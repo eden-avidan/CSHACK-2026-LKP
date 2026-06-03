@@ -1,15 +1,13 @@
 name: cshack
 channels:
   - pytorch
-  - nvidia
   - conda-forge
   - defaults
 
 dependencies:
   - python=3.10
-  - pytorch=2.0.1
-  - torchvision=0.15.2
-  - pytorch-cuda=11.8
+  - pytorch=2.2.2
+  - torchvision=0.17.2
   - numpy>=1.21.0,<2.0
   - pip
   - setuptools<70
@@ -24,6 +22,6 @@ dependencies:
       - pycocotools
       - tqdm
       - onnx
-      - onnxruntime-gpu
+      - onnxruntime
       - ultralytics
       - gitpython
