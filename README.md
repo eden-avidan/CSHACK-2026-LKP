@@ -35,16 +35,18 @@ mim install "mmpose>=1.1.0"
 python figure_recognition/detect_live.py
 ```
 
+Then open **<http://localhost:8000/>** in your browser. Hit `F11` for fullscreen on demo day.
+
 Edit the `CONFIG` block at the top of `figure_recognition/detect_live.py` to point `SOURCE` at:
-- a local video file path (`Path / "samples/drone_test.mp4"`)
-- an RTSP URL (drone bridge), e.g. `"rtsp://192.168.1.10:8554/live"`
 - `0` for the Mac built-in webcam
+- a local video file path (`HERE / "samples" / "drone_test.mp4"`)
+- an RTSP URL (drone bridge), e.g. `"rtsp://192.168.1.10:8554/live"`
 
 YOLO weights (`yolov8m.pt`, ~50 MB) auto-download on first run into `figure_recognition/models/`.
 
-The script opens a single window with the video, bounding boxes, FPS counter, and a side-panel showing the last ~18 detection log entries. Per-second JSON log lines are written to `figure_recognition/results/detections.jsonl` — `tail -f` it for a live audience-visible stream.
+The browser page is a flexbox split: annotated video on the left (auto-scales to viewport), live detection log on the right (one entry per second, newest on top, color-coded green when a person is present). Per-second JSON log lines are mirrored to `figure_recognition/results/detections.jsonl` — `tail -f` it for a terminal view.
 
-Press `ESC` in the video window to quit.
+Press `Ctrl-C` in the terminal to quit.
 
 ## Repo layout
 

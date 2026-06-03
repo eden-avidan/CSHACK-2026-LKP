@@ -27,4 +27,5 @@ dependencies:
       - onnx
       - onnxruntime-gpu
       - ultralytics
+      - flask
       - gitpython

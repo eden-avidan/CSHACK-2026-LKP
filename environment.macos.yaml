@@ -25,4 +25,5 @@ dependencies:
       - onnx
       - onnxruntime
       - ultralytics
+      - flask
       - gitpython
