@@ -18,6 +18,7 @@ dependencies:
   - pandas
   - ffmpeg
   - pip:
+      - "numpy<2"           # pin again here so pip honors it (else ultralytics deps pull numpy 2.x and break torch ABI)
       - openmim
       - matplotlib
       - opencv-contrib-python<=4.10.0.84
