@@ -27,15 +27,15 @@ mim install "mmpose>=1.1.0"
 Pose model — **RTMPose-l @ 384x288, 78.3 AP on COCO 17-keypoint** (~107 MB):
 
 ```bash
-mkdir -p figure_recognition
-curl -L -o figure_recognition/rtmpose-l_384x288.pth \
+mkdir -p figure_recognition/models
+curl -L -o figure_recognition/models/rtmpose-l_384x288.pth \
   "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/rtmpose-l_simcc-body7_pt-body7_420e-384x288-3f5a1437_20230504.pth"
 ```
 
 Person detector — **RTMDet-m** (~95 MB, paired with RTMPose-l):
 
 ```bash
-curl -L -o figure_recognition/rtmdet-m.pth \
+curl -L -o figure_recognition/models/rtmdet-m.pth \
   "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/rtmdet_m_8xb32-100e_coco-obj365-person-235e8209.pth"
 ```
 
@@ -44,7 +44,9 @@ curl -L -o figure_recognition/rtmdet-m.pth \
 ```
 .
 ├── README.md
-├── environment.yaml          conda env spec (name: cshack)
-├── .gitignore                ignores figure_recognition/ and skills/
-└── figure_recognition/       model weights (downloaded, not in git)
+├── environment.yaml              conda env spec (name: cshack)
+├── .gitignore                    ignores figure_recognition/models/ and skills/
+└── figure_recognition/
+    ├── README.md
+    └── models/                   model weights (downloaded, not in git)
 ```
