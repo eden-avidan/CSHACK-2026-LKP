@@ -55,12 +55,23 @@ Press `Ctrl-C` in the terminal to quit.
 ├── README.md
 ├── environment.yaml              conda env (Linux + CUDA)
 ├── environment.macos.yaml        conda env (Mac Apple Silicon, MPS)
-├── .gitignore                    ignores figure_recognition/{models,results}/ and skills/
+├── .gitignore                    ignores models/, results/, skills/, .DS_Store
 └── figure_recognition/
     ├── README.md
     ├── detect_live.py            main script: drone RTSP -> YOLO -> overlay + log
+    ├── samples/
+    │   └── drone_test.mp4        bundled test clip (~44 MB)
     ├── models/                   model weights (auto-downloaded, not in git)
     └── results/                  detections.jsonl + future recordings (not in git)
+```
+
+## Quick test on the bundled sample
+
+```bash
+conda activate cshack
+# in figure_recognition/detect_live.py, set SOURCE = HERE / "samples" / "drone_test.mp4"
+python figure_recognition/detect_live.py
+# then open http://localhost:8000/
 ```
 
 ## Stretch goal — RTMPose skeleton overlay
