@@ -1,6 +1,6 @@
 # CSHACK-2026-LKP
 
-Real-time person detection on a drone (DJI Mini 4 Pro) video feed, with per-frame confidence and a live JSONL log. Runtime detector: **YOLOv8** via Ultralytics; runs on Apple Silicon (MPS), CUDA, or CPU.
+Real-time person detection on a drone (DJI Mini 4 Pro) video feed, with per-frame confidence and a live JSONL log. Runtime detector: **YOLO26** via Ultralytics; runs on Apple Silicon (MPS), CUDA, or CPU.
 
 ## Setup
 
@@ -42,7 +42,7 @@ Edit the `CONFIG` block at the top of `figure_recognition/detect_live.py` to poi
 - a local video file path (`HERE / "samples" / "drone_test.mp4"`)
 - an RTSP URL (drone bridge), e.g. `"rtsp://192.168.1.10:8554/live"`
 
-YOLO weights (`yolov8m.pt`, ~50 MB) auto-download on first run into `figure_recognition/models/`.
+YOLO weights (`yolo26m.pt`) auto-download on first run into `figure_recognition/models/`.
 
 The browser page is a flexbox split: annotated video on the left (auto-scales to viewport), live detection log on the right (one entry per second, newest on top, color-coded green when a person is present). Per-second JSON log lines are mirrored to `figure_recognition/results/detections.jsonl` — `tail -f` it for a terminal view.
 

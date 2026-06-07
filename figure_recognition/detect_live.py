@@ -33,12 +33,13 @@ from ultralytics import YOLO
 # ===== CONFIG (edit before running) ============================================
 HERE        = Path(__file__).resolve().parent
 SOURCE      = 0                              # 0 = webcam; or "rtsp://..."; or a video path
-MODEL_NAME  = "yolov8m.pt"                   # auto-downloads on first run
+MODEL_NAME  = "yolo26l.pt"                   # auto-downloads on first run
 MODEL_DIR   = HERE / "models"
 LOG_PATH    = HERE / "results" / "detections.jsonl"
 
 CONF_THR        = 0.5
 DEVICE          = "mps"                      # "mps" (Mac), "cuda" (Linux GPU), or "cpu"
+INFER_SIZE      = 640                        # YOLO input resolution — try 320 or 416 for speed
 LOG_INTERVAL_S  = 1.0
 RECONNECT_WAIT  = 1.0
 JPEG_QUALITY    = 85
@@ -51,12 +52,17 @@ PORT            = 8000
 
 app = Flask(__name__)
 
-# shared state (worker thread -> http handlers)
+# shared state between threads
 _latest_jpeg   = b""
 _jpeg_lock     = threading.Lock()
 _log_subs      = []                          # list of queue.Queue[str], one per SSE client
 _log_subs_lock = threading.Lock()
 _log_recent    = deque(maxlen=200)           # served once on page load for backfill
+
+# capture → inference handoff: always holds the newest unprocessed frame
+_latest_frame      = None
+_latest_frame_lock = threading.Lock()
+_frame_ready       = threading.Event()
 
 
 def open_capture(source):
@@ -88,6 +94,25 @@ def publish_log(entry_dict):
                 pass
 
 
+def capture_thread():
+    """Reads frames as fast as possible, always exposing the latest one.
+    Inference never waits on I/O; I/O never waits on inference."""
+    global _latest_frame
+    cap = open_capture(SOURCE)
+    print(f"[capture] source: {SOURCE}")
+    while True:
+        ok, frame = cap.read()
+        if not ok or frame is None:
+            print(f"[capture] stream read failed; reconnecting in {RECONNECT_WAIT}s")
+            cap.release()
+            time.sleep(RECONNECT_WAIT)
+            cap = open_capture(SOURCE)
+            continue
+        with _latest_frame_lock:
+            _latest_frame = frame
+        _frame_ready.set()
+
+
 def worker():
     global _latest_jpeg
 
@@ -106,31 +131,28 @@ def worker():
             cwd_pt.rename(model_path)
             print(f"[worker] cached weights to {model_path}")
 
-    print(f"[worker] source: {SOURCE}  device: {DEVICE}")
-    cap = open_capture(SOURCE)
-    log_file = open(LOG_PATH, "a", buffering=1)
+    half = DEVICE == "cuda"
+    print(f"[worker] device: {DEVICE}  imgsz: {INFER_SIZE}  half: {half}")
 
+    log_file = open(LOG_PATH, "a", buffering=1)
     frame_idx   = 0
     last_log_ts = 0.0
     t_prev      = time.time()
     fps_smooth  = 0.0
 
     while True:
-        for _ in range(4):
-            cap.grab()
-        ok, frame = cap.retrieve() if cap.grab() else (False, None)
-        if not ok or frame is None:
-            print(f"[worker] stream read failed; reconnecting in {RECONNECT_WAIT}s")
-            cap.release()
-            time.sleep(RECONNECT_WAIT)
-            cap = open_capture(SOURCE)
+        _frame_ready.wait()
+        _frame_ready.clear()
+        with _latest_frame_lock:
+            frame = _latest_frame.copy() if _latest_frame is not None else None
+        if frame is None:
             continue
 
         frame_idx += 1
 
         results = model.predict(
             frame, classes=[0], conf=CONF_THR,
-            device=DEVICE, verbose=False,
+            device=DEVICE, imgsz=INFER_SIZE, half=half, verbose=False,
         )
         r = results[0]
 
@@ -287,8 +309,8 @@ def log_stream():
 
 
 def main():
-    t = threading.Thread(target=worker, daemon=True)
-    t.start()
+    threading.Thread(target=capture_thread, daemon=True).start()
+    threading.Thread(target=worker, daemon=True).start()
     print(f"[http] serving on http://{HOST}:{PORT}/  (open in your browser, F11 to fullscreen)")
     # use threaded=True so MJPEG + SSE can coexist with future HTTP hits
     app.run(host=HOST, port=PORT, threaded=True, debug=False, use_reloader=False)
