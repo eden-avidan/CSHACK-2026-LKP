@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "topo-layout"
+version = "0.1.0"
+description = "Preprocessing and terrain utilities for missing person probability mapping."
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "numpy>=1.24",
+  "Pillow>=10.0",
+  "uvicorn>=0.30",
+]
+
+[tool.setuptools.packages.find]
+include = ["topo_layout*"]

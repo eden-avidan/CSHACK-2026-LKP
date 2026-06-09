@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>topo-layout Mapbox Heatmap</title>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.24.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+    }
+    #map {
+      position: absolute;
+      inset: 0;
+    }
+    .panel {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 1;
+      width: 320px;
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(13, 17, 23, 0.88);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+    .panel h1 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+    .panel p {
+      margin: 0 0 12px;
+      color: #9fb0c0;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 100px;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .row label {
+      font-size: 14px;
+    }
+    .row input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 8px 10px;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      background: #111826;
+      color: #e6edf3;
+    }
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffb100, #ff5e00);
+      color: #101316;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+    .status {
+      margin-top: 12px;
+      min-height: 40px;
+      color: #c1d1df;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    .marker {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: #ff4d4d;
+      border: 2px solid white;
+      box-shadow: 0 0 0 6px rgba(255, 77, 77, 0.18);
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="panel">
+    <h1>Live Heatmap</h1>
+    <p>Pan the map to your search area, click to set the last known point, and compute a terrain-aware heatmap from Mapbox terrain data.</p>
+    <div class="row">
+      <label for="lastKnownTime">Last known time</label>
+      <input id="lastKnownTime" type="datetime-local">
+    </div>
+    <div class="row">
+      <label for="resolution">Grid width</label>
+      <input id="resolution" type="number" min="64" max="768" step="32" value="256">
+    </div>
+    <div class="row">
+      <label for="terrainInfluence">Use terrain influence</label>
+      <input id="terrainInfluence" type="checkbox" checked>
+    </div>
+    <button id="generate">Generate Heatmap</button>
+    <div class="status" id="status">Loading Mapbox configuration...</div>
+  </div>
+
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.24.0/mapbox-gl.js"></script>
+  <script>
+    let map;
+    let lastKnownPoint = null;
+    let marker = null;
+    let refreshTimer = null;
+    let requestInFlight = false;
+
+    const statusEl = document.getElementById('status');
+    const generateButton = document.getElementById('generate');
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function formatApiError(errorPayload) {
+      if (!errorPayload) {
+        return 'Heatmap request failed';
+      }
+      if (typeof errorPayload.detail === 'string') {
+        return errorPayload.detail;
+      }
+      if (Array.isArray(errorPayload.detail)) {
+        return errorPayload.detail
+          .map((entry) => {
+            const path = Array.isArray(entry.loc) ? entry.loc.join('.') : 'request';
+            return `${path}: ${entry.msg}`;
+          })
+          .join(' | ');
+      }
+      return 'Heatmap request failed';
+    }
+
+    function formatLocalDateTimeInput(date) {
+      const pad = (value) => String(value).padStart(2, '0');
+      return [
+        date.getFullYear(),
+        '-',
+        pad(date.getMonth() + 1),
+        '-',
+        pad(date.getDate()),
+        'T',
+        pad(date.getHours()),
+        ':',
+        pad(date.getMinutes())
+      ].join('');
+    }
+
+    function setMarker(lngLat) {
+      lastKnownPoint = lngLat;
+      if (!marker) {
+        const element = document.createElement('div');
+        element.className = 'marker';
+        marker = new mapboxgl.Marker({ element }).setLngLat(lngLat).addTo(map);
+      } else {
+        marker.setLngLat(lngLat);
+      }
+    }
+
+    function currentPoint() {
+      return lastKnownPoint || map.getCenter();
+    }
+
+    function readLastKnownTimestampIso() {
+      const rawValue = document.getElementById('lastKnownTime').value;
+      if (!rawValue) {
+        throw new Error('Please choose the last known time before generating the heatmap.');
+      }
+      const parsed = new Date(rawValue);
+      if (Number.isNaN(parsed.getTime())) {
+        throw new Error('The last known time is invalid.');
+      }
+      return parsed.toISOString();
+    }
+
+    function readResolution() {
+      const resolution = Number(document.getElementById('resolution').value);
+      if (!Number.isFinite(resolution) || !Number.isInteger(resolution)) {
+        throw new Error('Grid width must be a whole number.');
+      }
+      if (resolution < 64 || resolution > 768) {
+        throw new Error('Grid width must be between 64 and 768.');
+      }
+      return resolution;
+    }
+
+    function restartAutoRefresh() {
+      if (refreshTimer) {
+        window.clearInterval(refreshTimer);
+      }
+      refreshTimer = window.setInterval(() => {
+        generateHeatmap({ autoRefresh: true }).catch((error) => {
+          console.error(error);
+          setStatus(`Auto-refresh failed: ${error.message}`);
+        });
+      }, 5 * 60 * 1000);
+    }
+
+    async function initialize() {
+      const configResponse = await fetch('/api/config');
+      const config = await configResponse.json();
+      mapboxgl.accessToken = config.mapboxPublicToken;
+
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [config.defaultCenter.lon, config.defaultCenter.lat],
+        zoom: config.defaultZoom
+      });
+
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      map.on('load', () => {
+        setMarker(map.getCenter());
+        document.getElementById('lastKnownTime').value = formatLocalDateTimeInput(
+          new Date(Date.now() - 60 * 60 * 1000)
+        );
+        setStatus('Map ready. Click anywhere to move the last known point.');
+      });
+
+      map.on('click', (event) => {
+        setMarker(event.lngLat);
+        setStatus(`Last known point set to ${event.lngLat.lng.toFixed(5)}, ${event.lngLat.lat.toFixed(5)}`);
+      });
+    }
+
+    async function generateHeatmap({ autoRefresh = false } = {}) {
+      if (!map || requestInFlight) {
+        return;
+      }
+
+      requestInFlight = true;
+      generateButton.disabled = true;
+
+      try {
+        setStatus(
+          autoRefresh
+            ? 'Refreshing the live heatmap from the latest elapsed time...'
+            : 'Fetching terrain from Mapbox and computing the heatmap...'
+        );
+
+        const bounds = map.getBounds();
+        const point = currentPoint();
+        const resolution = readResolution();
+        const useTerrainInfluence = document.getElementById('terrainInfluence').checked;
+        const lastKnownTimestampIso = readLastKnownTimestampIso();
+
+        const response = await fetch('/api/heatmap/mapbox', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            west: bounds.getWest(),
+            south: bounds.getSouth(),
+            east: bounds.getEast(),
+            north: bounds.getNorth(),
+            last_known_lon: point.lng,
+            last_known_lat: point.lat,
+            last_known_timestamp: lastKnownTimestampIso,
+            map_zoom: map.getZoom(),
+            grid_width: resolution,
+            grid_height: resolution,
+            use_terrain_influence: useTerrainInfluence
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(formatApiError(error));
+        }
+
+        const payload = await response.json();
+        const sourceId = 'probability-overlay';
+        const layerId = 'probability-overlay-layer';
+
+        if (map.getSource(sourceId)) {
+          map.getSource(sourceId).updateImage({
+            url: payload.heatmapImageUrl,
+            coordinates: payload.imageCoordinates
+          });
+        } else {
+          map.addSource(sourceId, {
+            type: 'image',
+            url: payload.heatmapImageUrl,
+            coordinates: payload.imageCoordinates
+          });
+          map.addLayer({
+            id: layerId,
+            type: 'raster',
+            source: sourceId,
+            paint: {
+              'raster-opacity': 0.72
+            }
+          });
+        }
+
+        restartAutoRefresh();
+        setStatus(
+          `Done. Terrain zoom ${payload.stats.terrainZoom}, reachable cells ${payload.stats.reachableCells}, elapsed hours ${payload.stats.elapsedHours.toFixed(2)}. Auto-refresh runs every 5 minutes.`
+        );
+      } finally {
+        requestInFlight = false;
+        generateButton.disabled = false;
+      }
+    }
+
+    generateButton.addEventListener('click', async () => {
+      try {
+        await generateHeatmap();
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message);
+        generateButton.disabled = false;
+      }
+    });
+
+    initialize().catch((error) => {
+      console.error(error);
+      setStatus(error.message);
+    });
+  </script>
+</body>
+</html>

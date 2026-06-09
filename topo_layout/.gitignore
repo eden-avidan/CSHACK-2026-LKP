@@ -1,0 +1,7 @@
+artifacts/
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+topo_layout.egg-info/
