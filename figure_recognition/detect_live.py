@@ -14,7 +14,9 @@ SOURCE (set below) can be:
   - an RTSP URL         (e.g. "rtsp://<drone-bridge-ip>:8554/live")
   - 0                   (Mac built-in webcam)
 
-JSONL log mirrored to figure_recognition/results/detections.jsonl (tail -f for terminal view).
+JSONL logs:
+  - figure_recognition/results/detections.jsonl (tail -f for terminal view)
+  - figure_recognition/results/person_detection_output.jsonl (heatmap input)
 """
 
 import json
@@ -36,6 +38,7 @@ SOURCE      = 0                              # 0 = webcam; or "rtsp://..."; or a
 MODEL_NAME  = "yolo26l.pt"                   # auto-downloads on first run
 MODEL_DIR   = HERE / "models"
 LOG_PATH    = HERE / "results" / "detections.jsonl"
+PERSON_OUTPUT_PATH = HERE / "results" / "person_detection_output.jsonl"
 
 CONF_THR        = 0.5
 DEVICE          = "mps"                      # "mps" (Mac), "cuda" (Linux GPU), or "cpu"
@@ -200,8 +203,31 @@ def worker():
             else:
                 entry = {"ts": ts, "frame": frame_idx, "person": False,
                          "confidence": None, "bbox": None}
+
+            if detection:
+                confidence = round(detection["confidence"], 4)
+                person_output_entry = {
+                    "timestamp": ts,
+                    "frame": frame_idx,
+                    "person_found": True,
+                    "confidence": confidence,
+                    "confidence_percent": round(confidence * 100, 2),
+                    "bbox": detection["bbox"],
+                }
+            else:
+                person_output_entry = {
+                    "timestamp": ts,
+                    "frame": frame_idx,
+                    "person_found": False,
+                    "confidence": None,
+                    "confidence_percent": 0.0,
+                    "bbox": None,
+                }
+
             log_file.write(json.dumps(entry) + "\n")
             log_file.flush()
+            person_output_file.write(json.dumps(person_output_entry) + "\n")
+            person_output_file.flush()
             publish_log(entry)
 
 
