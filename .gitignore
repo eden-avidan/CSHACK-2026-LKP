@@ -3,3 +3,14 @@ figure_recognition/models/
 figure_recognition/results/
 .DS_Store
 **/.DS_Store
+
+# Dependencies and local env
+node_modules/
+.venv/
+.env
+!.env.example
+dist/
+tsconfig.tsbuildinfo
+__pycache__/
+.pytest_cache/
+*.pyc
