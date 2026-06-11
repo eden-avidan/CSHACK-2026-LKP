@@ -15,7 +15,9 @@ from app.models.mission import (
     UpdatePaceRequest,
 )
 from app.models.routes import DroneRouteResponse, GeoJsonLineString
+from app.models.terrain import TerrainInspectResponse
 from app.services.mission_store import mission_store
+from app.services.terrain_serialize import build_inspect_response
 from app.api.ws.mission import start_tick_loop, stop_tick_loop, broadcast_tick_result
 
 router = APIRouter(prefix="/missions", tags=["missions"])
@@ -141,4 +143,17 @@ async def find_drone_route(mission_id: UUID) -> DroneRouteResponse:
         expected_coverage=result.expected_coverage,
         length_m=result.length_m,
         route_points=len(result.cells),
+    )
+
+
+@router.get("/{mission_id}/node-fields", response_model=TerrainInspectResponse)
+async def get_mission_node_fields(mission_id: UUID) -> TerrainInspectResponse:
+    state = mission_store.get(mission_id)
+    if not state:
+        raise HTTPException(status_code=404, detail="Mission not found")
+    if state.initial_node_fields is None:
+        raise HTTPException(status_code=404, detail="Mission has no terrain snapshot")
+    return build_inspect_response(
+        state.grid_matrix.grid,
+        state.initial_node_fields,
     )

@@ -11,10 +11,10 @@ import numpy as np
 
 from app.core.config import settings
 from app.engine.grid_engine import GridEngine
-from app.engine.grid_matrix import GridMatrix
+from app.engine.grid_matrix import GridMatrix, NodeFields
 from app.engine.grid_utils import compute_mpp, downsample_grid_peaks
 from app.engine.layers.registry import ensure_min_one_dict, ensure_min_one_layer
-from app.engine.node_builder import build_node_fields, env_for_layers
+from app.engine.node_builder import build_node_fields, copy_node_fields, env_for_layers
 from app.geospatial.grid import ProbabilityGrid, create_empty_grid
 from app.models.heatmap import HeatmapCellDelta
 from app.models.layers import EngineTickMessage, LayerFlags
@@ -81,6 +81,7 @@ class MissionState:
     update_interval_sec: float = LIVE_UPDATE_INTERVAL_SEC
     simulation_running: bool = True
     terrain: Optional[TerrainContext] = None
+    initial_node_fields: Optional[NodeFields] = None
     layers: LayerFlags = field(default_factory=LayerFlags)
     mpp: Optional[LatLon] = None
     tick_task: Optional[asyncio.Task] = field(default=None, repr=False)
@@ -164,6 +165,7 @@ class MissionStore:
             layers=layer_flags,
         )
         self._update_reachability(temp_state)
+        initial_node_fields = copy_node_fields(grid_matrix.node_fields)
         grid_matrix.probabilities = self._finalize_probabilities(
             temp_state, grid_matrix.probabilities
         )
@@ -188,6 +190,7 @@ class MissionStore:
             update_interval_sec=resolved_interval,
             simulation_running=simulation_running,
             terrain=terrain,
+            initial_node_fields=initial_node_fields,
             layers=layer_flags,
             mpp=mpp,
         )

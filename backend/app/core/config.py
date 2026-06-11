@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     grid_size: int = 128
     grid_resolution_m: float = 50.0
     filter_hz: float = 1.0
-    cors_origins: str = "http://localhost:5173"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     alpha: float = 0.85
     sigma_v: float = 0.25
@@ -58,6 +58,11 @@ class Settings(BaseSettings):
     topo_ridge_weight: float = 0.9
 
     env_fetch_timeout_sec: float = 8.0
+    roads_data_source: str = "auto"  # auto | overpass | osm_map
+
+    # Terrain inspection: meters per cell (smaller = finer detail, same coverage).
+    # Coverage stays grid_size * grid_resolution_m; cell count scales up accordingly.
+    terrain_inspect_resolution_m: float = 25.0
 
     @property
     def cors_origin_list(self) -> list[str]:
