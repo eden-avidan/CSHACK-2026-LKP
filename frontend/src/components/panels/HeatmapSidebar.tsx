@@ -5,7 +5,7 @@ import type { TerrainData } from '../../stores/missionStore'
 import { useWebSocket } from '../../hooks/useWebSocket'
 import type { GridMetadata } from '../../types/geo'
 import type { DroneRoute } from '../../types/geo'
-import { BASE_STEP_SEC, formatDuration } from '../../utils/formatTime'
+import { BASE_STEP_SEC, formatDuration, formatSimulatedDateTime, simulatedDateTime } from '../../utils/formatTime'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
@@ -20,6 +20,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const draftLkp = useMissionStore((s) => s.draftLkp)
   const pinnedLkp = useMissionStore((s) => s.pinnedLkp)
   const lkpTimestamp = useMissionStore((s) => s.lkpTimestamp)
+  const simulationStartTimestamp = useMissionStore((s) => s.simulationStartTimestamp)
   const pace = useMissionStore((s) => s.pace)
   const stepSec = useMissionStore((s) => s.stepSec)
   const tickCount = useMissionStore((s) => s.tickCount)
@@ -29,6 +30,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const setMode = useMissionStore((s) => s.setMode)
   const setPinnedLkp = useMissionStore((s) => s.setPinnedLkp)
   const setLkpTimestamp = useMissionStore((s) => s.setLkpTimestamp)
+  const setSimulationStartTimestamp = useMissionStore((s) => s.setSimulationStartTimestamp)
   const setPace = useMissionStore((s) => s.setPace)
   const setStepSec = useMissionStore((s) => s.setStepSec)
   const setMission = useMissionStore((s) => s.setMission)
@@ -73,7 +75,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   }, [missionId])
 
   useEffect(() => {
-    if (!missionId || mode !== 'live') return
+    if (!missionId) return
     if (!pacePatchReady.current) {
       pacePatchReady.current = true
       return
@@ -90,7 +92,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       }
     }, 400)
     return () => clearTimeout(t)
-  }, [missionId, mode, pace, setStepSec])
+  }, [missionId, pace, setStepSec])
 
   const pinLkp = useCallback(() => {
     if (draftLkp) {
@@ -110,6 +112,19 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       setError('Set the LKP date and time for offline mode')
       return
     }
+    if (mode === 'offline' && !simulationStartTimestamp) {
+      setError('Set the simulation start date and time for offline mode')
+      return
+    }
+    if (
+      mode === 'offline' &&
+      lkpTimestamp &&
+      simulationStartTimestamp &&
+      new Date(simulationStartTimestamp) < new Date(lkpTimestamp)
+    ) {
+      setError('Simulation start must be on or after the LKP time')
+      return
+    }
     setLoading(true)
     setError(null)
     try {
@@ -124,6 +139,9 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       }
       if (mode === 'offline' && lkpTimestamp) {
         body.lkp_timestamp = new Date(lkpTimestamp).toISOString()
+      }
+      if (mode === 'offline' && simulationStartTimestamp) {
+        body.simulation_start_timestamp = new Date(simulationStartTimestamp).toISOString()
       }
       const res = await fetch(`${BACKEND_URL}/missions`, {
         method: 'POST',
@@ -141,15 +159,18 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
 
       let resolvedStepSec: number | undefined
       let resolvedSimulationRunning: boolean | undefined
+      let resolvedTickCount: number | undefined
       if (missionRes.ok) {
         const mission = (await missionRes.json()) as {
           step_sec?: number
           simulation_running?: boolean
+          tick_count?: number
         }
         if (typeof mission.step_sec === 'number') resolvedStepSec = mission.step_sec
         if (typeof mission.simulation_running === 'boolean') {
           resolvedSimulationRunning = mission.simulation_running
         }
+        if (typeof mission.tick_count === 'number') resolvedTickCount = mission.tick_count
       }
 
       if (nodeFieldsRes.ok) {
@@ -164,10 +185,26 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           metadata: GridMetadata
           probabilities: number[]
         }
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
+        setMission(
+          data.mission_id,
+          pinnedLkp,
+          mode,
+          pace,
+          resolvedStepSec,
+          resolvedTickCount,
+          resolvedSimulationRunning,
+        )
         setHeatmapFull(heat.metadata, heat.probabilities)
       } else {
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
+        setMission(
+          data.mission_id,
+          pinnedLkp,
+          mode,
+          pace,
+          resolvedStepSec,
+          resolvedTickCount,
+          resolvedSimulationRunning,
+        )
       }
       if (resolvedSimulationRunning !== undefined) {
         setSimulationRunning(resolvedSimulationRunning)
@@ -183,12 +220,16 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
+  }, [pinnedLkp, mode, lkpTimestamp, simulationStartTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
   const simulatedElapsedSec = tickCount * stepSec
+  const offlineSimTime =
+    mode === 'offline' && lkpTimestamp
+      ? formatSimulatedDateTime(simulatedDateTime(lkpTimestamp, tickCount, stepSec))
+      : null
 
   const togglePauseResume = useCallback(async () => {
-    if (!missionId || mode !== 'live') return
+    if (!missionId) return
     setPauseLoading(true)
     setError(null)
     const endpoint = simulationRunning ? 'pause' : 'resume'
@@ -208,7 +249,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     } finally {
       setPauseLoading(false)
     }
-  }, [missionId, mode, simulationRunning, setSimulationRunning])
+  }, [missionId, simulationRunning, setSimulationRunning])
 
   const newPin = useCallback(async () => {
     if (!missionId) return
@@ -334,8 +375,34 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
               aria-label="Last known position timestamp"
             />
           </label>
+          <label className="field">
+            <span>Start live simulation at</span>
+            <input
+              type="datetime-local"
+              value={simulationStartTimestamp ?? ''}
+              onChange={(e) => setSimulationStartTimestamp(e.target.value || null)}
+              disabled={!!missionId}
+              aria-label="Simulation start timestamp"
+            />
+          </label>
+          <label className="field pace-slider">
+            <span>
+              Pace — {pace.toFixed(1)}× ({Math.round(stepSec)}s sim / tick)
+            </span>
+            <input
+              type="range"
+              min={0.1}
+              max={120}
+              step={0.1}
+              value={pace}
+              onChange={(e) => setPace(Number(e.target.value))}
+              disabled={!!missionId && mode !== 'offline'}
+              aria-label="Simulation pace multiplier"
+            />
+          </label>
           <p className="pace-hint">
-            Computes where the subject likely is now based on elapsed time since last seen.
+            Batch-computes the heatmap from LKP → start time, then plays forward like live.
+            Pace speeds simulated time after start ({BASE_STEP_SEC}s/tick at 1×).
           </p>
         </section>
       )}
@@ -350,16 +417,28 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
         </p>
       )}
 
+      {missionId && mode === 'offline' && offlineSimTime && (
+        <p className="live-timer" aria-live="polite">
+          Simulation time: <strong>{offlineSimTime}</strong>
+          <span className="live-timer-meta">
+            {' '}
+            ({tickCount} × {Math.round(stepSec)}s since LKP)
+          </span>
+        </p>
+      )}
+
       {missionId && (
         <p className="mission-id">
           Mission: <code>{missionId.slice(0, 8)}…</code>
           {mode === 'live' && simulationRunning && wsStatus === 'open'
             ? ' · live'
-            : mode === 'live' && !simulationRunning
-              ? ' · paused'
-              : wsStatus !== 'open'
-                ? ` · ${wsStatus}`
-                : ''}
+            : mode === 'offline' && simulationRunning && wsStatus === 'open'
+              ? ' · replay'
+              : simulationRunning === false
+                ? ' · paused'
+                : wsStatus !== 'open'
+                  ? ` · ${wsStatus}`
+                  : ''}
         </p>
       )}
 
@@ -377,7 +456,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             {routeLoading ? 'Planning Route…' : 'Find Drone Route'}
           </button>
           {routeSummary && <p className="route-summary">{routeSummary}</p>}
-          {mode === 'live' && (
+          {(mode === 'live' || mode === 'offline') && (
             <button
               type="button"
               className={simulationRunning ? 'secondary' : undefined}

@@ -30,6 +30,7 @@ def _mission_response(state) -> MissionResponse:
         mode=state.mode,
         lkp=state.lkp,
         lkp_timestamp=state.lkp_timestamp,
+        simulation_start_timestamp=state.simulation_start_timestamp,
         created_at=state.created_at,
         tick_count=state.tick_count,
         pace=state.pace,
@@ -47,6 +48,7 @@ async def create_mission(body: CreateMissionRequest) -> CreateMissionResponse:
             body.sigma_0_m,
             mode=body.mode,
             lkp_timestamp=body.lkp_timestamp,
+            simulation_start_timestamp=body.simulation_start_timestamp,
             pace=body.pace,
             step_sec=body.step_sec,
             update_interval_sec=body.update_interval_sec,
@@ -55,8 +57,7 @@ async def create_mission(body: CreateMissionRequest) -> CreateMissionResponse:
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    if state.mode == MissionMode.LIVE:
-        start_tick_loop(state.mission_id)
+    start_tick_loop(state.mission_id)
     return CreateMissionResponse(mission_id=state.mission_id, status=MissionStatus.SEARCHING)
 
 
@@ -94,8 +95,7 @@ async def resume_mission(mission_id: UUID) -> MissionResponse:
         state = await mission_store.resume(mission_id)
     except KeyError:
         raise HTTPException(status_code=404, detail="Mission not found") from None
-    if state.mode == MissionMode.LIVE:
-        start_tick_loop(mission_id)
+    start_tick_loop(mission_id)
     return _mission_response(state)
 
 

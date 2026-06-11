@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
-import { BASE_STEP_SEC } from '../utils/formatTime'
+import { BASE_STEP_SEC, toDatetimeLocalValue } from '../utils/formatTime'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
@@ -62,8 +62,11 @@ export const DEFAULT_LAYERS: LayerState = {
 
 function defaultLkpTimestamp(): string {
   const d = new Date(Date.now() - 2 * 60 * 60 * 1000)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+  return toDatetimeLocalValue(d)
+}
+
+function defaultSimulationStartTimestamp(): string {
+  return toDatetimeLocalValue(new Date())
 }
 
 interface MissionStore {
@@ -86,6 +89,7 @@ interface MissionStore {
   pinnedLkp: LatLon | null
   draftLkp: LatLon | null
   lkpTimestamp: string | null
+  simulationStartTimestamp: string | null
   pace: number
   stepSec: number
   wsSend: ((payload: unknown) => void) | null
@@ -100,7 +104,16 @@ interface MissionStore {
   setMode: (mode: MissionMode) => void
   setPace: (pace: number) => void
   setLkpTimestamp: (ts: string | null) => void
-  setMission: (id: string, lkp: LatLon, mode: MissionMode, pace: number, stepSec?: number) => void
+  setSimulationStartTimestamp: (ts: string | null) => void
+  setMission: (
+    id: string,
+    lkp: LatLon,
+    mode: MissionMode,
+    pace: number,
+    stepSec?: number,
+    tickCount?: number,
+    simulationRunning?: boolean,
+  ) => void
   setStepSec: (stepSec: number) => void
   setSimulationRunning: (running: boolean) => void
   resetMission: () => void
@@ -139,6 +152,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   pinnedLkp: null,
   draftLkp: null,
   lkpTimestamp: defaultLkpTimestamp(),
+  simulationStartTimestamp: defaultSimulationStartTimestamp(),
   pace: 1,
   stepSec: BASE_STEP_SEC,
   wsSend: null,
@@ -163,7 +177,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
 
-  setMission: (id, lkp, mode, pace, stepSec) =>
+  setSimulationStartTimestamp: (simulationStartTimestamp) => set({ simulationStartTimestamp }),
+
+  setMission: (id, lkp, mode, pace, stepSec, tickCount, simulationRunning) =>
     set((state) => ({
       missionId: id,
       lkp,
@@ -171,9 +187,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       mppTrail: [lkp],
       status: 'searching',
       mode,
-      tickCount: 0,
+      tickCount: tickCount ?? 0,
       engineTickVersion: 0,
-      simulationRunning: mode === 'live',
+      simulationRunning: simulationRunning ?? mode === 'live',
       layers: state.layers,
       pace,
       stepSec: stepSec ?? BASE_STEP_SEC * pace,
@@ -208,6 +224,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       pinnedLkp: null,
       draftLkp: null,
       lkpTimestamp: defaultLkpTimestamp(),
+      simulationStartTimestamp: defaultSimulationStartTimestamp(),
       pace: 1,
       stepSec: BASE_STEP_SEC,
       wsSend: null,
