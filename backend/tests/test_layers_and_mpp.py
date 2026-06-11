@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, patch
 import numpy as np
 import pytest
 
-from app.geospatial.grid import create_empty_grid
+from app.geospatial.grid import cell_centroid_utm, create_empty_grid
 from app.models.layers import LayerFlags
 from app.models.mission import LatLon
 from app.services.env_ingestion import TerrainContext
@@ -64,24 +64,23 @@ def test_weather_off_zero_wind():
 def test_topography_land_mask():
     grid = create_empty_grid(HAIFA, 50.0, 32)
     terrain = _terrain(grid.rows, grid.cols, land=False)
-    # Mark center cell as land so particle can be nudged there
-    terrain.is_land[16, 16] = True
+    land_row, land_col = 16, 16
+    terrain.is_land[land_row, land_col] = True
+    water_e, water_n = cell_centroid_utm(grid, 0, 0)
+    land_e, land_n = cell_centroid_utm(grid, land_row, land_col)
     particles = Particles(
-        eastings=np.array([grid.crs.origin_e]),
-        northings=np.array([grid.crs.origin_n]),
+        eastings=np.array([water_e]),
+        northings=np.array([water_n]),
         v_n=np.array([5.0]),
         v_e=np.array([0.0]),
         weights=np.array([1.0]),
     )
     layers = LayerFlags(topography=True, weather=False)
     out = predict_step(particles, zero_env(), dt=1.0, terrain=terrain, grid=grid, layers=layers)
-    rows, cols = 16, 16
-    res = grid.metadata.resolution_m
-    half = (grid.rows * res) / 2.0
-    target_e = grid.crs.origin_e - half + (cols + 0.5) * res
-    target_n = grid.crs.origin_n + half - (rows + 0.5) * res
-    # Particle should move toward land cell from water
-    assert abs(out.eastings[0] - target_e) < abs(particles.eastings[0] - target_e) or out.v_e[0] < particles.v_e[0]
+    # Particle in water should move toward the nearest land cell (LKP center).
+    assert abs(out.eastings[0] - land_e) < abs(particles.eastings[0] - land_e) or out.v_e[0] < particles.v_e[0]
+    assert land_e == pytest.approx(grid.crs.origin_e)
+    assert land_n == pytest.approx(grid.crs.origin_n)
 
 
 def test_road_snap_within_50m():
@@ -103,14 +102,14 @@ def test_road_snap_within_50m():
     assert np.mean(out.v_e) > np.mean(particles.v_e)
 
 
-def test_injured_reduces_variance():
+def test_personality_reduces_variance():
     grid = create_empty_grid(HAIFA, 50.0, 32)
     particles = initialize_particles(grid.crs.origin_e, grid.crs.origin_n, 200, 50.0)
     base = predict_step(
-        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(subject_injured=False)
+        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(personality=False)
     )
     injured = predict_step(
-        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(subject_injured=True)
+        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(personality=True)
     )
     base_spread = np.std(base.eastings - particles.eastings)
     injured_spread = np.std(injured.eastings - particles.eastings)

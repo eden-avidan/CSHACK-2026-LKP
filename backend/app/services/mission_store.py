@@ -17,7 +17,9 @@ from app.engine.layers.registry import ensure_min_one_dict, ensure_min_one_layer
 from app.engine.node_builder import build_node_fields, copy_node_fields, env_for_layers
 from app.geospatial.grid import ProbabilityGrid, create_empty_grid
 from app.models.heatmap import HeatmapCellDelta
+from app.models.detection import DetectionEventMessage
 from app.models.layers import EngineTickMessage, LayerFlags
+from app.models.personality import PersonalityProfile
 from app.models.mission import (
     BASE_STEP_SEC,
     LatLon,
@@ -62,6 +64,7 @@ class TickResult:
     deltas: list[HeatmapCellDelta]
     engine_tick: Optional[EngineTickMessage]
     full_refresh: bool = False
+    detection_events: list[DetectionEventMessage] = field(default_factory=list)
 
 
 @dataclass
@@ -82,6 +85,7 @@ class MissionState:
     terrain: Optional[TerrainContext] = None
     initial_node_fields: Optional[NodeFields] = None
     layers: LayerFlags = field(default_factory=LayerFlags)
+    personality: PersonalityProfile | None = None
     mpp: Optional[LatLon] = None
     tick_task: Optional[asyncio.Task] = field(default=None, repr=False)
     subscribers: list[asyncio.Queue] = field(default_factory=list, repr=False)
@@ -110,6 +114,7 @@ class MissionStore:
         step_sec: Optional[float] = None,
         update_interval_sec: Optional[float] = None,
         layers: Optional[dict[str, bool]] = None,
+        personality: PersonalityProfile | None = None,
     ) -> MissionState:
         del sigma_0_m  # grid engine uses t=0 impulse at LKP center
         mission_id = uuid4()
@@ -130,10 +135,14 @@ class MissionStore:
             layer_flags = LayerFlags(
                 topography=False,
                 roads=False,
-                subject_injured=False,
+                personality=False,
                 weather=False,
                 sea_drift=True,
             )
+
+        resolved_personality: PersonalityProfile | None = None
+        if layer_flags.personality:
+            resolved_personality = personality or PersonalityProfile()
 
         if mode == MissionMode.LIVE:
             if step_sec is not None and update_interval_sec is not None:
@@ -162,6 +171,7 @@ class MissionStore:
             terrain_grid=terrain_grid,
             terrain=terrain,
             layers=layer_flags,
+            personality=resolved_personality,
         )
         self._update_reachability(temp_state)
         initial_node_fields = copy_node_fields(grid_matrix.node_fields)
@@ -190,6 +200,7 @@ class MissionStore:
             initial_node_fields=initial_node_fields,
             layers=layer_flags,
             mpp=mpp,
+            personality=resolved_personality,
         )
         self._missions[mission_id] = state
 
@@ -218,9 +229,10 @@ class MissionStore:
             dt_sec=state.step_sec,
             tick_count=state.tick_count,
             env=env,
+            personality=state.personality if state.layers.personality else None,
         )
 
-    async def _tick_unlocked(self, state: MissionState) -> None:
+    async def _tick_unlocked(self, state: MissionState) -> list[DetectionEventMessage]:
         prior_probs = state.grid_matrix.probabilities.copy()
         state.tick_count += 1
         self._update_reachability(state)
@@ -228,9 +240,10 @@ class MissionStore:
         current_probs = self._recompute_from_impulse(state)
         blended = self._blend_history(prior_probs, current_probs)
         state.grid_matrix.probabilities = blended
-        self._update_drone_last_seen(state)
+        detection_events = self._update_drone_last_seen(state)
         state.grid_matrix.sync_to_grid()
         state.mpp = compute_mpp(state.grid_matrix.grid, blended)
+        return detection_events
 
     def _blend_history(self, prior: np.ndarray, current: np.ndarray) -> np.ndarray:
         decay = settings.heatmap_history_decay
@@ -240,29 +253,50 @@ class MissionStore:
             return prior
         return decay * prior + (1.0 - decay) * current
 
-    def _update_drone_last_seen(self, state: MissionState) -> None:
+    def _update_drone_last_seen(self, state: MissionState) -> list[DetectionEventMessage]:
         tick_start = (state.lkp_timestamp or state.created_at) + timedelta(
-            seconds=state.tick_count * state.step_sec
+            seconds=max(0, state.tick_count - 1) * state.step_sec
         )
         tick_end = tick_start + timedelta(seconds=state.step_sec)
         records = load_detection_records(get_default_detection_jsonl_path())
         node_last_seen = state.grid_matrix.node_fields.drone_last_seen
         node_last_seen.fill(False)
+        events: list[DetectionEventMessage] = []
 
         for record in records:
             if not (tick_start <= record.timestamp < tick_end):
                 continue
+            position = None
+            if record.latitude is not None and record.longitude is not None:
+                try:
+                    position = LatLon(lat=record.latitude, lon=record.longitude)
+                except ValueError:
+                    position = None
+            events.append(
+                DetectionEventMessage(
+                    mission_id=state.mission_id,
+                    timestamp=record.timestamp,
+                    confidence=record.confidence,
+                    confidence_percent=record.confidence_percent,
+                    frame=record.frame,
+                    bbox=record.bbox,
+                    position=position,
+                )
+            )
+            if position is None:
+                continue
             try:
                 row, col = map_detection_to_grid_cell(
                     state.grid_matrix.grid,
-                    record.latitude,
-                    record.longitude,
+                    position.lat,
+                    position.lon,
                 )
             except ValueError:
                 continue
             if not altitude_matches_node(state.grid_matrix.node_fields, row, col, record.altitude):
                 continue
             node_last_seen[row, col] = True
+        return events
 
     def _update_reachability(self, state: MissionState) -> None:
         if not state.layers.topography or state.terrain is None:
@@ -304,7 +338,7 @@ class MissionStore:
         if not state.simulation_running and state.mode == MissionMode.LIVE:
             return TickResult(deltas=[], engine_tick=None)
         async with state._lock:
-            await self._tick_unlocked(state)
+            detection_events = await self._tick_unlocked(state)
             engine_tick = EngineTickMessage(
                 event="engine_tick",
                 tick_count=state.tick_count,
@@ -315,7 +349,12 @@ class MissionStore:
                     state.grid_matrix.probabilities, state.grid_matrix.grid
                 ),
             )
-            return TickResult(deltas=[], engine_tick=engine_tick, full_refresh=True)
+            return TickResult(
+                deltas=[],
+                engine_tick=engine_tick,
+                full_refresh=True,
+                detection_events=detection_events,
+            )
 
     async def update_layers(self, mission_id: UUID, layers: dict[str, bool]) -> MissionState:
         state = self._require(mission_id)

@@ -134,6 +134,10 @@ pytest -q --cov=app tests/
 | `/ws/telemetry` | edge_drone | Ingest `pose`, `scan_swath`, `detection` |
 | `/ws/mission/{id}` | frontend | Push `heatmap_delta`, `route_update`, `detection_event` |
 
+`detection_event` is emitted from the real figure-recognition JSONL feed during
+mission ticks. It contains `person_found`, `confidence`, `confidence_percent`,
+`timestamp`, optional `frame` and `bbox`, and optional WGS84 `position`.
+
 ---
 
 ## Service Architecture

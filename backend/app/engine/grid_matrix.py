@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from app.geospatial.grid import ProbabilityGrid, cell_centroid_latlon, create_empty_grid
+from app.geospatial.grid import ProbabilityGrid, cell_centroid_latlon, create_empty_grid, lkp_cell_indices
 from app.models.mission import LatLon
 
 
@@ -85,8 +85,7 @@ class GridMatrix:
         node_fields: NodeFields | None = None,
     ) -> GridMatrix:
         grid = create_empty_grid(lkp, resolution_m, size)
-        lkp_row = size // 2
-        lkp_col = size // 2
+        lkp_row, lkp_col = lkp_cell_indices(size)
         fields = node_fields or NodeFields.zeros(size)
         _fill_cell_latlon(fields.latitude, fields.longitude, grid)
         matrix = cls(

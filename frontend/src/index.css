@@ -60,6 +60,80 @@ body {
   height: 100%;
 }
 
+.detection-viewport-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: rgba(57, 255, 20, 0.18);
+  box-shadow: inset 0 0 120px 35px rgba(57, 255, 20, 0.85);
+  animation: detection-viewport-pulse 3s ease-out forwards;
+}
+
+.detection-location-flash {
+  position: absolute;
+  z-index: 5;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  pointer-events: none;
+  border: 3px solid #39ff14;
+  border-radius: 50%;
+  background: rgba(57, 255, 20, 0.95);
+  box-shadow: 0 0 25px 10px rgba(57, 255, 20, 0.95);
+  animation: detection-core-pulse 0.7s ease-in-out 4 alternate forwards;
+}
+
+.detection-location-flash span {
+  position: absolute;
+  inset: -3px;
+  border: 3px solid #39ff14;
+  border-radius: 50%;
+  animation: detection-radar-ring 3s ease-out forwards;
+}
+
+.detection-location-flash span:nth-child(2) {
+  animation-delay: 0.35s;
+}
+
+.detection-location-flash span:nth-child(3) {
+  animation-delay: 0.7s;
+}
+
+@keyframes detection-viewport-pulse {
+  0%, 18%, 36% {
+    opacity: 0.95;
+  }
+  9%, 27%, 50% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes detection-core-pulse {
+  from {
+    transform: scale(0.75);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.35);
+    opacity: 1;
+  }
+}
+
+@keyframes detection-radar-ring {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(9);
+    opacity: 0;
+  }
+}
+
 .footer {
   padding: 0.5rem 1.25rem;
   background: #1a2332;
@@ -172,10 +246,38 @@ body {
 
 .coords,
 .mission-id,
+.live-timer,
 .status,
 .ws-status {
   font-size: 0.85rem;
   margin: 0.25rem 0;
+}
+
+.live-timer strong {
+  font-variant-numeric: tabular-nums;
+  color: #e7ecf1;
+}
+
+.live-timer-meta {
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.personality-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.35rem 0 0.5rem 1.5rem;
+  padding: 0.5rem;
+  border-left: 2px solid #2a3544;
+}
+
+.personality-fields .field input[type='number'] {
+  width: 100%;
+}
+
+.personality-fields .layer-toggle {
+  margin-top: 0.15rem;
 }
 
 button {
@@ -335,34 +437,6 @@ button.secondary {
   font-size: 0.65rem;
   color: #718096;
   margin-left: auto;
-}
-
-.mpp-pulse-ring {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  margin-left: -14px;
-  margin-top: -14px;
-  border: 2px solid #22c55e;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 3;
-  animation: mpp-pulse 1.6s ease-out infinite;
-}
-
-@keyframes mpp-pulse {
-  0% {
-    transform: scale(0.6);
-    opacity: 0.95;
-  }
-  70% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
 }
 
 code {

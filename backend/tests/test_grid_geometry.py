@@ -70,17 +70,24 @@ def test_grid_matrix_create_populates_latlon_for_every_cell():
             assert matrix.node_fields.longitude[row, col] == pytest.approx(expected_lon)
 
 
-def test_lkp_cell_latlon_is_close_to_lkp():
-    size = 32
+def test_lkp_cell_latlon_matches_pin():
+    size = 128
     matrix = GridMatrix.create(JERUSALEM, size=size, resolution_m=50.0)
     lat = matrix.node_fields.latitude[matrix.lkp_row, matrix.lkp_col]
     lon = matrix.node_fields.longitude[matrix.lkp_row, matrix.lkp_col]
-    # LKP cell is one of the four cells around the LKP point; centroid is
-    # within half a cell (~35 m diagonal) of the click in any direction.
-    mlat = 111_132.0
-    mlon = 111_320.0 * math.cos(math.radians(JERUSALEM.lat))
-    err = math.hypot((lat - JERUSALEM.lat) * mlat, (lon - JERUSALEM.lon) * mlon)
-    assert err < 50.0, f"LKP cell centroid is {err:.1f} m from the LKP click"
+    assert lat == pytest.approx(JERUSALEM.lat, abs=1e-9)
+    assert lon == pytest.approx(JERUSALEM.lon, abs=1e-9)
+
+
+def test_lkp_to_grid_cell_at_origin():
+    from app.geospatial.grid import lkp_cell_indices
+    from app.services.topo_reachability import lkp_to_grid_cell
+
+    size = 128
+    matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0)
+    row, col = lkp_to_grid_cell(matrix.grid, matrix.grid.crs.origin_e, matrix.grid.crs.origin_n)
+    expected_row, expected_col = lkp_cell_indices(size)
+    assert (row, col) == (expected_row, expected_col)
 
 
 def test_longitude_varies_across_cols_constant_across_rows():

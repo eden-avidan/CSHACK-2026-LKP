@@ -8,6 +8,7 @@ import { HeatmapSidebar } from './components/panels/HeatmapSidebar'
 import { LayerControls } from './components/panels/LayerControls'
 import { TerrainInspector } from './components/panels/TerrainInspector'
 import { HeatmapLegend } from './components/panels/HeatmapLegend'
+import { DetectionFlash } from './components/map/DetectionFlash'
 
 export default function App() {
   const [map, setMap] = useState<Map | null>(null)
@@ -30,6 +31,7 @@ export default function App() {
           <TerrainOverlay map={map} />
           <HeatmapCanvas map={map} />
           <TrackingOverlay map={map} />
+          <DetectionFlash map={map} />
         </main>
       </div>
       <footer className="footer">

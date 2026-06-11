@@ -17,9 +17,9 @@ const LAYER_CONFIG: {
     hint: 'Within 80 m of OSM roads: strong velocity snap + displacement pull along tangent; KDE boost up to +120%.',
   },
   {
-    key: 'subject_injured',
-    label: 'Subject Injured',
-    hint: 'Velocity ×0.25 and random walk variance halved — simulates sheltering / limited mobility.',
+    key: 'personality',
+    label: 'Personality',
+    hint: 'Age, fitness, and injury adjust how far probability spreads from the LKP (mobility heuristic).',
   },
   {
     key: 'weather',
@@ -31,18 +31,9 @@ const LAYER_CONFIG: {
 export function LayerControls() {
   const missionId = useMissionStore((s) => s.missionId)
   const layers = useMissionStore((s) => s.layers)
-  const wsStatus = useMissionStore((s) => s.wsStatus)
+  const personality = useMissionStore((s) => s.personality)
   const setLayers = useMissionStore((s) => s.setLayers)
-  const wsSend = useMissionStore((s) => s.wsSend)
-
-  const sendLayers = useCallback(
-    (next: LayerState) => {
-      if (wsSend && wsStatus === 'open') {
-        wsSend({ event: 'update_layers', layers: next })
-      }
-    },
-    [wsSend, wsStatus],
-  )
+  const setPersonality = useMissionStore((s) => s.setPersonality)
 
   const toggleLayer = useCallback(
     (key: keyof LayerState) => {
@@ -51,18 +42,22 @@ export function LayerControls() {
         next.topography = true
       }
       setLayers(next)
-      sendLayers(next)
     },
-    [layers, setLayers, sendLayers],
+    [layers, setLayers],
   )
 
-  const togglesDisabled = false
+  const togglesDisabled = Boolean(missionId)
 
   return (
     <div className="layer-controls-sidebar" aria-label="Simulation layer toggles">
       <h3>Probability Layers</h3>
-      {!missionId && (
-        <p className="layer-idle-hint">Set layers before creating a mission — they apply on start.</p>
+      {missionId ? (
+        <p className="layer-idle-hint">
+          Locked while this mission runs — the grid is built iteratively from the layers chosen at
+          start. Use New Pin to change them.
+        </p>
+      ) : (
+        <p className="layer-idle-hint">Set layers before Run Heatmap — they apply for the whole simulation.</p>
       )}
       <ul className="layer-toggle-list">
         {LAYER_CONFIG.map(({ key, label, hint }) => (
@@ -77,12 +72,44 @@ export function LayerControls() {
               <span>{label}</span>
             </label>
             <p className="layer-hint">{hint}</p>
+            {key === 'personality' && layers.personality && !missionId && (
+              <div className="personality-fields">
+                <label className="field">
+                  <span>Age (years)</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={120}
+                    value={personality.age}
+                    onChange={(e) =>
+                      setPersonality({ age: Math.max(1, Math.min(120, Number(e.target.value) || 1)) })
+                    }
+                  />
+                </label>
+                <label className="field">
+                  <span>Fitness — {personality.fitness}/5</span>
+                  <input
+                    type="range"
+                    min={1}
+                    max={5}
+                    step={1}
+                    value={personality.fitness}
+                    onChange={(e) => setPersonality({ fitness: Number(e.target.value) })}
+                  />
+                </label>
+                <label className="layer-toggle">
+                  <input
+                    type="checkbox"
+                    checked={personality.injured}
+                    onChange={(e) => setPersonality({ injured: e.target.checked })}
+                  />
+                  <span>Injured</span>
+                </label>
+              </div>
+            )}
           </li>
         ))}
       </ul>
-      {missionId && wsStatus !== 'open' && (
-        <p className="layer-ws-hint">Connecting WebSocket…</p>
-      )}
     </div>
   )
 }

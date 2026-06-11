@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 
 from app.engine.grid_matrix import GridMatrix, NodeFields
+from app.models.personality import PersonalityProfile
 from app.services.particle_types import EnvForcing
 
 
@@ -21,6 +22,7 @@ class TransitionContext:
     size: int
     resolution_m: float
     sea_mode: bool = False
+    personality: PersonalityProfile | None = None
 
     def neighbor_indices(self, row: int, col: int, dr: int, dc: int) -> tuple[int, int] | None:
         nr, nc = row + dr, col + dc

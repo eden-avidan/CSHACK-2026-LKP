@@ -75,7 +75,7 @@ def test_update_layers_forces_topography_when_all_off():
                 {
                     "topography": False,
                     "roads": False,
-                    "subject_injured": False,
+                    "personality": False,
                     "weather": False,
                 },
             )
@@ -122,6 +122,6 @@ def test_tick_accumulates_history_near_lkp():
 
 
 def test_layer_flags_apply_update_min_one():
-    flags = LayerFlags(topography=False, roads=False, subject_injured=False, weather=False)
+    flags = LayerFlags(topography=False, roads=False, personality=False, weather=False)
     flags.apply_update({"weather": False})
     assert flags.topography is True

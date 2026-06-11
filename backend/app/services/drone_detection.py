@@ -8,7 +8,7 @@ from typing import Any
 
 import numpy as np
 
-from app.geospatial.grid import ProbabilityGrid
+from app.geospatial.grid import ProbabilityGrid, grid_extent_m
 
 DETECTION_JSONL_NAME = Path("figure_recognition") / "results" / "person_detection_output.jsonl"
 ALTITUDE_MATCH_THRESHOLD_M = 20.0
@@ -17,10 +17,14 @@ ALTITUDE_MATCH_THRESHOLD_M = 20.0
 @dataclass
 class DetectionRecord:
     timestamp: datetime
-    latitude: float
-    longitude: float
+    latitude: float | None
+    longitude: float | None
     altitude: float | None
     person: bool = True
+    confidence: float = 0.0
+    confidence_percent: float = 0.0
+    frame: int | None = None
+    bbox: list[float] | None = None
 
 
 def get_default_detection_jsonl_path() -> Path:
@@ -54,7 +58,7 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
             except json.JSONDecodeError:
                 continue
 
-            if not raw.get("person", False):
+            if not raw.get("person_found", raw.get("person", False)):
                 continue
 
             ts = _parse_timestamp(raw.get("timestamp") or raw.get("ts"))
@@ -63,14 +67,14 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
 
             lat = raw.get("latitude")
             lon = raw.get("longitude")
-            if lat is None or lon is None:
-                continue
-
-            try:
-                lat = float(lat)
-                lon = float(lon)
-            except (ValueError, TypeError):
-                continue
+            if lat is not None and lon is not None:
+                try:
+                    lat = float(lat)
+                    lon = float(lon)
+                except (ValueError, TypeError):
+                    lat = lon = None
+            else:
+                lat = lon = None
 
             alt = raw.get("altitude")
             if alt is None:
@@ -81,12 +85,48 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
                 except (ValueError, TypeError):
                     alt = None
 
+            confidence = raw.get("confidence")
+            try:
+                confidence = float(confidence) if confidence is not None else 0.0
+            except (ValueError, TypeError):
+                confidence = 0.0
+            confidence = max(0.0, min(1.0, confidence))
+
+            confidence_percent = raw.get("confidence_percent")
+            try:
+                confidence_percent = (
+                    float(confidence_percent)
+                    if confidence_percent is not None
+                    else confidence * 100.0
+                )
+            except (ValueError, TypeError):
+                confidence_percent = confidence * 100.0
+
+            frame = raw.get("frame")
+            try:
+                frame = int(frame) if frame is not None else None
+            except (ValueError, TypeError):
+                frame = None
+
+            bbox = raw.get("bbox")
+            if isinstance(bbox, list):
+                try:
+                    bbox = [float(value) for value in bbox]
+                except (ValueError, TypeError):
+                    bbox = None
+            else:
+                bbox = None
+
             records.append(DetectionRecord(
                 timestamp=ts,
                 latitude=lat,
                 longitude=lon,
                 altitude=alt,
                 person=True,
+                confidence=confidence,
+                confidence_percent=max(0.0, min(100.0, confidence_percent)),
+                frame=frame,
+                bbox=bbox,
             ))
     return records
 
@@ -97,11 +137,12 @@ def map_detection_to_grid_cell(
     longitude: float,
 ) -> tuple[int, int]:
     e, n = grid.crs.to_utm(longitude, latitude)
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
+    min_e = grid.crs.origin_e - west
 
-    cols = (e - (grid.crs.origin_e - half)) / res
-    rows = ((grid.crs.origin_n + half) - n) / res
+    cols = (e - min_e) / res
+    rows = ((grid.crs.origin_n + north) - n) / res
     row = int(np.floor(rows))
     col = int(np.floor(cols))
 

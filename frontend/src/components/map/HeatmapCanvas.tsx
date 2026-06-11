@@ -61,7 +61,7 @@ export function HeatmapCanvas({ map }: HeatmapCanvasProps) {
             id: LAYER_ID,
             type: 'raster',
             source: SOURCE_ID,
-            paint: { 'raster-opacity': 0.85, 'raster-fade-duration': 0 },
+            paint: { 'raster-opacity': 0.90, 'raster-fade-duration': 0 },
           },
           undefined,
         )

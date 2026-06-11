@@ -68,17 +68,30 @@ P ← (1 − w) × P + w × P'
 
 ---
 
-### 4. Subject injured (`subject_injured`) — *planned*
+### 4. Personality (`personality`) — **implemented**
 
-**Fields used:** none (global layer flag)
+**Fields used:** none per-cell — global subject profile set at mission create (`age`, `fitness`, `injured`).
 
-**Planned rule:** Contract the distribution — retain mass near current peak, reduce spread.
+**Mobility heuristic** (combined multiplier `M`):
 
 ```
-P ← P × (1 − w × (1 − injured_velocity_factor))   at non-peak cells
+age_factor     = clamp(1.20 − (age − 10) / 100,  0.35 … 1.20)   # ↓ with age
+fitness_factor = 0.85 + 0.10 × (fitness − 1)                     # 1→0.85, 5→1.25 (>1 when fit)
+injured_factor = 0.45  if injured else 1.0                       # <1 when injured
+
+M = age_factor × fitness_factor × injured_factor
 ```
 
-Or Gaussian blur reduction by `injured_velocity_factor`.
+**Rule:** Distance-weighted scale from the LKP (anchor cell unchanged):
+
+```
+dist_norm[r,c] = min(1, hypot(r−lkp, c−lkp) / (size/2))
+scale[r,c]     = M ** (1 + dist_norm)        # scale[lkp] = 1
+target         = P × scale
+P ← (1 − w) × P + w × target
+```
+
+**Intuition:** Young, fit, uninjured subjects (`M > 1`) push probability farther from the pin; older, unfit, or injured subjects (`M < 1`) keep mass closer to the LKP. Set profile in the UI before **Run Heatmap** — locked for the mission run.
 
 ---
 
@@ -105,7 +118,7 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 | Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
 | Roads | `road_kde_bonus` |
 | Weather | `momentum_reference_dt_sec`, wind from env |
-| Subject | `injured_velocity_factor` |
+| Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
 | Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |
 
 ## Adding a layer

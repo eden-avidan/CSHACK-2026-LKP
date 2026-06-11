@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 from app.layers.base import HeatmapLayer
+from app.layers.personality import personality_layer
 from app.layers.roads import roads_layer
-from app.layers.subject_injured import subject_injured_layer
 from app.layers.topography import topography_layer
 from app.layers.weather import weather_layer
 from app.models.layers import LayerFlags
 
 LAYER_REGISTRY: list[HeatmapLayer] = [
     topography_layer,
-    subject_injured_layer,
+    personality_layer,
     weather_layer,
     roads_layer,
 ]
@@ -20,7 +20,7 @@ FALLBACK_LAYER_ID = "topography"
 
 
 def ensure_min_one_layer(flags: LayerFlags) -> LayerFlags:
-    if flags.topography or flags.roads or flags.subject_injured or flags.weather:
+    if flags.topography or flags.roads or flags.personality or flags.weather:
         return flags
     flags.topography = True
     return flags

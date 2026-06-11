@@ -57,6 +57,11 @@ async def broadcast_tick_result(mission_id: UUID, result: TickResult) -> None:
             mission_id, result.engine_tick.model_dump(mode="json")
         )
 
+    for detection in result.detection_events:
+        await mission_store.broadcast(
+            mission_id, detection.model_dump(mode="json")
+        )
+
 
 def start_tick_loop(mission_id: UUID) -> None:
     if mission_id in _tick_loops and not _tick_loops[mission_id].done():

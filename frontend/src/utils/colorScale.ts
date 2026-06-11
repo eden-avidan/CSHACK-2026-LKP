@@ -1,7 +1,14 @@
 const BLUE: [number, number, number] = [33, 102, 172]
 const YELLOW: [number, number, number] = [253, 231, 37]
-const RED: [number, number, number] = [178, 24, 43]
+const RED: [number, number, number] = [230, 12, 18]
 const EPS = 1e-8
+
+/** Stretch mid/low values so the blue→yellow→red ramp is more visible. */
+const COLOR_GAMMA = 0.45
+
+/** Blue tail stays see-through; peak red is nearly opaque. */
+const ALPHA_MIN = 0.22
+const ALPHA_MAX = 1.0
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t
@@ -16,38 +23,49 @@ function lerpColor(c1: [number, number, number], c2: [number, number, number], t
 }
 
 export interface ColorRange {
+  min: number
   max: number
-  logMin: number
-  logMax: number
 }
 
-/** Scale colors against grid peak so the tail fades out naturally — no vignette needed. */
+/** Min/max of the grid — used to map every cell into [0, 1] before coloring. */
 export function computeColorRange(grid: Float32Array): ColorRange {
-  let max = EPS
+  let min = Infinity
+  let max = -Infinity
   for (let i = 0; i < grid.length; i++) {
-    if (grid[i] > max) max = grid[i]
+    const v = grid[i]
+    if (v < min) min = v
+    if (v > max) max = v
   }
-  return { max, logMin: Math.log(EPS), logMax: Math.log(max) }
+  if (!Number.isFinite(min) || !Number.isFinite(max) || max - min <= EPS) {
+    return { min: 0, max: 1 }
+  }
+  return { min, max }
+}
+
+/** Map a raw cell value to [0, 1] using the grid-wide min/max. */
+export function normalizeToUnit(value: number, range: ColorRange): number {
+  const span = range.max - range.min
+  if (span <= EPS) return 0
+  return Math.max(0, Math.min(1, (value - range.min) / span))
 }
 
 export function probabilityToRGBA(p: number, range: ColorRange): [number, number, number, number] {
-  if (p < EPS) return [0, 0, 0, 0]
+  const linear = normalizeToUnit(p, range)
+  if (linear <= EPS) return [0, 0, 0, 0]
 
-  const rel = p / range.max
-  if (rel < 0.008) return [0, 0, 0, 0]
-
-  const span = range.logMax - range.logMin
-  const t = span > 1e-12 ? (Math.log(p + EPS) - range.logMin) / span : 1
-  const clamped = Math.max(0, Math.min(1, t))
+  // Gamma < 1 pushes more of the dynamic range into saturated hues.
+  const t = Math.pow(linear, COLOR_GAMMA)
 
   let rgb: [number, number, number]
-  if (clamped < 0.5) {
-    rgb = lerpColor(BLUE, YELLOW, clamped * 2)
+  if (t < 0.5) {
+    rgb = lerpColor(BLUE, YELLOW, t * 2)
   } else {
-    rgb = lerpColor(YELLOW, RED, (clamped - 0.5) * 2)
+    const redT = (t - 0.5) * 2
+    rgb = lerpColor(YELLOW, RED, Math.pow(redT, 0.75))
   }
 
-  const alpha = Math.min(0.75, Math.pow(rel, 0.55) * 0.8)
+  // Low prob (blue) → faint; high prob (red) → solid crimson.
+  const alpha = ALPHA_MIN + Math.pow(linear, 0.7) * (ALPHA_MAX - ALPHA_MIN)
   return [rgb[0], rgb[1], rgb[2], Math.round(alpha * 255)]
 }
 
@@ -57,6 +75,14 @@ export function gridMax(grid: Float32Array): number {
     if (grid[i] > max) max = grid[i]
   }
   return max
+}
+
+export function gridMin(grid: Float32Array): number {
+  let min = Infinity
+  for (let i = 0; i < grid.length; i++) {
+    if (grid[i] < min) min = grid[i]
+  }
+  return Number.isFinite(min) ? min : 0
 }
 
 /** Returns true when non-zero cell count is below 1% of grid (possible boundary loss). */

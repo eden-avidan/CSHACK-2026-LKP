@@ -152,7 +152,7 @@ def rasterize_kde(
         layer_flags = LayerFlags(
             topography=layer_flags.topography,
             roads=True,
-            subject_injured=layer_flags.subject_injured,
+            personality=layer_flags.personality,
             weather=layer_flags.weather,
         )
     return run_kde_pipeline(

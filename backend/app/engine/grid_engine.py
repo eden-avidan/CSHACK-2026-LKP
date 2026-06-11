@@ -6,6 +6,7 @@ from app.engine.grid_matrix import GridMatrix, NodeFields
 from app.engine.layers.registry import get_active_layers
 from app.engine.transition_context import TransitionContext
 from app.models.layers import LayerFlags
+from app.models.personality import PersonalityProfile
 from app.services.particle_types import EnvForcing
 
 
@@ -23,6 +24,7 @@ class GridEngine:
         dt_sec: float = 0.0,
         tick_count: int = 0,
         env: EnvForcing | None = None,
+        personality: PersonalityProfile | None = None,
     ) -> np.ndarray:
         ctx = TransitionContext(
             matrix=matrix,
@@ -34,6 +36,7 @@ class GridEngine:
             size=matrix.size,
             resolution_m=matrix.resolution_m,
             sea_mode=layers.sea_drift,
+            personality=personality,
         )
         active = get_active_layers(layers)
         probs = matrix.probabilities.astype(np.float64, copy=True)
@@ -49,6 +52,7 @@ class GridEngine:
                 size=ctx.size,
                 resolution_m=ctx.resolution_m,
                 sea_mode=ctx.sea_mode,
+                personality=ctx.personality,
             )
             probs = layer.apply_field(ctx, layer_weight)
 
@@ -62,6 +66,7 @@ class GridEngine:
         dt_sec: float,
         tick_count: int,
         env: EnvForcing | None = None,
+        personality: PersonalityProfile | None = None,
     ) -> np.ndarray:
         return self.apply_layers(
             matrix,
@@ -69,6 +74,7 @@ class GridEngine:
             dt_sec=dt_sec,
             tick_count=tick_count,
             env=env,
+            personality=personality,
         )
 
     @staticmethod
