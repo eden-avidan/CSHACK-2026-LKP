@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
 import { BASE_STEP_SEC } from '../utils/formatTime'
+import type { DetectionEvent } from '../types/ws-messages'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
@@ -74,6 +75,7 @@ interface MissionStore {
   grid: Float32Array | null
   gridVersion: number
   droneRoute: DroneRoute | null
+  detectionFlash: DetectionEvent | null
   pinnedLkp: LatLon | null
   draftLkp: LatLon | null
   lkpTimestamp: string | null
@@ -103,6 +105,7 @@ interface MissionStore {
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
   setDroneRoute: (route: DroneRoute | null) => void
+  setDetectionFlash: (detection: DetectionEvent | null) => void
   setTickCount: (n: number) => void
   setTerrainData: (data: TerrainData | null) => void
   setTerrainField: (field: string | null) => void
@@ -127,6 +130,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   grid: null,
   gridVersion: 0,
   droneRoute: null,
+  detectionFlash: null,
   pinnedLkp: null,
   draftLkp: null,
   lkpTimestamp: defaultLkpTimestamp(),
@@ -174,6 +178,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       grid: state.grid,
       gridVersion: state.gridVersion,
       droneRoute: null,
+      detectionFlash: null,
     })),
 
   setSimulationRunning: (simulationRunning) => set({ simulationRunning }),
@@ -196,6 +201,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       grid: null,
       gridVersion: 0,
       droneRoute: null,
+      detectionFlash: null,
       pinnedLkp: null,
       draftLkp: null,
       lkpTimestamp: defaultLkpTimestamp(),
@@ -267,6 +273,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   },
 
   setDroneRoute: (droneRoute) => set({ droneRoute }),
+
+  setDetectionFlash: (detectionFlash) => set({ detectionFlash }),
 
   setTickCount: (tickCount) => set({ tickCount }),
 

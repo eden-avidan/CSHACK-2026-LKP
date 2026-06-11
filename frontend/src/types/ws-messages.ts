@@ -62,11 +62,15 @@ export const detectionEventSchema = z.object({
   mission_id: z.string(),
   asset_id: z.string(),
   timestamp: z.string(),
-  target: z.object({
+  person_found: z.literal(true),
+  confidence: z.number(),
+  confidence_percent: z.number(),
+  frame: z.number().nullable().optional(),
+  bbox: z.array(z.number()).nullable().optional(),
+  position: z.object({
     lat: z.number(),
     lon: z.number(),
-    confidence: z.number(),
-  }),
+  }).nullable().optional(),
 })
 
 export const engineTickSchema = z.object({
@@ -89,3 +93,4 @@ export type WsMessage = z.infer<typeof wsMessageSchema>
 export type HeatmapFull = z.infer<typeof heatmapFullSchema>
 export type HeatmapDelta = z.infer<typeof heatmapDeltaSchema>
 export type EngineTick = z.infer<typeof engineTickSchema>
+export type DetectionEvent = z.infer<typeof detectionEventSchema>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useMissionStore } from '../stores/missionStore'
 import {
+  detectionEventSchema,
   engineTickSchema,
   heatmapDeltaSchema,
   heatmapFullSchema,
@@ -8,6 +9,7 @@ import {
 
 const WS_BASE = import.meta.env.VITE_BACKEND_WS_URL ?? 'ws://localhost:8000/ws/mission'
 const MAX_RECONNECT_MS = 30000
+const DETECTION_FLASH_COOLDOWN_MS = 5000
 
 export function useWebSocket(missionId: string | null) {
   const wsRef = useRef<WebSocket | null>(null)
@@ -15,12 +17,15 @@ export function useWebSocket(missionId: string | null) {
   const reconnectTimer = useRef<number | null>(null)
   const intentionalCloseRef = useRef(false)
   const activeMissionRef = useRef<string | null>(null)
+  const seenDetectionsRef = useRef(new Set<string>())
+  const lastDetectionFlashAtRef = useRef(0)
 
   const setWsStatus = useMissionStore((s) => s.setWsStatus)
   const setWsSend = useMissionStore((s) => s.setWsSend)
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
   const applyHeatmapDelta = useMissionStore((s) => s.applyHeatmapDelta)
   const setEngineTick = useMissionStore((s) => s.setEngineTick)
+  const setDetectionFlash = useMissionStore((s) => s.setDetectionFlash)
 
   const connectBurstUntilRef = useRef(0)
 
@@ -68,15 +73,32 @@ export function useWebSocket(missionId: string | null) {
         return
       }
 
+      if (msg.type === 'detection_event') {
+        const result = detectionEventSchema.safeParse(msg)
+        if (!result.success) return
+        const detection = result.data
+        const key = `${detection.mission_id}:${detection.frame ?? detection.timestamp}`
+        if (seenDetectionsRef.current.has(key)) return
+        seenDetectionsRef.current.add(key)
+
+        const now = Date.now()
+        if (now - lastDetectionFlashAtRef.current < DETECTION_FLASH_COOLDOWN_MS) return
+        lastDetectionFlashAtRef.current = now
+        setDetectionFlash(detection)
+        return
+      }
+
       if (msg.type === 'mission_closed') {
         return
       }
     },
-    [setHeatmapFull, applyHeatmapDelta, setEngineTick],
+    [setHeatmapFull, applyHeatmapDelta, setEngineTick, setDetectionFlash],
   )
 
   useEffect(() => {
     activeMissionRef.current = missionId
+    seenDetectionsRef.current.clear()
+    lastDetectionFlashAtRef.current = 0
 
     if (!missionId) {
       intentionalCloseRef.current = true
