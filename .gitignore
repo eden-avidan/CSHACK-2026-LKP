@@ -13,3 +13,4 @@ tsconfig.tsbuildinfo
 __pycache__/
 .pytest_cache/
 *.pyc
+figure_recognition/results/

@@ -1,4 +1,0 @@
-[http] serving on http://0.0.0.0:8000/  (open in your browser, F11 to fullscreen)
-[worker] loading YOLO from C:\cs_comp\Third_year\senester6\Hackathon\CSHACK-2026-LKP\figure_recognition\models\yolov8m.pt
- * Serving Flask app 'detect_live'
- * Debug mode: off
