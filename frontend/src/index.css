@@ -204,6 +204,13 @@ button.secondary {
   font-size: 0.85rem;
 }
 
+.route-summary {
+  margin: 0.45rem 0 0;
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 .badge {
   padding: 0.15rem 0.5rem;
   border-radius: 4px;

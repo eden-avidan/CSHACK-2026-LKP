@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GridMetadata } from '../types/geo'
+import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
@@ -40,6 +40,7 @@ interface MissionStore {
   metadata: GridMetadata | null
   grid: Float32Array | null
   gridVersion: number
+  droneRoute: DroneRoute | null
   pinnedLkp: LatLon | null
   draftLkp: LatLon | null
   lkpTimestamp: string | null
@@ -60,6 +61,7 @@ interface MissionStore {
   setEngineTick: (mpp: LatLon, tickCount: number, layers?: Partial<LayerState>) => void
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
+  setDroneRoute: (route: DroneRoute | null) => void
   setTickCount: (n: number) => void
 }
 
@@ -78,6 +80,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   metadata: null,
   grid: null,
   gridVersion: 0,
+  droneRoute: null,
   pinnedLkp: null,
   draftLkp: null,
   lkpTimestamp: defaultLkpTimestamp(),
@@ -111,6 +114,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       metadata: state.metadata,
       grid: state.grid,
       gridVersion: state.gridVersion,
+      droneRoute: null,
     })),
 
   setSimulationRunning: (simulationRunning) => set({ simulationRunning }),
@@ -131,6 +135,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       metadata: null,
       grid: null,
       gridVersion: 0,
+      droneRoute: null,
       pinnedLkp: null,
       draftLkp: null,
       lkpTimestamp: defaultLkpTimestamp(),
@@ -190,6 +195,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
     }
     set({ grid: next, gridVersion: get().gridVersion + 1 })
   },
+
+  setDroneRoute: (droneRoute) => set({ droneRoute }),
 
   setTickCount: (tickCount) => set({ tickCount }),
 }))

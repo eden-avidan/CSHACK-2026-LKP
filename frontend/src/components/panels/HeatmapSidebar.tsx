@@ -4,6 +4,7 @@ import { useMissionStore } from '../../stores/missionStore'
 import { useWebSocket } from '../../hooks/useWebSocket'
 import { HAIFA_MAP_VIEW } from '../../types/geo'
 import type { GridMetadata } from '../../types/geo'
+import type { DroneRoute } from '../../types/geo'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
@@ -27,8 +28,11 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
   const setMission = useMissionStore((s) => s.setMission)
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
   const resetMission = useMissionStore((s) => s.resetMission)
+  const setDroneRoute = useMissionStore((s) => s.setDroneRoute)
 
   const [loading, setLoading] = useState(false)
+  const [routeLoading, setRouteLoading] = useState(false)
+  const [routeSummary, setRouteSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [backendOk, setBackendOk] = useState<boolean | null>(null)
 
@@ -56,6 +60,7 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
 
   useEffect(() => {
     pacePatchReady.current = false
+    setRouteSummary(null)
   }, [missionId])
 
   useEffect(() => {
@@ -149,6 +154,32 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       map.flyTo({ center: HAIFA_MAP_VIEW.center, zoom: HAIFA_MAP_VIEW.zoom, duration: 800 })
     }
   }, [missionId, resetMission, map])
+
+  const findDroneRoute = useCallback(async () => {
+    if (!missionId) return
+    setRouteLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`${BACKEND_URL}/missions/${missionId}/drone-route`, {
+        method: 'POST',
+      })
+      if (!res.ok) throw new Error(await res.text())
+      const data = (await res.json()) as {
+        route: DroneRoute
+        expected_coverage: number
+        length_m: number
+        route_points: number
+      }
+      setDroneRoute(data.route)
+      setRouteSummary(
+        `${data.route_points} points · ${(data.length_m / 1000).toFixed(1)} km · ${(data.expected_coverage * 100).toFixed(1)}% probability coverage`,
+      )
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to find drone route')
+    } finally {
+      setRouteLoading(false)
+    }
+  }, [missionId, setDroneRoute])
 
   return (
     <div className="heatmap-sidebar">
@@ -254,9 +285,15 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       )}
 
       {missionId && (
-        <button type="button" className="secondary" onClick={stopAndNew}>
-          Stop &amp; New
-        </button>
+        <>
+          <button type="button" onClick={findDroneRoute} disabled={routeLoading}>
+            {routeLoading ? 'Planning Route…' : 'Find Drone Route'}
+          </button>
+          {routeSummary && <p className="route-summary">{routeSummary}</p>}
+          <button type="button" className="secondary" onClick={stopAndNew}>
+            Stop &amp; New
+          </button>
+        </>
       )}
     </div>
   )

@@ -33,6 +33,7 @@ from app.services.drone_detection import (
 )
 from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.negative_search import apply_negative_search
+from app.services.path_optimizer import DroneRoute, optimize_drone_route
 from app.services.topo_reachability import (
     apply_reachability_to_grid,
     compute_reachability,
@@ -366,6 +367,11 @@ class MissionStore:
             state.grid_matrix.sync_from_grid()
             state.mpp = compute_mpp(state.grid_matrix.grid, state.grid_matrix.probabilities)
             return _compute_delta(old, state.grid_matrix.probabilities, threshold=1e-10)
+
+    async def drone_route(self, mission_id: UUID) -> DroneRoute:
+        state = self._require(mission_id)
+        async with state._lock:
+            return optimize_drone_route(state.grid)
 
     async def update_pace(
         self,
