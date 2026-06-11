@@ -17,7 +17,7 @@ from app.engine.layers.registry import ensure_min_one_dict, ensure_min_one_layer
 from app.engine.node_builder import build_node_fields, copy_node_fields, env_for_layers
 from app.geospatial.grid import ProbabilityGrid, create_empty_grid
 from app.models.heatmap import HeatmapCellDelta
-from app.models.detection import DetectionEventMessage, DroneTrackMessage
+from app.models.detection import DetectionEventMessage, DroneTrackItem, DroneTrackMessage
 from app.models.layers import EngineTickMessage, LayerFlags
 from app.models.personality import PersonalityProfile
 from app.models.mission import (
@@ -31,9 +31,11 @@ from app.services.drone_detection import (
     DetectionRecord,
     cells_within_radius,
     get_default_detection_jsonl_path,
-    get_default_drone_track_jsonl_path,
+    get_drone_sortie_paths,
     load_detection_records,
+    load_detection_records_cached,
     map_detection_to_grid_cell,
+    subsample_records,
 )
 from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.negative_search import apply_negative_search
@@ -304,15 +306,18 @@ class MissionStore:
         Decays the per-cell "clean" score once, then folds in two sources:
           1. The real detection feed (absolute timestamps vs the mission clock) —
              drives person-found detection events and clears found cells.
-          2. The synthetic drone track (timestamps interpreted *relative to mission
-             start*) — the drone walks its path as ticks advance, marking swept
-             cells clean (1.0) and yielding the live position + flown path.
+          2. The sequential drone sorties (timestamps interpreted *relative to
+             mission start*) — each drone walks its path as ticks advance, one
+             after another, marking swept cells clean (1.0), emitting detection
+             events when the "found" drone spots the person, and yielding the
+             live position(s) + flown path(s).
         """
         clean = state.grid_matrix.node_fields.searched_clean
         clean *= settings.drone_clean_decay
 
         events = self._mark_detection_feed(state, clean)
-        track = self._mark_synthetic_track(state, clean)
+        sortie_events, track = self._mark_drone_sorties(state, clean)
+        events.extend(sortie_events)
         return events, track
 
     def _mark_detection_feed(
@@ -345,62 +350,131 @@ class MissionStore:
             self._mark_clean_cell(state, clean, record, position)
         return events
 
-    def _mark_synthetic_track(
-        self, state: MissionState, clean: np.ndarray
-    ) -> Optional[DroneTrackMessage]:
-        """Synthetic track, played back relative to mission start, marks swept cells."""
-        records = load_detection_records(get_default_drone_track_jsonl_path())
-        if not records:
-            return None
-        base = min(r.timestamp for r in records)
+    def _sortie_plan(self, state: MissionState) -> list[dict]:
+        """Per-sortie timeline relative to mission start (launch delay + gaps).
+
+        Each entry: ``asset_id``, ``found`` (sortie contains a person), the
+        subsampled ``records``, the file ``base`` time, the mission-elapsed
+        ``start`` second the drone launches at, and the flight ``duration``.
+        """
         delay = settings.drone_track_launch_delay_sec
-        elapsed_start = max(0, state.tick_count - 1) * state.step_sec - delay
-        elapsed_end = state.tick_count * state.step_sec - delay
-
-        for record in records:
-            offset = (record.timestamp - base).total_seconds()
-            if not (elapsed_start <= offset < elapsed_end):
+        gap = settings.drone_sortie_gap_sec
+        max_points = settings.drone_sortie_max_points
+        offsets = settings.drone_sortie_north_offset_list
+        plan: list[dict] = []
+        start = delay
+        for idx, path in enumerate(get_drone_sortie_paths()):
+            records = subsample_records(load_detection_records_cached(path), max_points)
+            if not records:
                 continue
-            position = self._record_position(record)
-            self._mark_clean_cell(state, clean, record, position)
+            base = records[0].timestamp
+            duration = (records[-1].timestamp - base).total_seconds()
+            north_m = offsets[idx] if idx < len(offsets) else 0.0
+            plan.append(
+                {
+                    "asset_id": f"drone-{idx + 1}",
+                    "found": any(r.person for r in records),
+                    "records": records,
+                    "base": base,
+                    "start": start,
+                    "duration": duration,
+                    # Per-sortie north shift, applied to every revealed lat.
+                    "lat_offset_deg": north_m / 111_320.0,
+                }
+            )
+            start += duration + gap
+        return plan
 
-        return self._drone_track_message(state, records, base)
+    def _mark_drone_sorties(
+        self, state: MissionState, clean: np.ndarray
+    ) -> tuple[list[DetectionEventMessage], Optional[DroneTrackMessage]]:
+        """Advance every sortie: mark this tick's swept cells, emit detection
+        events for person-found points, and snapshot the revealed track(s)."""
+        plan = self._sortie_plan(state)
+        if not plan:
+            return [], None
 
-    def _drone_track_message(
-        self,
-        state: MissionState,
-        records: list[DetectionRecord],
-        base: datetime,
+        win_end = state.tick_count * state.step_sec
+        win_start = max(0, state.tick_count - 1) * state.step_sec
+        events: list[DetectionEventMessage] = []
+
+        for sortie in plan:
+            start, base = sortie["start"], sortie["base"]
+            lat_off = sortie["lat_offset_deg"]
+            for record in sortie["records"]:
+                reveal = start + (record.timestamp - base).total_seconds()
+                if not (win_start <= reveal < win_end):
+                    continue
+                position = self._record_position(record, lat_off)
+                self._mark_clean_cell(state, clean, record, position)
+                if record.person:
+                    events.append(
+                        DetectionEventMessage(
+                            mission_id=state.mission_id,
+                            asset_id=sortie["asset_id"],
+                            timestamp=record.timestamp,
+                            confidence=record.confidence,
+                            confidence_percent=record.confidence_percent,
+                            frame=record.frame,
+                            bbox=record.bbox,
+                            position=position,
+                        )
+                    )
+
+        return events, self._sortie_track_snapshot(state, plan)
+
+    def _sortie_track_snapshot(
+        self, state: MissionState, plan: list[dict]
     ) -> Optional[DroneTrackMessage]:
-        """Cumulative flown path + current position revealed up to the current tick."""
-        elapsed_end = state.tick_count * state.step_sec - settings.drone_track_launch_delay_sec
-        if elapsed_end <= 0:
+        """Cumulative path + current position of every drone revealed so far."""
+        now = state.tick_count * state.step_sec
+        items: list[DroneTrackItem] = []
+        for sortie in plan:
+            start, base, duration = sortie["start"], sortie["base"], sortie["duration"]
+            lat_off = sortie["lat_offset_deg"]
+            if start >= now:
+                continue  # not launched yet
+            revealed = [
+                r
+                for r in sortie["records"]
+                if r.latitude is not None
+                and r.longitude is not None
+                and start + (r.timestamp - base).total_seconds() < now
+            ]
+            if not revealed:
+                continue
+            path = [[float(r.longitude), float(r.latitude) + lat_off] for r in revealed]
+            last = revealed[-1]
+            items.append(
+                DroneTrackItem(
+                    asset_id=sortie["asset_id"],
+                    found=bool(sortie["found"]),
+                    active=start <= now < start + duration,
+                    position=LatLon(lat=float(last.latitude) + lat_off, lon=float(last.longitude)),
+                    path=path,
+                )
+            )
+
+        if not items:
             return None
-        revealed = [
-            r
-            for r in records
-            if r.latitude is not None
-            and r.longitude is not None
-            and (r.timestamp - base).total_seconds() < elapsed_end
-        ]
-        revealed.sort(key=lambda r: r.timestamp)
-        if not revealed:
-            return None
-        path = [[float(r.longitude), float(r.latitude)] for r in revealed]
-        last = revealed[-1]
+        active = next((it for it in reversed(items) if it.active), items[-1])
         return DroneTrackMessage(
             mission_id=state.mission_id,
             timestamp=datetime.now(timezone.utc),
-            position=LatLon(lat=float(last.latitude), lon=float(last.longitude)),
-            path=path,
+            asset_id=active.asset_id,
+            position=active.position,
+            path=active.path,
+            drones=items,
         )
 
     @staticmethod
-    def _record_position(record: DetectionRecord) -> Optional[LatLon]:
+    def _record_position(
+        record: DetectionRecord, lat_offset_deg: float = 0.0
+    ) -> Optional[LatLon]:
         if record.latitude is None or record.longitude is None:
             return None
         try:
-            return LatLon(lat=record.latitude, lon=record.longitude)
+            return LatLon(lat=record.latitude + lat_offset_deg, lon=record.longitude)
         except ValueError:
             return None
 
@@ -447,15 +521,11 @@ class MissionStore:
             clean[row, col] = value
 
     def build_drone_track(self, mission_id: UUID) -> Optional[DroneTrackMessage]:
-        """Current flown path + position without advancing the simulation (for connect)."""
+        """Current flown path(s) + position(s) without advancing the sim (for connect)."""
         state = self.get(mission_id)
         if not state:
             return None
-        records = load_detection_records(get_default_drone_track_jsonl_path())
-        if not records:
-            return None
-        base = min(r.timestamp for r in records)
-        return self._drone_track_message(state, records, base)
+        return self._sortie_track_snapshot(state, self._sortie_plan(state))
 
     def _apply_clean_suppression(self, state: MissionState) -> None:
         """Lower probability in cleared cells: prob *= (1 - strength*clean), renorm."""

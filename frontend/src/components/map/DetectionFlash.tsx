@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Map } from 'mapbox-gl'
 import { useMissionStore } from '../../stores/missionStore'
 
-const FLASH_DURATION_MS = 3000
+const FLASH_DURATION_MS = 5000
 
 interface DetectionFlashProps {
   map: Map | null

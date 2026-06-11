@@ -20,8 +20,26 @@ class DetectionEventMessage(BaseModel):
     position: LatLon | None = None
 
 
+class DroneTrackItem(BaseModel):
+    """One drone sortie's revealed path + current position."""
+
+    asset_id: str
+    # True for the sortie that locates the person; drives path coloring.
+    found: bool = False
+    # True while this sortie is mid-flight (vs. launched-and-landed).
+    active: bool = False
+    position: LatLon | None = None
+    # [[lon, lat], ...] — GeoJSON order, ready to drop into a LineString.
+    path: list[list[float]] = Field(default_factory=list)
+
+
 class DroneTrackMessage(BaseModel):
-    """Live drone position + the path it has flown so far this mission."""
+    """Live drone position + the path(s) flown so far this mission.
+
+    ``position``/``path`` mirror the currently active drone (back-compat); the
+    ``drones`` list carries every sortie revealed so far so the client can draw
+    several drones flying one after another.
+    """
 
     type: Literal["drone_track"] = "drone_track"
     mission_id: UUID
@@ -30,3 +48,4 @@ class DroneTrackMessage(BaseModel):
     position: LatLon | None = None
     # [[lon, lat], ...] — GeoJSON order, ready to drop into a LineString.
     path: list[list[float]] = Field(default_factory=list)
+    drones: list[DroneTrackItem] = Field(default_factory=list)

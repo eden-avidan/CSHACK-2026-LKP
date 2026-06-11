@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
 import { BASE_STEP_SEC, toDatetimeLocalValue } from '../utils/formatTime'
-import type { DetectionEvent } from '../types/ws-messages'
+import type { DetectionEvent, DroneTrackItem } from '../types/ws-messages'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
@@ -90,6 +90,7 @@ interface MissionStore {
   droneRoute: DroneRoute | null
   dronePosition: LatLon | null
   dronePath: number[][]
+  drones: DroneTrackItem[]
   detectionFlash: DetectionEvent | null
   pinnedLkp: LatLon | null
   draftLkp: LatLon | null
@@ -130,7 +131,7 @@ interface MissionStore {
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
   setDroneRoute: (route: DroneRoute | null) => void
-  setDroneTrack: (position: LatLon | null, path: number[][]) => void
+  setDroneTrack: (position: LatLon | null, path: number[][], drones: DroneTrackItem[]) => void
   setDetectionFlash: (detection: DetectionEvent | null) => void
   setTickCount: (n: number) => void
   setTerrainData: (data: TerrainData | null) => void
@@ -159,6 +160,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   droneRoute: null,
   dronePosition: null,
   dronePath: [],
+  drones: [],
   detectionFlash: null,
   pinnedLkp: null,
   draftLkp: null,
@@ -213,6 +215,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       droneRoute: null,
       dronePosition: null,
       dronePath: [],
+      drones: [],
       detectionFlash: null,
     })),
 
@@ -239,6 +242,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       droneRoute: null,
       dronePosition: null,
       dronePath: [],
+      drones: [],
       detectionFlash: null,
       pinnedLkp: null,
       draftLkp: null,
@@ -313,7 +317,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setDroneRoute: (droneRoute) => set({ droneRoute }),
 
-  setDroneTrack: (dronePosition, dronePath) => set({ dronePosition, dronePath }),
+  setDroneTrack: (dronePosition, dronePath, drones) => set({ dronePosition, dronePath, drones }),
 
   setDetectionFlash: (detectionFlash) => set({ detectionFlash }),
 

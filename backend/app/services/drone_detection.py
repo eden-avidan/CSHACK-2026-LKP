@@ -9,6 +9,7 @@ from typing import Any
 
 import numpy as np
 
+from app.core.config import settings
 from app.geospatial.grid import ProbabilityGrid, cell_centroid_utm, grid_extent_m
 
 DETECTION_JSONL_NAME = Path("figure_recognition") / "results" / "person_detection_output.jsonl"
@@ -37,6 +38,15 @@ def get_default_drone_track_jsonl_path() -> Path:
     """Synthetic 'drone searched here, found nobody' track (person_found=false)."""
     root = Path(__file__).resolve().parents[3]
     return root / DRONE_TRACK_JSONL_NAME
+
+
+def get_drone_sortie_paths() -> list[Path]:
+    """Ordered real-drone sortie files (played back one after another).
+
+    Resolved from ``settings.drone_sortie_files`` relative to the repo root.
+    """
+    root = Path(__file__).resolve().parents[3]
+    return [root / rel for rel in settings.drone_sortie_file_list]
 
 
 def _parse_timestamp(value: Any) -> datetime | None:
@@ -143,6 +153,48 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
                 bbox=bbox,
             ))
     return records
+
+
+# Parsed-record cache keyed by file path, invalidated on mtime change. The real
+# sortie files are large (tens of MB) and are read once per tick, so reparsing
+# every tick would be wasteful.
+_RECORD_CACHE: dict[str, tuple[float, list[DetectionRecord]]] = {}
+
+
+def load_detection_records_cached(path: Path) -> list[DetectionRecord]:
+    """Like :func:`load_detection_records` but cached by path + mtime and sorted by time."""
+    try:
+        mtime = path.stat().st_mtime
+    except OSError:
+        return []
+    key = str(path)
+    cached = _RECORD_CACHE.get(key)
+    if cached is not None and cached[0] == mtime:
+        return cached[1]
+    records = load_detection_records(path)
+    records = [r for r in records if r.timestamp is not None]
+    records.sort(key=lambda r: r.timestamp)
+    _RECORD_CACHE[key] = (mtime, records)
+    return records
+
+
+def subsample_records(
+    records: list[DetectionRecord], max_points: int
+) -> list[DetectionRecord]:
+    """Thin a dense flight log down to ``max_points`` while keeping every
+    person-found record (those drive detection events) and the endpoints."""
+    if max_points <= 0 or len(records) <= max_points:
+        return records
+    found = [r for r in records if r.person]
+    others = [r for r in records if not r.person]
+    keep = max_points - len(found)
+    if keep <= 0:
+        sampled = list(found)
+    else:
+        step = len(others) / keep
+        sampled = found + [others[min(len(others) - 1, int(i * step))] for i in range(keep)]
+    sampled.sort(key=lambda r: r.timestamp)
+    return sampled
 
 
 def map_detection_to_grid_cell(

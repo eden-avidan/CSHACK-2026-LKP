@@ -78,7 +78,7 @@ export function useWebSocket(missionId: string | null) {
       if (msg.type === 'drone_track') {
         const result = droneTrackSchema.safeParse(msg)
         if (result.success) {
-          setDroneTrack(result.data.position ?? null, result.data.path)
+          setDroneTrack(result.data.position ?? null, result.data.path, result.data.drones ?? [])
         }
         return
       }

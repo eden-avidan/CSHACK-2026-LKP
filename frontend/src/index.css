@@ -162,6 +162,14 @@ body {
   animation: drone-pulse 1.8s ease-out infinite;
 }
 
+.drone-marker--found .drone-icon {
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.95));
+}
+
+.drone-marker--found .drone-pulse {
+  background: rgba(245, 158, 11, 0.55);
+}
+
 @keyframes drone-pulse {
   from {
     transform: scale(0.6);

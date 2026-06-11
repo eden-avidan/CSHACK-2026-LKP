@@ -288,6 +288,7 @@ def test_tick_marks_searched_clean(tmp_path: Path):
         )
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[]), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
@@ -317,6 +318,8 @@ def test_tick_clean_suppresses_probability(tmp_path: Path):
         )
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[]), \
+             patch.object(settings, "drone_clean_suppression_strength", 1.0), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
@@ -360,6 +363,8 @@ def test_tick_with_high_altitude_drone_reduces_local_probability(tmp_path: Path)
         terrain.elevation[:] = 150.0
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[]), \
+             patch.object(settings, "drone_clean_suppression_strength", 1.0), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = terrain
             state = await store.create(
@@ -400,6 +405,7 @@ def test_tick_returns_detection_event(tmp_path: Path):
         )
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[]), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
@@ -462,8 +468,9 @@ def test_tick_emits_drone_track(tmp_path: Path):
         track_path.write_text("\n".join(lines) + "\n")
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
-             patch("app.services.mission_store.get_default_drone_track_jsonl_path", return_value=track_path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[track_path]), \
              patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch.object(settings, "drone_sortie_north_offsets_m", "0"), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
@@ -477,6 +484,9 @@ def test_tick_emits_drone_track(tmp_path: Path):
             assert len(result.drone_track.path) == 2
             # Each path point is [lon, lat].
             assert result.drone_track.path[0] == pytest.approx([HAIFA.lon, HAIFA.lat])
+            # A single sortie surfaces as one drone in the list.
+            assert len(result.drone_track.drones) == 1
+            assert result.drone_track.drones[0].asset_id == "drone-1"
             clean = state.grid_matrix.node_fields.searched_clean
             assert clean.max() == pytest.approx(1.0)
 
@@ -500,7 +510,7 @@ def test_drone_track_launch_delay(tmp_path: Path):
         # Delay of 15s with step_sec=10s: tick 1 (elapsed 10s) is still grounded,
         # tick 2 (elapsed 20s) launches the drone.
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
-             patch("app.services.mission_store.get_default_drone_track_jsonl_path", return_value=track_path), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[track_path]), \
              patch.object(settings, "drone_track_launch_delay_sec", 15.0), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
@@ -513,6 +523,70 @@ def test_drone_track_launch_delay(tmp_path: Path):
             second = await store.tick(state.mission_id)
             assert second.drone_track is not None
             assert second.drone_track.position is not None
+
+    asyncio.run(run())
+
+
+def _write_track(path: Path, points: list[tuple[float, bool]], base: datetime) -> None:
+    """points: list of (offset_sec, person_found)."""
+    lines = []
+    for off, found in points:
+        ts = (base + timedelta(seconds=off)).isoformat().replace("+00:00", "Z")
+        extra = ', "confidence": 0.8, "confidence_percent": 80.0' if found else ""
+        lines.append(
+            f'{{"timestamp": "{ts}", "person_found": {str(found).lower()}, '
+            f'"latitude": {HAIFA.lat}, "longitude": {HAIFA.lon}{extra}}}'
+        )
+    path.write_text("\n".join(lines) + "\n")
+
+
+def test_two_sorties_play_one_after_another(tmp_path: Path):
+    """Drone 1 (no-one) sweeps first; drone 2 (finds the person) launches after."""
+
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        empty_feed = tmp_path / "person_detection_output.jsonl"
+        empty_feed.write_text("")
+
+        # Sortie 1: 2 not-found points (offsets 0, 5 -> 5 s flight).
+        f1 = tmp_path / "drone1_not_found.jsonl"
+        _write_track(f1, [(0, False), (5, False)], base)
+        # Sortie 2: a sweep point then a detection (offsets 0, 4 -> 4 s flight).
+        f2 = tmp_path / "drone2_found.jsonl"
+        _write_track(f2, [(0, False), (4, True)], base)
+
+        # delay 0, gap 10, step 10s -> sortie 2 launches at 0+5+10 = 15 s.
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[f1, f2]), \
+             patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch.object(settings, "drone_sortie_gap_sec", 10.0), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
+
+            # Tick 1 (mission elapsed [0, 10)): only drone 1 has flown.
+            first = await store.tick(state.mission_id)
+            assert first.drone_track is not None
+            assert len(first.drone_track.drones) == 1
+            assert first.drone_track.drones[0].asset_id == "drone-1"
+            assert first.drone_track.drones[0].found is False
+            assert len(first.detection_events) == 0
+
+            # Tick 2 (mission elapsed [10, 20)): drone 2 launches and finds the person.
+            second = await store.tick(state.mission_id)
+            assert second.drone_track is not None
+            ids = [d.asset_id for d in second.drone_track.drones]
+            assert ids == ["drone-1", "drone-2"]
+            found_item = second.drone_track.drones[1]
+            assert found_item.found is True
+            assert len(second.detection_events) >= 1
+            event = second.detection_events[-1]
+            assert event.person_found is True
+            assert event.asset_id == "drone-2"
 
     asyncio.run(run())
 

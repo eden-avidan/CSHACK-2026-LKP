@@ -78,9 +78,26 @@ class Settings(BaseSettings):
     # this radius, so a sweep suppresses a realistic area instead of one cell.
     # 0 -> legacy single-cell behavior.
     drone_coverage_radius_m: float = 80.0
-    # Delay (mission-time seconds) before the synthetic drone "launches" and starts
+    # Delay (mission-time seconds) before the first drone "launches" and starts
     # sweeping, so it doesn't move the instant the mission begins.
-    drone_track_launch_delay_sec: float = 30.0
+    drone_track_launch_delay_sec: float = 60.0
+    # Sequential drone sorties: comma-separated paths (relative to the repo root)
+    # played back one after another, each relative to mission start. The first
+    # launches after drone_track_launch_delay_sec; each subsequent one launches
+    # drone_sortie_gap_sec after the previous one lands. Default: first the
+    # "found nobody" sweep, then the drone that locates the person.
+    drone_sortie_files: str = (
+        "figure_recognition/results/drone.not_found.JSON,"
+        "figure_recognition/results/drone.merged.jsonl"
+    )
+    drone_sortie_gap_sec: float = 15.0
+    # Per-sortie north shift (meters), comma-separated and aligned to
+    # drone_sortie_files, to nudge a flight onto the search area without editing
+    # the raw telemetry. Positive = north. Missing/blank entries default to 0.
+    drone_sortie_north_offsets_m: str = "60,0"
+    # Subsample each flight to at most this many points (person-found points are
+    # always kept) so per-tick marking and the broadcast path stay lightweight.
+    drone_sortie_max_points: int = 300
     topo_reachability_floor_frac: float = 0.12
     grid_base_outflow: float = 0.22
 
@@ -109,6 +126,21 @@ class Settings(BaseSettings):
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @property
+    def drone_sortie_file_list(self) -> list[str]:
+        return [p.strip() for p in self.drone_sortie_files.split(",") if p.strip()]
+
+    @property
+    def drone_sortie_north_offset_list(self) -> list[float]:
+        offsets: list[float] = []
+        for part in self.drone_sortie_north_offsets_m.split(","):
+            part = part.strip()
+            try:
+                offsets.append(float(part) if part else 0.0)
+            except ValueError:
+                offsets.append(0.0)
+        return offsets
 
 
 settings = Settings()

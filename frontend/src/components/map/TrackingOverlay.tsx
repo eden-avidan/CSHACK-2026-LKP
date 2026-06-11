@@ -88,7 +88,8 @@ function ensureTrackingLayers(map: mapboxgl.Map) {
       source: DRONE_TRACK_SOURCE,
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#22c55e',
+        // Amber for the drone that found the person, green for "clean" sweeps.
+        'line-color': ['case', ['get', 'found'], '#f59e0b', '#22c55e'],
         'line-width': 9,
         'line-opacity': 0.25,
         'line-blur': 4,
@@ -100,7 +101,7 @@ function ensureTrackingLayers(map: mapboxgl.Map) {
       source: DRONE_TRACK_SOURCE,
       layout: { 'line-cap': 'round', 'line-join': 'round' },
       paint: {
-        'line-color': '#4ade80',
+        'line-color': ['case', ['get', 'found'], '#fbbf24', '#4ade80'],
         'line-width': 3,
         'line-opacity': 0.95,
       },
@@ -119,9 +120,11 @@ function ensureTrackingLayers(map: mapboxgl.Map) {
   }
 }
 
-function createDroneElement(): HTMLDivElement {
+function createDroneElement(found = false): HTMLDivElement {
+  const rotor = found ? '#f59e0b' : '#22c55e'
+  const hub = found ? '#b45309' : '#16a34a'
   const el = document.createElement('div')
-  el.className = 'drone-marker'
+  el.className = `drone-marker${found ? ' drone-marker--found' : ''}`
   el.innerHTML = `
     <div class="drone-pulse"></div>
     <svg class="drone-icon" viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">
@@ -131,13 +134,13 @@ function createDroneElement(): HTMLDivElement {
         <line x1="24" y1="24" x2="12" y2="36" />
         <line x1="24" y1="24" x2="36" y2="36" />
       </g>
-      <g fill="#22c55e" stroke="#eafff1" stroke-width="2">
+      <g fill="${rotor}" stroke="#eafff1" stroke-width="2">
         <circle cx="12" cy="12" r="6" />
         <circle cx="36" cy="12" r="6" />
         <circle cx="12" cy="36" r="6" />
         <circle cx="36" cy="36" r="6" />
       </g>
-      <circle cx="24" cy="24" r="5.5" fill="#16a34a" stroke="#eafff1" stroke-width="2" />
+      <circle cx="24" cy="24" r="5.5" fill="${hub}" stroke="#eafff1" stroke-width="2" />
       <circle cx="24" cy="16.5" r="1.8" fill="#fef08a" />
     </svg>`
   return el
@@ -164,7 +167,8 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
   const droneRoute = useMissionStore((s) => s.droneRoute)
   const dronePosition = useMissionStore((s) => s.dronePosition)
   const dronePath = useMissionStore((s) => s.dronePath)
-  const droneMarkerRef = useRef<mapboxgl.Marker | null>(null)
+  const drones = useMissionStore((s) => s.drones)
+  const droneMarkersRef = useRef<Map<string, mapboxgl.Marker>>(new Map())
   const [overlayReady, setOverlayReady] = useState(false)
 
   const displayLkp: LatLon | null = missionId ? lkp : pinnedLkp ?? draftLkp
@@ -200,36 +204,53 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
         : [],
     })
 
+    // Prefer the per-drone list (multiple sorties one after another); fall back
+    // to the single active drone for backward compatibility.
+    const droneList =
+      drones.length > 0
+        ? drones
+        : dronePosition || dronePath.length >= 2
+          ? [{ asset_id: 'drone', found: false, active: true, position: dronePosition, path: dronePath }]
+          : []
+
     droneTrackSrc.setData({
       type: 'FeatureCollection',
-      features:
-        dronePath.length >= 2
-          ? [
-              {
-                type: 'Feature',
-                geometry: { type: 'LineString', coordinates: dronePath },
-                properties: { status: 'flown' },
-              },
-            ]
-          : [],
+      features: droneList
+        .filter((d) => d.path.length >= 2)
+        .map((d) => ({
+          type: 'Feature',
+          geometry: { type: 'LineString', coordinates: d.path },
+          properties: { status: 'flown', found: !!d.found, asset_id: d.asset_id },
+        })),
     })
 
-    if (dronePosition) {
-      if (!droneMarkerRef.current) {
-        droneMarkerRef.current = new mapboxgl.Marker({
-          element: createDroneElement(),
+    // One marker per drone, keyed by asset_id; drop markers no longer present.
+    const markers = droneMarkersRef.current
+    const seen = new Set<string>()
+    for (const d of droneList) {
+      if (!d.position) continue
+      seen.add(d.asset_id)
+      let marker = markers.get(d.asset_id)
+      if (!marker) {
+        marker = new mapboxgl.Marker({
+          element: createDroneElement(!!d.found),
           rotationAlignment: 'map',
           pitchAlignment: 'map',
         })
+        markers.set(d.asset_id, marker)
       }
-      droneMarkerRef.current
-        .setLngLat([dronePosition.lon, dronePosition.lat])
-        .setRotation(pathHeadingDeg(dronePath))
+      marker
+        .setLngLat([d.position.lon, d.position.lat])
+        .setRotation(pathHeadingDeg(d.path))
         .addTo(map)
-    } else if (droneMarkerRef.current) {
-      droneMarkerRef.current.remove()
     }
-  }, [map, overlayReady, displayLkp, droneRoute, dronePosition, dronePath])
+    for (const [id, marker] of markers) {
+      if (!seen.has(id)) {
+        marker.remove()
+        markers.delete(id)
+      }
+    }
+  }, [map, overlayReady, displayLkp, droneRoute, dronePosition, dronePath, drones])
 
   useEffect(() => {
     if (!map) {
@@ -245,10 +266,11 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
     if (map.isStyleLoaded()) init()
     else map.once('load', init)
 
+    const markers = droneMarkersRef.current
     return () => {
       setOverlayReady(false)
-      droneMarkerRef.current?.remove()
-      droneMarkerRef.current = null
+      for (const marker of markers.values()) marker.remove()
+      markers.clear()
     }
   }, [map])
 

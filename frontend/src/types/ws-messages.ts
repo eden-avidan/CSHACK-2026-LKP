@@ -73,6 +73,14 @@ export const detectionEventSchema = z.object({
   }).nullable().optional(),
 })
 
+export const droneTrackItemSchema = z.object({
+  asset_id: z.string(),
+  found: z.boolean().optional(),
+  active: z.boolean().optional(),
+  position: latLonSchema.nullable().optional(),
+  path: z.array(z.array(z.number())),
+})
+
 export const droneTrackSchema = z.object({
   type: z.literal('drone_track'),
   mission_id: z.string(),
@@ -80,6 +88,7 @@ export const droneTrackSchema = z.object({
   timestamp: z.string(),
   position: latLonSchema.nullable().optional(),
   path: z.array(z.array(z.number())),
+  drones: z.array(droneTrackItemSchema).optional(),
 })
 
 export const engineTickSchema = z.object({
@@ -105,3 +114,4 @@ export type HeatmapDelta = z.infer<typeof heatmapDeltaSchema>
 export type EngineTick = z.infer<typeof engineTickSchema>
 export type DetectionEvent = z.infer<typeof detectionEventSchema>
 export type DroneTrack = z.infer<typeof droneTrackSchema>
+export type DroneTrackItem = z.infer<typeof droneTrackItemSchema>
