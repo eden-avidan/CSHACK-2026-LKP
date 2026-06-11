@@ -1,14 +1,26 @@
 const BLUE: [number, number, number] = [33, 102, 172]
 const YELLOW: [number, number, number] = [253, 231, 37]
-const RED: [number, number, number] = [230, 12, 18]
+const ORANGE: [number, number, number] = [194, 85, 10]
+const RED: [number, number, number] = [158, 10, 14]
+const DARK_RED: [number, number, number] = [58, 4, 8]
+
 const EPS = 1e-8
 
-/** Stretch mid/low values so the blue→yellow→red ramp is more visible. */
-const COLOR_GAMMA = 0.45
+/** Steepens normalized value so band changes stay sharp. */
+const COLOR_GAMMA = 0.55
 
-/** Blue tail stays see-through; peak red is nearly opaque. */
-const ALPHA_MIN = 0.22
+/** Blue tail stays light; dark-red peak is fully opaque. */
+const ALPHA_MIN = 0.14
 const ALPHA_MAX = 1.0
+
+/** Low → high: blue → yellow → orange → red → dark red. */
+const COLOR_STOPS: Array<{ t: number; rgb: [number, number, number] }> = [
+  { t: 0, rgb: BLUE },
+  { t: 0.25, rgb: YELLOW },
+  { t: 0.5, rgb: ORANGE },
+  { t: 0.75, rgb: RED },
+  { t: 1, rgb: DARK_RED },
+]
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t
@@ -20,6 +32,36 @@ function lerpColor(c1: [number, number, number], c2: [number, number, number], t
     Math.round(lerp(c1[1], c2[1], t)),
     Math.round(lerp(c1[2], c2[2], t)),
   ]
+}
+
+/** Five-band ramp with short blends between flat color steps. */
+function fiveStopRamp(t: number): [number, number, number] {
+  const x = Math.max(0, Math.min(1, t))
+
+  for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
+    const a = COLOR_STOPS[i]
+    const b = COLOR_STOPS[i + 1]
+    const span = b.t - a.t
+    const mid = a.t + span * 0.72
+
+    if (x <= mid) {
+      return a.rgb
+    }
+    if (x < b.t) {
+      const local = Math.pow((x - mid) / (b.t - mid), 1.8)
+      return lerpColor(a.rgb, b.rgb, local)
+    }
+  }
+
+  return DARK_RED
+}
+
+/** Less transparency toward the red / dark-red end. */
+function alphaForValue(linear: number, colorT: number): number {
+  const warm = Math.max(0, (colorT - 0.35) / 0.65)
+  const base = ALPHA_MIN + Math.pow(linear, 1.1) * 0.1
+  const warmBoost = Math.pow(warm, 0.6) * (ALPHA_MAX - ALPHA_MIN - 0.1)
+  return Math.min(ALPHA_MAX, base + warmBoost)
 }
 
 export interface ColorRange {
@@ -53,19 +95,10 @@ export function probabilityToRGBA(p: number, range: ColorRange): [number, number
   const linear = normalizeToUnit(p, range)
   if (linear <= EPS) return [0, 0, 0, 0]
 
-  // Gamma < 1 pushes more of the dynamic range into saturated hues.
   const t = Math.pow(linear, COLOR_GAMMA)
+  const rgb = fiveStopRamp(t)
+  const alpha = alphaForValue(linear, t)
 
-  let rgb: [number, number, number]
-  if (t < 0.5) {
-    rgb = lerpColor(BLUE, YELLOW, t * 2)
-  } else {
-    const redT = (t - 0.5) * 2
-    rgb = lerpColor(YELLOW, RED, Math.pow(redT, 0.75))
-  }
-
-  // Low prob (blue) → faint; high prob (red) → solid crimson.
-  const alpha = ALPHA_MIN + Math.pow(linear, 0.7) * (ALPHA_MAX - ALPHA_MIN)
   return [rgb[0], rgb[1], rgb[2], Math.round(alpha * 255)]
 }
 

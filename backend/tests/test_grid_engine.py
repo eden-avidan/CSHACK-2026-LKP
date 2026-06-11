@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from app.core.config import settings
 from app.engine.grid_engine import GridEngine
@@ -39,8 +40,9 @@ def test_topography_spreads_impulse_to_reachability_field():
     engine = GridEngine()
     out = engine.apply_layers(matrix, LayerFlags(topography=True, roads=False), env=EnvForcing())
 
+    w = settings.topo_reachability_blend_weight
     assert out[row, col] == 1.0
-    assert out[row, col + 5] == 0.6
+    assert out[row, col + 5] == pytest.approx(0.6 * w)
     assert out[row, col + 15] == 0.0
     assert out.sum() > 1.0  # not forced to sum to 1
 

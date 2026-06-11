@@ -64,6 +64,30 @@ def _lkp_in_sea(terrain: Optional[TerrainContext], size: int) -> bool:
         return False
 
 
+def resolve_sortie_launch_delays(
+    drone_launch_delay_sec: Optional[float] = None,
+    drone_sortie_launch_delays_sec: Optional[list[float]] = None,
+) -> list[float | None]:
+    """Mission-time launch second for each sortie (None = sequential fallback)."""
+    if drone_sortie_launch_delays_sec:
+        return [float(d) for d in drone_sortie_launch_delays_sec]
+
+    configured = settings.drone_sortie_launch_delay_list
+    if configured:
+        if drone_launch_delay_sec is not None:
+            merged = list(configured)
+            merged[0] = float(drone_launch_delay_sec)
+            return merged
+        return configured
+
+    first = (
+        settings.drone_track_launch_delay_sec
+        if drone_launch_delay_sec is None
+        else float(drone_launch_delay_sec)
+    )
+    return [first]
+
+
 @dataclass
 class TickResult:
     deltas: list[HeatmapCellDelta]
@@ -94,6 +118,13 @@ class MissionState:
     marine_current: Optional[MarineCurrent] = None
     layers: LayerFlags = field(default_factory=LayerFlags)
     personality: PersonalityProfile | None = None
+    drone_launch_delay_sec: float = field(
+        default_factory=lambda: settings.drone_track_launch_delay_sec
+    )
+    drone_sortie_launch_delays_sec: list[float | None] = field(
+        default_factory=lambda: settings.drone_sortie_launch_delay_list
+        or [settings.drone_track_launch_delay_sec]
+    )
     mpp: Optional[LatLon] = None
     tick_task: Optional[asyncio.Task] = field(default=None, repr=False)
     subscribers: list[asyncio.Queue] = field(default_factory=list, repr=False)
@@ -124,6 +155,8 @@ class MissionStore:
         update_interval_sec: Optional[float] = None,
         layers: Optional[dict[str, bool]] = None,
         personality: PersonalityProfile | None = None,
+        drone_launch_delay_sec: Optional[float] = None,
+        drone_sortie_launch_delays_sec: Optional[list[float]] = None,
     ) -> MissionState:
         del sigma_0_m  # grid engine uses t=0 impulse at LKP center
         mission_id = uuid4()
@@ -169,6 +202,15 @@ class MissionStore:
             else:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
+
+        resolved_delays = resolve_sortie_launch_delays(
+            drone_launch_delay_sec, drone_sortie_launch_delays_sec
+        )
+        resolved_first = float(
+            resolved_delays[0]
+            if resolved_delays and resolved_delays[0] is not None
+            else settings.drone_track_launch_delay_sec
+        )
 
         node_fields = build_node_fields(
             terrain,
@@ -231,6 +273,8 @@ class MissionStore:
             layers=layer_flags,
             mpp=mpp,
             personality=resolved_personality,
+            drone_launch_delay_sec=resolved_first,
+            drone_sortie_launch_delays_sec=resolved_delays,
         )
         self._missions[mission_id] = state
 
@@ -286,6 +330,7 @@ class MissionStore:
         state.grid_matrix.probabilities = blended
         detection_events, drone_track = self._update_drone_coverage(state)
         self._apply_clean_suppression(state)
+        self._apply_detection_boosts(state, detection_events)
         state.grid_matrix.sync_to_grid()
         state.mpp = compute_mpp(state.grid_matrix.grid, state.grid_matrix.probabilities)
         return detection_events, drone_track
@@ -351,18 +396,23 @@ class MissionStore:
         return events
 
     def _sortie_plan(self, state: MissionState) -> list[dict]:
-        """Per-sortie timeline relative to mission start (launch delay + gaps).
+        """Per-sortie timeline relative to mission start.
 
         Each entry: ``asset_id``, ``found`` (sortie contains a person), the
         subsampled ``records``, the file ``base`` time, the mission-elapsed
         ``start`` second the drone launches at, and the flight ``duration``.
+
+        Launch times come from ``state.drone_sortie_launch_delays_sec`` when
+        set; blank slots fall back to launching after the previous sortie
+        ends plus ``drone_sortie_gap_sec``.
         """
-        delay = settings.drone_track_launch_delay_sec
+        explicit = state.drone_sortie_launch_delays_sec
+        first_fallback = state.drone_launch_delay_sec
         gap = settings.drone_sortie_gap_sec
         max_points = settings.drone_sortie_max_points
         offsets = settings.drone_sortie_north_offset_list
         plan: list[dict] = []
-        start = delay
+        next_sequential = first_fallback
         for idx, path in enumerate(get_drone_sortie_paths()):
             records = subsample_records(load_detection_records_cached(path), max_points)
             if not records:
@@ -370,6 +420,15 @@ class MissionStore:
             base = records[0].timestamp
             duration = (records[-1].timestamp - base).total_seconds()
             north_m = offsets[idx] if idx < len(offsets) else 0.0
+            explicit_start = (
+                explicit[idx] if idx < len(explicit) and explicit[idx] is not None else None
+            )
+            if explicit_start is not None:
+                start = explicit_start
+            elif idx == 0:
+                start = first_fallback
+            else:
+                start = next_sequential
             plan.append(
                 {
                     "asset_id": f"drone-{idx + 1}",
@@ -382,7 +441,7 @@ class MissionStore:
                     "lat_offset_deg": north_m / 111_320.0,
                 }
             )
-            start += duration + gap
+            next_sequential = start + duration + gap
         return plan
 
     def _mark_drone_sorties(
@@ -485,7 +544,7 @@ class MissionStore:
         record: DetectionRecord,
         position: Optional[LatLon],
     ) -> None:
-        if position is None:
+        if position is None or record.person:
             return
         # Pure 2D overflight match: the cell(s) the drone flew over are cleared
         # regardless of the drone's flight altitude. The drone's altitude is an
@@ -494,31 +553,20 @@ class MissionStore:
         # coverage — doing so silently dropped every real-data clear.
         #
         # A "no person" fix clears its whole camera footprint (a disc of radius
-        # drone_coverage_radius_m), so a sweep suppresses a realistic area. A
-        # positive detection is point-like and only touches its own cell.
-        if record.person:
-            try:
-                cells = [
-                    map_detection_to_grid_cell(
-                        state.grid_matrix.grid, position.lat, position.lon
-                    )
-                ]
-            except ValueError:
-                return
-            value = 0.0
-        else:
-            try:
-                cells = cells_within_radius(
-                    state.grid_matrix.grid,
-                    position.lat,
-                    position.lon,
-                    settings.drone_coverage_radius_m,
-                )
-            except ValueError:
-                return
-            value = 1.0
+        # drone_coverage_radius_m), so a sweep suppresses a realistic area.
+        # Person-found detections skip the clean mask; they boost probability
+        # separately via _apply_detection_boosts.
+        try:
+            cells = cells_within_radius(
+                state.grid_matrix.grid,
+                position.lat,
+                position.lon,
+                settings.drone_coverage_radius_m,
+            )
+        except ValueError:
+            return
         for row, col in cells:
-            clean[row, col] = value
+            clean[row, col] = 1.0
 
     def build_drone_track(self, mission_id: UUID) -> Optional[DroneTrackMessage]:
         """Current flown path(s) + position(s) without advancing the sim (for connect)."""
@@ -535,6 +583,35 @@ class MissionStore:
         strength = settings.drone_clean_suppression_strength
         factor = 1.0 - strength * np.clip(clean, 0.0, 1.0)
         probs = state.grid_matrix.probabilities * factor
+        total = float(probs.sum())
+        if total <= 0.0:
+            return
+        state.grid_matrix.probabilities = probs / total
+
+    def _apply_detection_boosts(
+        self, state: MissionState, events: list[DetectionEventMessage]
+    ) -> None:
+        """Raise probability at person-detection cells, scaled by confidence."""
+        strength = settings.drone_detection_boost_strength
+        if strength <= 0.0 or not events:
+            return
+        probs = state.grid_matrix.probabilities
+        boosted = False
+        for event in events:
+            if event.position is None:
+                continue
+            try:
+                row, col = map_detection_to_grid_cell(
+                    state.grid_matrix.grid,
+                    event.position.lat,
+                    event.position.lon,
+                )
+            except ValueError:
+                continue
+            probs[row, col] *= 1.0 + strength * event.confidence
+            boosted = True
+        if not boosted:
+            return
         total = float(probs.sum())
         if total <= 0.0:
             return

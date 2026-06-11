@@ -170,6 +170,26 @@ body {
   background: rgba(245, 158, 11, 0.55);
 }
 
+.drone-marker--blue .drone-icon {
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.95));
+  animation: drone-hover-lifted 2.2s ease-in-out infinite;
+}
+
+.drone-marker--blue .drone-pulse {
+  background: rgba(56, 189, 248, 0.55);
+  transform: translateY(-30px);
+}
+
+@keyframes drone-hover-lifted {
+  0%,
+  100% {
+    transform: translateY(-30px);
+  }
+  50% {
+    transform: translateY(-31.5px);
+  }
+}
+
 @keyframes drone-pulse {
   from {
     transform: scale(0.6);
@@ -472,10 +492,23 @@ button.secondary {
 }
 
 .legend-bar {
-  width: 160px;
-  height: 12px;
+  width: 180px;
+  height: 14px;
   border-radius: 4px;
-  background: linear-gradient(to right, #2166ac, #fde725, #b2182b);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    to right,
+    #2166ac 0%,
+    #2166ac 18%,
+    #fde725 22%,
+    #fde725 38%,
+    #c2550a 42%,
+    #c2550a 58%,
+    #9e0a0e 62%,
+    #9e0a0e 78%,
+    #3a0408 82%,
+    #3a0408 100%
+  );
 }
 
 .legend-peak {

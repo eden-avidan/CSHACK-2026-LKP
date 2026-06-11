@@ -17,7 +17,10 @@ class TopographyLayer(BaseProbabilityLayer):
 
     layer_id = "topography"
     default_enabled = True
-    default_weight = 1.0
+
+    @property
+    def default_weight(self) -> float:
+        return settings.topo_reachability_blend_weight
 
     def apply_field(
         self,

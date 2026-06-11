@@ -56,10 +56,15 @@ export const DEFAULT_PERSONALITY: PersonalityProfile = {
 
 export const DEFAULT_LAYERS: LayerState = {
   topography: true,
-  roads: false,
+  roads: true,
   personality: false,
   weather: false,
 }
+
+export const DEFAULT_STEP_SEC = 1
+export const DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC = [120, 300] as const
+/** @deprecated use DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC */
+export const DEFAULT_DRONE_LAUNCH_DELAY_SEC = DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[0]
 
 function defaultLkpTimestamp(): string {
   const d = new Date(Date.now() - 2 * 60 * 60 * 1000)
@@ -98,6 +103,7 @@ interface MissionStore {
   simulationStartTimestamp: string | null
   pace: number
   stepSec: number
+  droneSortieLaunchDelaysSec: number[]
   wsSend: ((payload: unknown) => void) | null
   terrainData: TerrainData | null
   terrainField: string | null
@@ -109,6 +115,7 @@ interface MissionStore {
   setPinnedLkp: (lkp: LatLon | null) => void
   setMode: (mode: MissionMode) => void
   setPace: (pace: number) => void
+  setDroneSortieLaunchDelaySec: (sortieIndex: number, sec: number) => void
   setLkpTimestamp: (ts: string | null) => void
   setSimulationStartTimestamp: (ts: string | null) => void
   setMission: (
@@ -166,8 +173,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   draftLkp: null,
   lkpTimestamp: defaultLkpTimestamp(),
   simulationStartTimestamp: defaultSimulationStartTimestamp(),
-  pace: 1,
-  stepSec: BASE_STEP_SEC,
+  pace: DEFAULT_STEP_SEC / BASE_STEP_SEC,
+  stepSec: DEFAULT_STEP_SEC,
+  droneSortieLaunchDelaysSec: [...DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC],
   wsSend: null,
   terrainData: null,
   terrainField: null,
@@ -186,7 +194,20 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
     set({ pace: clamped, stepSec: BASE_STEP_SEC * clamped })
   },
 
-  setStepSec: (stepSec) => set({ stepSec }),
+  setStepSec: (stepSec) => {
+    const clamped = Math.max(1, Math.min(600, Math.round(stepSec)))
+    set({ stepSec: clamped, pace: clamped / BASE_STEP_SEC })
+  },
+
+  setDroneSortieLaunchDelaySec: (sortieIndex, sec) => {
+    const clamped = Math.max(0, Math.min(3600, Math.round(sec)))
+    set((state) => {
+      const next = [...state.droneSortieLaunchDelaysSec]
+      while (next.length <= sortieIndex) next.push(0)
+      next[sortieIndex] = clamped
+      return { droneSortieLaunchDelaysSec: next }
+    })
+  },
 
   setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
 
@@ -248,8 +269,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       draftLkp: null,
       lkpTimestamp: defaultLkpTimestamp(),
       simulationStartTimestamp: defaultSimulationStartTimestamp(),
-      pace: 1,
-      stepSec: BASE_STEP_SEC,
+      pace: DEFAULT_STEP_SEC / BASE_STEP_SEC,
+      stepSec: DEFAULT_STEP_SEC,
+      droneSortieLaunchDelaysSec: [...DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC],
       wsSend: null,
       terrainData: null,
       terrainField: null,

@@ -55,6 +55,19 @@ class CreateMissionRequest(BaseModel):
     )
     layers: Optional[dict[str, bool]] = None
     personality: Optional[PersonalityProfile] = None
+    drone_launch_delay_sec: Optional[float] = Field(
+        default=None,
+        ge=0,
+        le=3600,
+        description="Mission-time seconds before the first drone sortie appears (alias for sortie 1)",
+    )
+    drone_sortie_launch_delays_sec: Optional[list[float]] = Field(
+        default=None,
+        description=(
+            "Per-sortie launch times in mission elapsed seconds, aligned with "
+            "drone_sortie_files. Overrides sequential scheduling when set."
+        ),
+    )
 
     @model_validator(mode="after")
     def validate_mode_fields(self) -> "CreateMissionRequest":

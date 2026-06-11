@@ -6,6 +6,7 @@ import { useWebSocket } from '../../hooks/useWebSocket'
 import type { GridMetadata } from '../../types/geo'
 import type { DroneRoute } from '../../types/geo'
 import { BASE_STEP_SEC, formatDuration, formatSimulatedDateTime, simulatedDateTime } from '../../utils/formatTime'
+import { DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC, DEFAULT_STEP_SEC } from '../../stores/missionStore'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
@@ -23,6 +24,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const simulationStartTimestamp = useMissionStore((s) => s.simulationStartTimestamp)
   const pace = useMissionStore((s) => s.pace)
   const stepSec = useMissionStore((s) => s.stepSec)
+  const droneSortieLaunchDelaysSec = useMissionStore((s) => s.droneSortieLaunchDelaysSec)
   const tickCount = useMissionStore((s) => s.tickCount)
   const liveStartTickCount = useMissionStore((s) => s.liveStartTickCount)
   const missionId = useMissionStore((s) => s.missionId)
@@ -32,8 +34,8 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const setPinnedLkp = useMissionStore((s) => s.setPinnedLkp)
   const setLkpTimestamp = useMissionStore((s) => s.setLkpTimestamp)
   const setSimulationStartTimestamp = useMissionStore((s) => s.setSimulationStartTimestamp)
-  const setPace = useMissionStore((s) => s.setPace)
   const setStepSec = useMissionStore((s) => s.setStepSec)
+  const setDroneSortieLaunchDelaySec = useMissionStore((s) => s.setDroneSortieLaunchDelaySec)
   const setMission = useMissionStore((s) => s.setMission)
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
   const setTerrainData = useMissionStore((s) => s.setTerrainData)
@@ -85,7 +87,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       const res = await fetch(`${BACKEND_URL}/missions/${missionId}/pace`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pace }),
+        body: JSON.stringify({ pace: stepSec / BASE_STEP_SEC }),
       })
       if (res.ok) {
         const data = (await res.json()) as { step_sec?: number }
@@ -93,7 +95,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       }
     }, 400)
     return () => clearTimeout(t)
-  }, [missionId, pace, setStepSec])
+  }, [missionId, stepSec, setStepSec])
 
   const pinLkp = useCallback(() => {
     if (draftLkp) {
@@ -134,6 +136,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
         lkp: pinnedLkp,
         pace,
         layers,
+        drone_sortie_launch_delays_sec: droneSortieLaunchDelaysSec,
       }
       if (layers.personality) {
         body.personality = personality
@@ -221,7 +224,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [pinnedLkp, mode, lkpTimestamp, simulationStartTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
+  }, [pinnedLkp, mode, lkpTimestamp, simulationStartTimestamp, pace, layers, personality, droneSortieLaunchDelaysSec, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
   const liveTickCount = Math.max(0, tickCount - liveStartTickCount)
   const simulatedElapsedSec = liveTickCount * stepSec
@@ -336,23 +339,47 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             </p>
           )}
           <label className="field pace-slider">
-            <span>
-              Pace — {pace.toFixed(1)}× ({Math.round(stepSec)}s sim / tick)
-            </span>
+            <span>Drone 1 launch — {droneSortieLaunchDelaysSec[0] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[0]}s</span>
             <input
               type="range"
-              min={0.1}
-              max={120}
-              step={0.1}
-              value={pace}
-              onChange={(e) => setPace(Number(e.target.value))}
+              min={0}
+              max={600}
+              step={15}
+              value={droneSortieLaunchDelaysSec[0] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[0]}
+              onChange={(e) => setDroneSortieLaunchDelaySec(0, Number(e.target.value))}
+              disabled={!!missionId}
+              aria-label="Seconds before first drone appears"
+            />
+          </label>
+          <label className="field pace-slider">
+            <span>Drone 2 launch — {droneSortieLaunchDelaysSec[1] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[1]}s</span>
+            <input
+              type="range"
+              min={0}
+              max={600}
+              step={15}
+              value={droneSortieLaunchDelaysSec[1] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[1]}
+              onChange={(e) => setDroneSortieLaunchDelaySec(1, Number(e.target.value))}
+              disabled={!!missionId}
+              aria-label="Seconds before second drone appears"
+            />
+          </label>
+          <label className="field pace-slider">
+            <span>Sim step — {stepSec}s / tick</span>
+            <input
+              type="range"
+              min={1}
+              max={600}
+              step={1}
+              value={stepSec}
+              onChange={(e) => setStepSec(Number(e.target.value))}
               disabled={!!missionId && mode !== 'live'}
-              aria-label="Simulation pace multiplier"
+              aria-label="Simulated seconds per tick"
             />
           </label>
           <p className="pace-hint">
-            Heatmap refreshes every 1 s wall clock. Base {BASE_STEP_SEC}s simulated time per tick;
-            pace slider speeds that up (e.g. 6× → {BASE_STEP_SEC * 6}s/tick).
+            Heatmap refreshes every 1 s wall clock. Each tick advances simulated time by the
+            step above (default {DEFAULT_STEP_SEC}s).
           </p>
         </section>
       )}
@@ -388,23 +415,47 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             />
           </label>
           <label className="field pace-slider">
-            <span>
-              Pace — {pace.toFixed(1)}× ({Math.round(stepSec)}s sim / tick)
-            </span>
+            <span>Drone 1 launch — {droneSortieLaunchDelaysSec[0] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[0]}s</span>
             <input
               type="range"
-              min={0.1}
-              max={120}
-              step={0.1}
-              value={pace}
-              onChange={(e) => setPace(Number(e.target.value))}
+              min={0}
+              max={600}
+              step={15}
+              value={droneSortieLaunchDelaysSec[0] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[0]}
+              onChange={(e) => setDroneSortieLaunchDelaySec(0, Number(e.target.value))}
+              disabled={!!missionId}
+              aria-label="Seconds before first drone appears"
+            />
+          </label>
+          <label className="field pace-slider">
+            <span>Drone 2 launch — {droneSortieLaunchDelaysSec[1] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[1]}s</span>
+            <input
+              type="range"
+              min={0}
+              max={600}
+              step={15}
+              value={droneSortieLaunchDelaysSec[1] ?? DEFAULT_DRONE_SORTIE_LAUNCH_DELAYS_SEC[1]}
+              onChange={(e) => setDroneSortieLaunchDelaySec(1, Number(e.target.value))}
+              disabled={!!missionId}
+              aria-label="Seconds before second drone appears"
+            />
+          </label>
+          <label className="field pace-slider">
+            <span>Sim step — {stepSec}s / tick</span>
+            <input
+              type="range"
+              min={1}
+              max={600}
+              step={1}
+              value={stepSec}
+              onChange={(e) => setStepSec(Number(e.target.value))}
               disabled={!!missionId && mode !== 'offline'}
-              aria-label="Offline simulation pace multiplier"
+              aria-label="Simulated seconds per tick"
             />
           </label>
           <p className="pace-hint">
             Batch-computes the heatmap from LKP → start time, then plays forward like live.
-            Pace speeds simulated time after start ({BASE_STEP_SEC}s/tick at 1×).
+            Each tick advances simulated time by the step above (default {DEFAULT_STEP_SEC}s).
           </p>
         </section>
       )}

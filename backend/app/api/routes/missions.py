@@ -53,6 +53,8 @@ async def create_mission(body: CreateMissionRequest) -> CreateMissionResponse:
             update_interval_sec=body.update_interval_sec,
             layers=body.layers,
             personality=body.personality,
+            drone_launch_delay_sec=body.drone_launch_delay_sec,
+            drone_sortie_launch_delays_sec=body.drone_sortie_launch_delays_sec,
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc

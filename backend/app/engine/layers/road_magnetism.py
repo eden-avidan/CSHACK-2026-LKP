@@ -25,7 +25,10 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 
     layer_id = "roads"
     default_enabled = False
-    default_weight = 0.68
+
+    @property
+    def default_weight(self) -> float:
+        return settings.road_layer_blend_weight
 
     def apply_field(
         self,

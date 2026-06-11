@@ -257,7 +257,7 @@ def test_mark_clean_cell_uses_coverage_footprint():
     assert int((clean >= 1.0 - 1e-9).sum()) == 9
     assert clean[center_row, center_col] == pytest.approx(1.0)
 
-    # Positive detection -> only its own cell is touched (set back to 0.0).
+    # Positive detection -> clean mask is not modified (boost is applied separately).
     matrix2 = _haifa_grid()
     clean2 = matrix2.node_fields.searched_clean
     clean2.fill(1.0)
@@ -271,8 +271,8 @@ def test_mark_clean_cell_uses_coverage_footprint():
         person=True,
     )
     store._mark_clean_cell(state2, clean2, found, LatLon(lat=HAIFA.lat, lon=HAIFA.lon))
-    assert clean2[center_row, center_col] == pytest.approx(0.0)
-    assert int((clean2 <= 1e-9).sum()) == 1
+    assert clean2[center_row, center_col] == pytest.approx(1.0)
+    assert int((clean2 >= 1.0 - 1e-9).sum()) == clean2.size
 
 
 def test_tick_marks_searched_clean(tmp_path: Path):
@@ -423,6 +423,28 @@ def test_tick_returns_detection_event(tmp_path: Path):
     asyncio.run(run())
 
 
+def test_apply_detection_boost_raises_cell_probability():
+    store = MissionStore()
+    matrix = _haifa_grid()
+    size = matrix.grid.rows
+    matrix.probabilities.fill(1.0 / (size * size))
+    state = type("S", (), {"grid_matrix": matrix})()
+    row, col = map_detection_to_grid_cell(matrix.grid, HAIFA.lat, HAIFA.lon)
+    before = float(matrix.probabilities[row, col])
+    event = DetectionEventMessage(
+        mission_id=uuid4(),
+        timestamp=datetime.now(timezone.utc),
+        confidence=0.8,
+        confidence_percent=80.0,
+        position=LatLon(lat=HAIFA.lat, lon=HAIFA.lon),
+    )
+    with patch.object(settings, "drone_detection_boost_strength", 0.5):
+        store._apply_detection_boosts(state, [event])
+    after = float(matrix.probabilities[row, col])
+    assert after > before
+    assert matrix.probabilities.sum() == pytest.approx(1.0, abs=1e-6)
+
+
 def test_tick_broadcasts_detection_event():
     async def run() -> None:
         mission_id = uuid4()
@@ -470,6 +492,7 @@ def test_tick_emits_drone_track(tmp_path: Path):
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
              patch("app.services.mission_store.get_drone_sortie_paths", return_value=[track_path]), \
              patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch.object(settings, "drone_sortie_launch_delays_sec", ""), \
              patch.object(settings, "drone_sortie_north_offsets_m", "0"), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
@@ -512,6 +535,7 @@ def test_drone_track_launch_delay(tmp_path: Path):
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
              patch("app.services.mission_store.get_drone_sortie_paths", return_value=[track_path]), \
              patch.object(settings, "drone_track_launch_delay_sec", 15.0), \
+             patch.object(settings, "drone_sortie_launch_delays_sec", ""), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
@@ -561,6 +585,7 @@ def test_two_sorties_play_one_after_another(tmp_path: Path):
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
              patch("app.services.mission_store.get_drone_sortie_paths", return_value=[f1, f2]), \
              patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch.object(settings, "drone_sortie_launch_delays_sec", ""), \
              patch.object(settings, "drone_sortie_gap_sec", 10.0), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(settings.grid_size)
@@ -587,6 +612,47 @@ def test_two_sorties_play_one_after_another(tmp_path: Path):
             event = second.detection_events[-1]
             assert event.person_found is True
             assert event.asset_id == "drone-2"
+
+    asyncio.run(run())
+
+
+def test_sortie_launch_delays_are_independent(tmp_path: Path):
+    """Each sortie can launch at an explicit mission-time second."""
+
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        empty_feed = tmp_path / "person_detection_output.jsonl"
+        empty_feed.write_text("")
+
+        f1 = tmp_path / "drone1.jsonl"
+        _write_track(f1, [(0, False), (20, False)], base)
+        f2 = tmp_path / "drone2.jsonl"
+        _write_track(f2, [(0, True)], base)
+
+        # Drone 2 launches at 30s even though drone 1 is still flying (ends at 50s).
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[f1, f2]), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA,
+                mode=MissionMode.LIVE,
+                lkp_timestamp=two_hours_ago,
+                drone_sortie_launch_delays_sec=[10.0, 30.0],
+            )
+            state.step_sec = 10.0
+
+            await store.tick(state.mission_id)
+            second = await store.tick(state.mission_id)
+            assert second.drone_track is not None
+            assert [d.asset_id for d in second.drone_track.drones] == ["drone-1"]
+
+            await store.tick(state.mission_id)
+            fourth = await store.tick(state.mission_id)
+            assert fourth.drone_track is not None
+            assert [d.asset_id for d in fourth.drone_track.drones] == ["drone-1", "drone-2"]
 
     asyncio.run(run())
 

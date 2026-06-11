@@ -11,7 +11,7 @@ from app.models.mission import LatLon
 @dataclass
 class LayerFlags:
     topography: bool = True
-    roads: bool = False
+    roads: bool = True
     personality: bool = False
     weather: bool = False
     sea_drift: bool = False

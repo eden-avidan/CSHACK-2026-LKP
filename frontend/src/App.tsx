@@ -18,7 +18,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <h1>RescuEdge</h1>
+        <h1>Adar</h1>
         <span className="subtitle">SAR Command Center</span>
       </header>
       <div className="layout">
