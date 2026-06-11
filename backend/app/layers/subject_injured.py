@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.core.config import settings
 from app.layers.base import LayerConfig, LayerContext, PredictState
@@ -8,7 +8,9 @@ from app.layers.base import LayerConfig, LayerContext, PredictState
 
 @dataclass
 class SubjectInjuredLayer:
-    config: LayerConfig = LayerConfig(id="subject_injured", default_enabled=False, default_weight=1.0)
+    config: LayerConfig = field(
+        default_factory=lambda: LayerConfig(id="subject_injured", default_enabled=False, default_weight=1.0)
+    )
 
     def adjust_sigmas(self, sigma_v: float, sigma_x: float, weight: float) -> tuple[float, float]:
         if weight <= 0:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 
@@ -45,7 +45,9 @@ class TopographyLayer:
     This layer only blocks water cells during particle propagation.
     """
 
-    config: LayerConfig = LayerConfig(id="topography", default_enabled=True, default_weight=0.65)
+    config: LayerConfig = field(
+        default_factory=lambda: LayerConfig(id="topography", default_enabled=True, default_weight=0.65)
+    )
 
     def adjust_sigmas(self, sigma_v: float, sigma_x: float, weight: float) -> tuple[float, float]:
         return sigma_v, sigma_x

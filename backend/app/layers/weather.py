@@ -1,13 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from app.layers.base import LayerConfig, LayerContext, PredictState
 
 
 @dataclass
 class WeatherLayer:
-    config: LayerConfig = LayerConfig(id="weather", default_enabled=False, default_weight=1.0)
+    config: LayerConfig = field(
+        default_factory=lambda: LayerConfig(id="weather", default_enabled=False, default_weight=1.0)
+    )
 
     def adjust_sigmas(self, sigma_v: float, sigma_x: float, weight: float) -> tuple[float, float]:
         return sigma_v, sigma_x

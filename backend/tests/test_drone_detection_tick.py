@@ -54,7 +54,7 @@ def test_tick_updates_drone_last_seen(tmp_path: Path):
         path = tmp_path / "person_detection_output.jsonl"
         path.write_text(
             f"{{\"ts\": \"{sample_ts.isoformat().replace('+00:00','Z')}\", "
-            "\"person\": true, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}}\n"
+            "\"person\": true, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}\n"
         )
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
