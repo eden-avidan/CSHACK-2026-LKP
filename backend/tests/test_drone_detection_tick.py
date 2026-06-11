@@ -60,7 +60,9 @@ def test_tick_updates_drone_last_seen(tmp_path: Path):
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
             mock_tc.return_value = _terrain(128)
-            state = await store.create(HAIFA, mode=MissionMode.LIVE)
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
             await store.tick(state.mission_id)
 
             seen = state.grid_matrix.node_fields.drone_last_seen

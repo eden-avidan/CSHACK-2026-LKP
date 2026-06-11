@@ -54,6 +54,10 @@ def copy_node_fields(fields: NodeFields) -> NodeFields:
         wind_u=fields.wind_u.copy(),
         wind_v=fields.wind_v.copy(),
         reachability=fields.reachability.copy(),
+        latitude=fields.latitude.copy(),
+        longitude=fields.longitude.copy(),
+        altitude=fields.altitude.copy(),
+        drone_last_seen=fields.drone_last_seen.copy(),
     )
 
 
