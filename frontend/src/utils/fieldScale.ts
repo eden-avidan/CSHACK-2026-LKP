@@ -16,6 +16,7 @@ const CONTINUOUS_TERRAIN_FIELDS = new Set([
   'elevation',
   'slope',
   'reachability',
+  'reachability_rel',
   'road_proximity',
   'current_speed',
   'current_heading',

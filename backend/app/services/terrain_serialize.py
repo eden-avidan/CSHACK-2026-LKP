@@ -24,9 +24,15 @@ AVAILABLE_FIELDS = [
     ),
     TerrainFieldMeta(
         id="reachability",
-        label="Reachability (Tobler/Dijkstra)",
+        label="Reachability (engine prior)",
         kind="scalar",
-        description="Travel-time-based prior from the LKP at mission start.",
+        description="Normalized Tobler/Dijkstra prior from LKP (all cells sum to 1). Values are tiny per cell; use Reachability (visual) for the overlay.",
+    ),
+    TerrainFieldMeta(
+        id="reachability_rel",
+        label="Reachability (visual)",
+        kind="scalar",
+        description="Peak-normalized reachability (1.0 at LKP, 0 unreachable) for map overlay.",
     ),
     TerrainFieldMeta(
         id="elevation",
@@ -105,10 +111,14 @@ def build_inspect_response(
     current_heading = np.degrees(
         np.arctan2(node_fields.current_u, node_fields.current_v)
     ) % 360.0
+    reach = node_fields.reachability.astype(np.float64)
+    reach_peak = float(np.max(reach)) if reach.size else 0.0
+    reachability_rel = reach / reach_peak if reach_peak > 1e-12 else reach
     fields_np = {
         "road_proximity": node_fields.road_proximity,
         "is_road": node_fields.is_road.astype(np.float64),
-        "reachability": node_fields.reachability,
+        "reachability": reach,
+        "reachability_rel": reachability_rel,
         "elevation": node_fields.elevation,
         "slope": np.degrees(node_fields.slope),
         "is_land": node_fields.is_land.astype(np.float64),
