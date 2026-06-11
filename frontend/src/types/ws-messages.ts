@@ -12,6 +12,13 @@ const gridBoundsSchema = z.object({
   west: z.number(),
 })
 
+const gridCornersSchema = z.object({
+  nw: latLonSchema,
+  ne: latLonSchema,
+  se: latLonSchema,
+  sw: latLonSchema,
+})
+
 const gridMetadataSchema = z.object({
   origin: latLonSchema,
   resolution_m: z.number(),
@@ -19,6 +26,7 @@ const gridMetadataSchema = z.object({
   cols: z.number(),
   crs_epsg: z.number(),
   bounds: gridBoundsSchema,
+  corners: gridCornersSchema,
 })
 
 const cellDeltaSchema = z.object({

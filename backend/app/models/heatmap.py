@@ -13,6 +13,20 @@ class GridBounds(BaseModel):
     west: float
 
 
+class GridCorners(BaseModel):
+    """Actual WGS84 corners of the UTM-aligned grid (NOT axis-aligned).
+
+    Use these (not `bounds`) when you need accurate per-cell lat/lon math on
+    the frontend — `bounds` is the axis-aligned bbox of these four points
+    and can drift O(100 m) from true cell positions near UTM zone edges.
+    """
+
+    nw: LatLon
+    ne: LatLon
+    se: LatLon
+    sw: LatLon
+
+
 class GridMetadata(BaseModel):
     origin: LatLon
     resolution_m: float
@@ -20,6 +34,7 @@ class GridMetadata(BaseModel):
     cols: int
     crs_epsg: int
     bounds: GridBounds
+    corners: GridCorners
 
 
 class HeatmapResponse(BaseModel):

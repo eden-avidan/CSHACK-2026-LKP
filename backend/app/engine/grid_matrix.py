@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from app.geospatial.grid import ProbabilityGrid, create_empty_grid
+from app.geospatial.grid import ProbabilityGrid, cell_centroid_latlon, create_empty_grid
 from app.models.mission import LatLon
 
 
@@ -22,6 +22,10 @@ class NodeFields:
     wind_u: np.ndarray
     wind_v: np.ndarray
     reachability: np.ndarray
+    latitude: np.ndarray   # cell-center latitude (degrees, WGS84)
+    longitude: np.ndarray  # cell-center longitude (degrees, WGS84)
+    altitude: np.ndarray   # cell-center altitude (meters above sea level);
+                           # alias of `elevation`, populated from the same DEM
 
     @classmethod
     def zeros(cls, size: int) -> NodeFields:
@@ -39,6 +43,9 @@ class NodeFields:
             wind_u=z.copy(),
             wind_v=z.copy(),
             reachability=reach,
+            latitude=z.copy(),
+            longitude=z.copy(),
+            altitude=z.copy(),
         )
 
 
@@ -72,6 +79,7 @@ class GridMatrix:
         lkp_row = size // 2
         lkp_col = size // 2
         fields = node_fields or NodeFields.zeros(size)
+        _fill_cell_latlon(fields.latitude, fields.longitude, grid)
         matrix = cls(
             size=size,
             resolution_m=resolution_m,
@@ -100,3 +108,15 @@ class GridMatrix:
     def total_area_m(self) -> float:
         span = self.size * self.resolution_m
         return span * span
+
+
+def _fill_cell_latlon(
+    latitude: np.ndarray, longitude: np.ndarray, grid: ProbabilityGrid
+) -> None:
+    """Write each cell's centroid (lat, lon) in WGS84 degrees into the arrays."""
+    rows, cols = latitude.shape
+    for row in range(rows):
+        for col in range(cols):
+            lat, lon = cell_centroid_latlon(grid, row, col)
+            latitude[row, col] = lat
+            longitude[row, col] = lon

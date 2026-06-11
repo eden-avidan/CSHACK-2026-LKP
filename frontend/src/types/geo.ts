@@ -10,6 +10,13 @@ export interface GridBounds {
   west: number
 }
 
+export interface GridCorners {
+  nw: LatLon
+  ne: LatLon
+  se: LatLon
+  sw: LatLon
+}
+
 export interface GridMetadata {
   origin: LatLon
   resolution_m: number
@@ -17,6 +24,7 @@ export interface GridMetadata {
   cols: number
   crs_epsg: number
   bounds: GridBounds
+  corners: GridCorners
 }
 
 /** Default map center: Haifa, Israel */

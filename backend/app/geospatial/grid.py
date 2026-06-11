@@ -4,7 +4,7 @@ import numpy as np
 from shapely.geometry import Point, shape
 
 from app.geospatial.crs import CRSHelper
-from app.models.heatmap import GridBounds, GridMetadata
+from app.models.heatmap import GridBounds, GridCorners, GridMetadata
 from app.models.mission import LatLon
 
 
@@ -31,14 +31,12 @@ def build_grid_metadata(
     crs = CRSHelper(lkp.lat, lkp.lon)
     half = (grid_size * resolution_m) / 2.0
 
-    corners = [
-        crs.offset_to_wgs84(-half, -half),
-        crs.offset_to_wgs84(half, -half),
-        crs.offset_to_wgs84(half, half),
-        crs.offset_to_wgs84(-half, half),
-    ]
-    lats = [c[0] for c in corners]
-    lons = [c[1] for c in corners]
+    sw_lat, sw_lon = crs.offset_to_wgs84(-half, -half)
+    se_lat, se_lon = crs.offset_to_wgs84( half, -half)
+    ne_lat, ne_lon = crs.offset_to_wgs84( half,  half)
+    nw_lat, nw_lon = crs.offset_to_wgs84(-half,  half)
+    lats = [sw_lat, se_lat, ne_lat, nw_lat]
+    lons = [sw_lon, se_lon, ne_lon, nw_lon]
 
     metadata = GridMetadata(
         origin=lkp,
@@ -51,6 +49,12 @@ def build_grid_metadata(
             south=min(lats),
             east=max(lons),
             west=min(lons),
+        ),
+        corners=GridCorners(
+            nw=LatLon(lat=nw_lat, lon=nw_lon),
+            ne=LatLon(lat=ne_lat, lon=ne_lon),
+            se=LatLon(lat=se_lat, lon=se_lon),
+            sw=LatLon(lat=sw_lat, lon=sw_lon),
         ),
     )
     return metadata, crs

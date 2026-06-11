@@ -20,6 +20,7 @@ def build_node_fields(
         return fields
 
     fields.elevation = terrain.elevation.astype(np.float64, copy=True)
+    fields.altitude = terrain.elevation.astype(np.float64, copy=True)
     fields.slope = terrain.slope.astype(np.float64, copy=True)
     fields.is_land = terrain.is_land.astype(bool, copy=True)
     fields.road_proximity = terrain.road_proximity.astype(np.float64, copy=True)
