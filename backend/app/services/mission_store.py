@@ -282,7 +282,16 @@ class MissionStore:
         self._update_reachability(state)
 
         current_probs = self._recompute_from_impulse(state)
-        blended = self._blend_history(prior_probs, current_probs)
+        if state.layers.sea_drift:
+            # A drifting object physically moves with the current, so its
+            # probability mass travels downstream each tick. Temporal history
+            # blending is an exponential moving average that would keep
+            # re-anchoring mass at the (now stale) LKP, smearing the cloud into a
+            # static blob centered on the start point. Use the freshly advected
+            # field directly so the heatmap actually tracks the drift.
+            blended = current_probs
+        else:
+            blended = self._blend_history(prior_probs, current_probs)
         state.grid_matrix.probabilities = blended
         detection_events, drone_track = self._update_drone_coverage(state)
         self._apply_clean_suppression(state)

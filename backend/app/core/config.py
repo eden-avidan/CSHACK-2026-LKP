@@ -58,7 +58,8 @@ class Settings(BaseSettings):
     marine_current_fallback_v_mps: float = 0.5
     marine_drift_advection_strength: float = 2.5
     marine_drift_self_weight: float = 0.15
-    marine_drift_steps: int = 2
+    marine_drift_steps: int = 2          # advection steps added per simulated tick
+    marine_drift_max_steps: int = 96     # cap on cumulative drift steps (≈ grid half-width)
 
     kde_edge_fade_cells: int = 0
     kde_bandwidth_factor: float = 1.1
