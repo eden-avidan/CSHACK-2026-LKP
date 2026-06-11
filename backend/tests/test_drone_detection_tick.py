@@ -591,5 +591,42 @@ def test_two_sorties_play_one_after_another(tmp_path: Path):
     asyncio.run(run())
 
 
+def test_offline_batch_does_not_replay_drone_before_live_ticks(tmp_path: Path):
+    async def run() -> None:
+        store = MissionStore()
+        lkp_time = datetime.now(timezone.utc) - timedelta(minutes=10)
+        simulation_start = lkp_time + timedelta(seconds=20)
+        base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        empty_feed = tmp_path / "person_detection_output.jsonl"
+        empty_feed.write_text("")
+
+        track_path = tmp_path / "synthetic_drone_track.jsonl"
+        _write_track(track_path, [(0, False), (5, False)], base)
+
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
+             patch("app.services.mission_store.get_drone_sortie_paths", return_value=[track_path]), \
+             patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA,
+                mode=MissionMode.OFFLINE,
+                lkp_timestamp=lkp_time,
+                simulation_start_timestamp=simulation_start,
+            )
+
+            assert state.tick_count == 2
+            assert state.drone_start_tick == state.tick_count
+            assert store.build_drone_track(state.mission_id) is None
+            assert float(state.grid_matrix.node_fields.searched_clean.max()) == pytest.approx(0.0)
+
+            result = await store.tick(state.mission_id)
+            assert result.drone_track is not None
+            assert len(result.drone_track.path) >= 1
+            assert float(state.grid_matrix.node_fields.searched_clean.max()) == pytest.approx(1.0)
+
+    asyncio.run(run())
+
+
 if __name__ == "__main__":
     pytest.main([__file__])

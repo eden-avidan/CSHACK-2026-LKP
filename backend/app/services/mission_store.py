@@ -85,6 +85,7 @@ class MissionState:
     terrain_grid: ProbabilityGrid
     simulation_start_timestamp: Optional[datetime] = None
     tick_count: int = 0
+    drone_start_tick: int = 0
     pace: float = 1.0
     step_sec: float = BASE_STEP_SEC
     update_interval_sec: float = field(default_factory=live_update_interval_sec)
@@ -259,7 +260,8 @@ class MissionStore:
         n_ticks = int(elapsed_sec / state.step_sec)
         async with state._lock:
             for _ in range(n_ticks):
-                await self._tick_unlocked(state)
+                await self._tick_unlocked(state, advance_drone=False)
+            state.drone_start_tick = state.tick_count
 
     def _recompute_from_impulse(self, state: MissionState) -> np.ndarray:
         """Reset to LKP impulse and apply the active layer stack (no normalization)."""
@@ -275,7 +277,7 @@ class MissionStore:
         )
 
     async def _tick_unlocked(
-        self, state: MissionState
+        self, state: MissionState, advance_drone: bool = True
     ) -> tuple[list[DetectionEventMessage], Optional[DroneTrackMessage]]:
         prior_probs = state.grid_matrix.probabilities.copy()
         state.tick_count += 1
@@ -284,11 +286,28 @@ class MissionStore:
         current_probs = self._recompute_from_impulse(state)
         blended = self._blend_history(prior_probs, current_probs)
         state.grid_matrix.probabilities = blended
-        detection_events, drone_track = self._update_drone_coverage(state)
-        self._apply_clean_suppression(state)
+        if advance_drone:
+            detection_events, drone_track = self._update_drone_coverage(state)
+            self._apply_clean_suppression(state)
+        else:
+            detection_events, drone_track = [], None
         state.grid_matrix.sync_to_grid()
         state.mpp = compute_mpp(state.grid_matrix.grid, state.grid_matrix.probabilities)
         return detection_events, drone_track
+
+    @staticmethod
+    def _drone_elapsed_sec(state: MissionState) -> float:
+        return max(0.0, (state.tick_count - state.drone_start_tick) * state.step_sec)
+
+    @staticmethod
+    def _drone_window_start_sec(state: MissionState) -> float:
+        return max(0.0, (state.tick_count - state.drone_start_tick - 1) * state.step_sec)
+
+    @staticmethod
+    def _drone_clock_start(state: MissionState) -> datetime:
+        if state.mode == MissionMode.OFFLINE and state.simulation_start_timestamp is not None:
+            return state.simulation_start_timestamp
+        return state.lkp_timestamp or state.created_at
 
     def _blend_history(self, prior: np.ndarray, current: np.ndarray) -> np.ndarray:
         decay = settings.heatmap_history_decay
@@ -324,9 +343,8 @@ class MissionStore:
         self, state: MissionState, clean: np.ndarray
     ) -> list[DetectionEventMessage]:
         """Real detection feed, matched on absolute time, emits person-found events."""
-        tick_start = (state.lkp_timestamp or state.created_at) + timedelta(
-            seconds=max(0, state.tick_count - 1) * state.step_sec
-        )
+        clock_start = self._drone_clock_start(state)
+        tick_start = clock_start + timedelta(seconds=self._drone_window_start_sec(state))
         tick_end = tick_start + timedelta(seconds=state.step_sec)
         records = load_detection_records(get_default_detection_jsonl_path())
         events: list[DetectionEventMessage] = []
@@ -394,8 +412,8 @@ class MissionStore:
         if not plan:
             return [], None
 
-        win_end = state.tick_count * state.step_sec
-        win_start = max(0, state.tick_count - 1) * state.step_sec
+        win_end = self._drone_elapsed_sec(state)
+        win_start = self._drone_window_start_sec(state)
         events: list[DetectionEventMessage] = []
 
         for sortie in plan:
@@ -427,7 +445,7 @@ class MissionStore:
         self, state: MissionState, plan: list[dict]
     ) -> Optional[DroneTrackMessage]:
         """Cumulative path + current position of every drone revealed so far."""
-        now = state.tick_count * state.step_sec
+        now = self._drone_elapsed_sec(state)
         items: list[DroneTrackItem] = []
         for sortie in plan:
             start, base, duration = sortie["start"], sortie["base"], sortie["duration"]
@@ -524,6 +542,8 @@ class MissionStore:
         """Current flown path(s) + position(s) without advancing the sim (for connect)."""
         state = self.get(mission_id)
         if not state:
+            return None
+        if self._drone_elapsed_sec(state) <= 0:
             return None
         return self._sortie_track_snapshot(state, self._sortie_plan(state))
 
