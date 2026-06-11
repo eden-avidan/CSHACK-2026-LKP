@@ -14,6 +14,20 @@ def test_mobility_decreases_with_age():
     assert young > old
 
 
+def test_toddler_mobility_is_lower_than_young_adult():
+    toddler = mobility_multiplier(PersonalityProfile(age=2, fitness=3, injured=False))
+    adult = mobility_multiplier(PersonalityProfile(age=20, fitness=3, injured=False))
+    assert toddler < adult
+
+
+def test_mobility_peaks_before_declining_in_older_age():
+    teen = mobility_multiplier(PersonalityProfile(age=16, fitness=3, injured=False))
+    adult = mobility_multiplier(PersonalityProfile(age=25, fitness=3, injured=False))
+    older = mobility_multiplier(PersonalityProfile(age=70, fitness=3, injured=False))
+    assert adult > teen
+    assert adult > older
+
+
 def test_fitness_boosts_mobility_above_one():
     low = mobility_multiplier(PersonalityProfile(age=35, fitness=1, injured=False))
     high = mobility_multiplier(PersonalityProfile(age=35, fitness=5, injured=False))

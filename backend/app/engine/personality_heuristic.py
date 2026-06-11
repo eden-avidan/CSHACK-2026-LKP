@@ -5,6 +5,38 @@ import numpy as np
 from app.models.personality import PersonalityProfile
 
 
+def _age_mobility_factor(age: int) -> float:
+    """
+    Approximate human mobility by age.
+
+    The curve is intentionally simple and editable:
+    - very young children move slowly
+    - mobility peaks in young adulthood
+    - mobility declines gradually in older ages
+    """
+    anchors = (
+        (2, 0.35),
+        (5, 0.45),
+        (10, 0.60),
+        (16, 0.85),
+        (25, 1.10),
+        (35, 1.05),
+        (50, 0.92),
+        (65, 0.75),
+        (80, 0.55),
+        (100, 0.40),
+        (120, 0.35),
+    )
+    if age <= anchors[0][0]:
+        return anchors[0][1]
+    for (left_age, left_factor), (right_age, right_factor) in zip(anchors, anchors[1:]):
+        if age <= right_age:
+            span = right_age - left_age
+            mix = (age - left_age) / span
+            return left_factor + mix * (right_factor - left_factor)
+    return anchors[-1][1]
+
+
 def mobility_multiplier(profile: PersonalityProfile) -> float:
     """
     Combined mobility scalar from age, fitness, and injury.
@@ -13,7 +45,7 @@ def mobility_multiplier(profile: PersonalityProfile) -> float:
     - Fitness 1–5: multiplier > 1 when high (1 → 0.85, 5 → 1.25).
     - Injured: multiplier < 1 (0.45) when True.
     """
-    age_factor = max(0.35, min(1.20, 1.20 - (profile.age - 10) / 100.0))
+    age_factor = _age_mobility_factor(profile.age)
     fitness_factor = 0.85 + 0.10 * (profile.fitness - 1)
     injured_factor = 0.45 if profile.injured else 1.0
     return age_factor * fitness_factor * injured_factor
