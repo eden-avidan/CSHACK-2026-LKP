@@ -8,7 +8,7 @@ from typing import Any
 
 import numpy as np
 
-from app.geospatial.grid import ProbabilityGrid
+from app.geospatial.grid import ProbabilityGrid, grid_extent_m
 
 DETECTION_JSONL_NAME = Path("figure_recognition") / "results" / "person_detection_output.jsonl"
 ALTITUDE_MATCH_THRESHOLD_M = 20.0
@@ -97,11 +97,12 @@ def map_detection_to_grid_cell(
     longitude: float,
 ) -> tuple[int, int]:
     e, n = grid.crs.to_utm(longitude, latitude)
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
+    min_e = grid.crs.origin_e - west
 
-    cols = (e - (grid.crs.origin_e - half)) / res
-    rows = ((grid.crs.origin_n + half) - n) / res
+    cols = (e - min_e) / res
+    rows = ((grid.crs.origin_n + north) - n) / res
     row = int(np.floor(rows))
     col = int(np.floor(cols))
 

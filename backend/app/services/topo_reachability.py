@@ -12,7 +12,7 @@ import numpy as np
 from numpy.lib.stride_tricks import sliding_window_view
 
 from app.core.config import settings
-from app.geospatial.grid import ProbabilityGrid, cell_centroid_utm
+from app.geospatial.grid import ProbabilityGrid, cell_centroid_utm, grid_extent_m
 
 ProbabilityMethod = Literal["linear", "exponential"]
 
@@ -94,9 +94,10 @@ def terrain_probability_weight(
 
 def lkp_to_grid_cell(grid: ProbabilityGrid, lkp_e: float, lkp_n: float) -> tuple[int, int]:
     res = grid.metadata.resolution_m
-    half = (grid.rows * res) / 2.0
-    col = int((lkp_e - (grid.crs.origin_e - half)) / res)
-    row = int(((grid.crs.origin_n + half) - lkp_n) / res)
+    west, _east, _south, north = grid_extent_m(grid.rows, res)
+    min_e = grid.crs.origin_e - west
+    col = int((lkp_e - min_e) / res)
+    row = int(((grid.crs.origin_n + north) - lkp_n) / res)
     row = min(grid.rows - 1, max(0, row))
     col = min(grid.cols - 1, max(0, col))
     return row, col

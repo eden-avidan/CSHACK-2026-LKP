@@ -23,18 +23,44 @@ class ProbabilityGrid:
         return self.probabilities.shape[1]
 
 
+def lkp_cell_indices(grid_size: int) -> tuple[int, int]:
+    """Row/col of the LKP impulse cell (center of the matrix)."""
+    return grid_size // 2, grid_size // 2
+
+
+def grid_extent_m(grid_size: int, resolution_m: float) -> tuple[float, float, float, float]:
+    """
+    UTM meters from the LKP to each grid edge (west, east, south, north).
+
+    Chosen so the LKP cell centroid sits exactly on the pinned coordinates.
+    """
+    row, col = lkp_cell_indices(grid_size)
+    res = resolution_m
+    west = (col + 0.5) * res
+    east = (grid_size - col - 0.5) * res
+    north = (row + 0.5) * res
+    south = (grid_size - row - 0.5) * res
+    return west, east, south, north
+
+
+def grid_utm_origin_corner(grid: ProbabilityGrid) -> tuple[float, float]:
+    """West and north UTM coordinates of the grid's NW corner."""
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
+    return grid.crs.origin_e - west, grid.crs.origin_n + north
+
+
 def build_grid_metadata(
     lkp: LatLon,
     resolution_m: float,
     grid_size: int,
 ) -> tuple[GridMetadata, CRSHelper]:
     crs = CRSHelper(lkp.lat, lkp.lon)
-    half = (grid_size * resolution_m) / 2.0
+    west, east, south, north = grid_extent_m(grid_size, resolution_m)
 
-    sw_lat, sw_lon = crs.offset_to_wgs84(-half, -half)
-    se_lat, se_lon = crs.offset_to_wgs84( half, -half)
-    ne_lat, ne_lon = crs.offset_to_wgs84( half,  half)
-    nw_lat, nw_lon = crs.offset_to_wgs84(-half,  half)
+    sw_lat, sw_lon = crs.offset_to_wgs84(-west, -south)
+    se_lat, se_lon = crs.offset_to_wgs84(east, -south)
+    ne_lat, ne_lon = crs.offset_to_wgs84(east, north)
+    nw_lat, nw_lon = crs.offset_to_wgs84(-west, north)
     lats = [sw_lat, se_lat, ne_lat, nw_lat]
     lons = [sw_lon, se_lon, ne_lon, nw_lon]
 
@@ -67,10 +93,10 @@ def create_empty_grid(lkp: LatLon, resolution_m: float, grid_size: int) -> Proba
 
 
 def cell_centroid_utm(grid: ProbabilityGrid, row: int, col: int) -> tuple[float, float]:
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
-    easting = grid.crs.origin_e - half + (col + 0.5) * res
-    northing = grid.crs.origin_n + half - (row + 0.5) * res
+    easting = grid.crs.origin_e - west + (col + 0.5) * res
+    northing = grid.crs.origin_n + north - (row + 0.5) * res
     return easting, northing
 
 
@@ -92,11 +118,11 @@ def cells_in_polygon(grid: ProbabilityGrid, polygon_geojson: dict) -> list[tuple
 
 def grid_utm_bounds(grid: ProbabilityGrid) -> tuple[float, float, float, float]:
     """Return (min_e, min_n, max_e, max_n) for the probability grid in UTM."""
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
-    min_e = grid.crs.origin_e - half
-    max_e = grid.crs.origin_e + half
-    min_n = grid.crs.origin_n - half
-    max_n = grid.crs.origin_n + half
+    west, east, south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
+    min_e = grid.crs.origin_e - west
+    max_e = grid.crs.origin_e + east
+    min_n = grid.crs.origin_n - south
+    max_n = grid.crs.origin_n + north
     return min_e, min_n, max_e, max_n
 
 
@@ -106,10 +132,11 @@ def particle_cell_indices(
     northings: np.ndarray,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Map particle UTM positions to clamped grid cell (row, col) indices."""
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
-    cols = (eastings - (grid.crs.origin_e - half)) / res
-    rows = ((grid.crs.origin_n + half) - northings) / res
+    min_e = grid.crs.origin_e - west
+    cols = (eastings - min_e) / res
+    rows = ((grid.crs.origin_n + north) - northings) / res
     r = np.clip(np.floor(rows).astype(np.int32), 0, grid.rows - 1)
     c = np.clip(np.floor(cols).astype(np.int32), 0, grid.cols - 1)
     return r, c
@@ -135,10 +162,13 @@ def extract_field_for_grid(
         for col in range(display.cols):
             lat, lon = cell_centroid_latlon(display, row, col)
             e, n = source.crs.to_utm(lon, lat)
-            half = (source.rows * source.metadata.resolution_m) / 2.0
+            west, _east, _south, north = grid_extent_m(
+                source.rows, source.metadata.resolution_m
+            )
             res = source.metadata.resolution_m
-            col_f = (e - (source.crs.origin_e - half)) / res
-            row_f = ((source.crs.origin_n + half) - n) / res
+            min_e = source.crs.origin_e - west
+            col_f = (e - min_e) / res
+            row_f = ((source.crs.origin_n + north) - n) / res
             r0 = int(np.floor(row_f))
             c0 = int(np.floor(col_f))
             if r0 < 0 or c0 < 0 or r0 > max_r or c0 > max_c:
@@ -162,8 +192,9 @@ def extract_field_for_grid(
 
 def utm_particle_positions(grid: ProbabilityGrid, eastings: np.ndarray, northings: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Convert absolute UTM coords to grid-local indices for KDE."""
-    half = (grid.rows * grid.metadata.resolution_m) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
-    cols = (eastings - (grid.crs.origin_e - half)) / res
-    rows = ((grid.crs.origin_n + half) - northings) / res
+    min_e = grid.crs.origin_e - west
+    cols = (eastings - min_e) / res
+    rows = ((grid.crs.origin_n + north) - northings) / res
     return rows, cols
