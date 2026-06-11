@@ -65,6 +65,7 @@ interface MissionStore {
   mpp: LatLon | null
   mppTrail: LatLon[]
   tickCount: number
+  liveStartTickCount: number
   engineTickVersion: number
   wsStatus: WsStatus
   simulationRunning: boolean
@@ -91,7 +92,14 @@ interface MissionStore {
   setMode: (mode: MissionMode) => void
   setPace: (pace: number) => void
   setLkpTimestamp: (ts: string | null) => void
-  setMission: (id: string, lkp: LatLon, mode: MissionMode, pace: number, stepSec?: number) => void
+  setMission: (
+    id: string,
+    lkp: LatLon,
+    mode: MissionMode,
+    pace: number,
+    stepSec?: number,
+    liveStartTickCount?: number,
+  ) => void
   setStepSec: (stepSec: number) => void
   setSimulationRunning: (running: boolean) => void
   resetMission: () => void
@@ -118,6 +126,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   mpp: null,
   mppTrail: [],
   tickCount: 0,
+  liveStartTickCount: 0,
   engineTickVersion: 0,
   wsStatus: 'idle',
   simulationRunning: true,
@@ -154,7 +163,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
 
-  setMission: (id, lkp, mode, pace, stepSec) =>
+  setMission: (id, lkp, mode, pace, stepSec, liveStartTickCount = 0) =>
     set((state) => ({
       missionId: id,
       lkp,
@@ -162,7 +171,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       mppTrail: [lkp],
       status: 'searching',
       mode,
-      tickCount: 0,
+      tickCount: liveStartTickCount,
+      liveStartTickCount,
       engineTickVersion: 0,
       simulationRunning: mode === 'live',
       layers: state.layers,
@@ -187,6 +197,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       mpp: null,
       mppTrail: [],
       tickCount: 0,
+      liveStartTickCount: 0,
       engineTickVersion: 0,
       wsStatus: 'idle',
       simulationRunning: true,
