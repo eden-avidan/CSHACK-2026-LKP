@@ -150,7 +150,7 @@ class MissionStore:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
         else:
-            resolved_step, resolved_interval = _pace_to_timing(1.0)
+            resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
 
         node_fields = build_node_fields(
@@ -190,7 +190,7 @@ class MissionStore:
             lkp_timestamp=lkp_ts,
             grid_matrix=grid_matrix,
             terrain_grid=terrain_grid,
-            pace=pace if mode == MissionMode.LIVE else 1.0,
+            pace=pace,
             step_sec=resolved_step,
             update_interval_sec=resolved_interval,
             simulation_running=simulation_running,
@@ -387,8 +387,6 @@ class MissionStore:
     ) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode != MissionMode.LIVE:
-                return state
             if pace is not None:
                 state.pace = pace
                 state.step_sec, state.update_interval_sec = _pace_to_timing(pace)

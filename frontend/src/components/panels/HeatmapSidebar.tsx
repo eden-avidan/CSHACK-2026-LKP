@@ -73,7 +73,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   }, [missionId])
 
   useEffect(() => {
-    if (!missionId || mode !== 'live') return
+    if (!missionId) return
     if (!pacePatchReady.current) {
       pacePatchReady.current = true
       return
@@ -90,7 +90,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       }
     }, 400)
     return () => clearTimeout(t)
-  }, [missionId, mode, pace, setStepSec])
+  }, [missionId, pace, setStepSec])
 
   const pinLkp = useCallback(() => {
     if (draftLkp) {
@@ -334,8 +334,23 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
               aria-label="Last known position timestamp"
             />
           </label>
+          <label className="field pace-slider">
+            <span>
+              Pace - {pace.toFixed(1)}x ({Math.round(stepSec)}s sim / tick)
+            </span>
+            <input
+              type="range"
+              min={0.1}
+              max={120}
+              step={0.1}
+              value={pace}
+              onChange={(e) => setPace(Number(e.target.value))}
+              disabled={!!missionId && mode !== 'offline'}
+              aria-label="Offline simulation pace multiplier"
+            />
+          </label>
           <p className="pace-hint">
-            Computes where the subject likely is now based on elapsed time since last seen.
+            Computes from the last known time, then keeps updating every second at this pace.
           </p>
         </section>
       )}

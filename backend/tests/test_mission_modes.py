@@ -64,6 +64,28 @@ def test_offline_mode_batch_ticks():
     asyncio.run(run())
 
 
+def test_offline_mode_uses_pace_for_live_ticks_after_seed():
+    async def run() -> None:
+        store = MissionStore()
+        two_minutes_ago = datetime.now(timezone.utc) - timedelta(minutes=2)
+        with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
+            mock.return_value = _terrain(128)
+            state = await store.create(
+                HAIFA,
+                mode=MissionMode.OFFLINE,
+                lkp_timestamp=two_minutes_ago,
+                pace=3.0,
+            )
+            assert state.pace == pytest.approx(3.0)
+            assert state.step_sec == pytest.approx(BASE_STEP_SEC * 3.0)
+
+            await store.update_pace(state.mission_id, pace=0.5)
+            assert state.pace == pytest.approx(0.5)
+            assert state.step_sec == pytest.approx(BASE_STEP_SEC * 0.5)
+
+    asyncio.run(run())
+
+
 def test_offline_mode_continues_after_seed_batch():
     async def run() -> None:
         store = MissionStore()
