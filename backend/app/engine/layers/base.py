@@ -9,11 +9,11 @@ from app.engine.transition_context import TransitionContext
 
 class BaseProbabilityLayer(ABC):
     """
-    Plugin interface for grid-matrix probability transitions.
+    Plugin interface for grid-matrix probability layers.
 
-    Each layer defines ONLY the next-step transition function: given a source
-    cell and its neighborhood, return relative outflow weights to adjacent
-    nodes (including self). The GridEngine aggregates all active layers.
+    Interactive pipeline: each layer implements ``apply_field`` to transform
+    the full probability matrix using per-cell NodeFields. Values are not
+    required to sum to 1.
     """
 
     @property
@@ -29,7 +29,14 @@ class BaseProbabilityLayer(ABC):
     def default_weight(self) -> float:
         return 1.0
 
-    @abstractmethod
+    def apply_field(
+        self,
+        ctx: TransitionContext,
+        weight: float,
+    ) -> np.ndarray:
+        """Transform the full matrix. Default: pass-through (no change)."""
+        return ctx.probabilities.astype(np.float64, copy=True)
+
     def transition_weights(
         self,
         ctx: TransitionContext,
@@ -38,8 +45,10 @@ class BaseProbabilityLayer(ABC):
         weight: float,
     ) -> np.ndarray:
         """
-        Return a length-9 vector aligned with NEIGHBOR_OFFSETS (index 4 = self).
+        Legacy neighbor outflow hook (deprecated — use apply_field).
 
-        Values are *additive adjustments* to the baseline isotropic transition.
-        Negative values suppress flow; positive values attract mass.
+        Kept for tests and migration reference; not called by GridEngine.
         """
+        from app.engine.neighbors import NEIGHBOR_COUNT
+
+        return np.zeros(NEIGHBOR_COUNT, dtype=np.float64)

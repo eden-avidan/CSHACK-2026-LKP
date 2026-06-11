@@ -143,6 +143,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       simulationRunning: mode === 'live',
       layers: state.layers,
       pace,
+      terrainField: null,
       // Preserve grid/metadata when already loaded (REST prefetch before WS connect)
       metadata: state.metadata,
       grid: state.grid,
@@ -251,7 +252,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
         terrainData.available.some((field) => field.id === state.terrainField)
       return {
         terrainData,
-        terrainField: stillValid ? state.terrainField : (terrainData.available[0]?.id ?? null),
+        terrainField: stillValid ? state.terrainField : null,
         terrainVersion: state.terrainVersion + 1,
       }
     }),

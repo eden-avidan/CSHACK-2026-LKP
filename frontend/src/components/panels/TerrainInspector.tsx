@@ -49,12 +49,13 @@ export function TerrainInspector() {
       if (!res.ok) throw new Error(await res.text())
       const data = (await res.json()) as TerrainData
       setTerrainData(data)
+      setTerrainField(data.available[0]?.id ?? null)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to inspect terrain')
     } finally {
       setLoading(false)
     }
-  }, [target, setTerrainData])
+  }, [target, setTerrainData, setTerrainField])
 
   const clear = useCallback(() => {
     if (missionId) return

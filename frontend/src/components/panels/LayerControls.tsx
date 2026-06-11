@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback } from 'react'
 import { useMissionStore, type LayerState } from '../../stores/missionStore'
 
 const LAYER_CONFIG: {
@@ -34,7 +34,6 @@ export function LayerControls() {
   const wsStatus = useMissionStore((s) => s.wsStatus)
   const setLayers = useMissionStore((s) => s.setLayers)
   const wsSend = useMissionStore((s) => s.wsSend)
-  const syncedRef = useRef(false)
 
   const sendLayers = useCallback(
     (next: LayerState) => {
@@ -56,17 +55,6 @@ export function LayerControls() {
     },
     [layers, setLayers, sendLayers],
   )
-
-  useEffect(() => {
-    if (!missionId || wsStatus !== 'open' || !wsSend) {
-      syncedRef.current = false
-      return
-    }
-    if (!syncedRef.current) {
-      syncedRef.current = true
-      sendLayers(layers)
-    }
-  }, [missionId, wsStatus, wsSend, sendLayers, layers])
 
   const togglesDisabled = false
 

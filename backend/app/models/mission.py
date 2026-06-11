@@ -22,6 +22,17 @@ class LatLon(BaseModel):
 
 
 BASE_STEP_SEC = 60.0
+
+
+def live_update_interval_sec() -> float:
+    """Wall-clock seconds between live heatmap pushes (from settings.filter_hz)."""
+    from app.core.config import settings
+
+    hz = max(float(settings.filter_hz), 0.01)
+    return 1.0 / hz
+
+
+# Deprecated alias — prefer live_update_interval_sec() so .env can tune filter_hz.
 LIVE_UPDATE_INTERVAL_SEC = 1.0
 
 

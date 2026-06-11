@@ -20,10 +20,10 @@ from app.models.heatmap import HeatmapCellDelta
 from app.models.layers import EngineTickMessage, LayerFlags
 from app.models.mission import (
     BASE_STEP_SEC,
-    LIVE_UPDATE_INTERVAL_SEC,
     LatLon,
     MissionMode,
     MissionStatus,
+    live_update_interval_sec,
 )
 from app.services.drone_detection import (
     altitude_matches_node,
@@ -35,17 +35,15 @@ from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.negative_search import apply_negative_search
 from app.services.path_optimizer import DroneRoute, optimize_drone_route
 from app.services.topo_reachability import (
-    apply_reachability_to_grid,
     compute_reachability,
     compute_reachability_score,
     lkp_to_grid_cell,
     mission_max_hours,
 )
-from app.engine.layers.registry import get_layer_weight
 
 
 def _pace_to_timing(pace: float) -> tuple[float, float]:
-    return BASE_STEP_SEC * pace, LIVE_UPDATE_INTERVAL_SEC
+    return BASE_STEP_SEC * pace, live_update_interval_sec()
 
 
 def _lkp_in_sea(terrain: Optional[TerrainContext], size: int) -> bool:
@@ -79,7 +77,7 @@ class MissionState:
     tick_count: int = 0
     pace: float = 1.0
     step_sec: float = BASE_STEP_SEC
-    update_interval_sec: float = LIVE_UPDATE_INTERVAL_SEC
+    update_interval_sec: float = field(default_factory=live_update_interval_sec)
     simulation_running: bool = True
     terrain: Optional[TerrainContext] = None
     initial_node_fields: Optional[NodeFields] = None
@@ -167,9 +165,7 @@ class MissionStore:
         )
         self._update_reachability(temp_state)
         initial_node_fields = copy_node_fields(grid_matrix.node_fields)
-        grid_matrix.probabilities = self._finalize_probabilities(
-            temp_state, grid_matrix.probabilities
-        )
+        grid_matrix.probabilities = self._recompute_from_impulse(temp_state)
         grid_matrix.sync_to_grid()
         mpp = compute_mpp(grid_matrix.grid, grid_matrix.probabilities)
 
@@ -212,24 +208,28 @@ class MissionStore:
             for _ in range(n_ticks):
                 await self._tick_unlocked(state)
 
-    async def _tick_unlocked(self, state: MissionState) -> None:
-        prior_probs = state.grid_matrix.probabilities.copy()
-        self._update_reachability(state)
-
+    def _recompute_from_impulse(self, state: MissionState) -> np.ndarray:
+        """Reset to LKP impulse and apply the active layer stack (no normalization)."""
+        state.grid_matrix.initialize_t0()
         env = env_for_layers(state.layers.weather)
-        current_probs = self._engine.tick(
+        return self._engine.apply_layers(
             state.grid_matrix,
             state.layers,
             dt_sec=state.step_sec,
             tick_count=state.tick_count,
             env=env,
         )
-        current_probs = self._finalize_probabilities(state, current_probs)
+
+    async def _tick_unlocked(self, state: MissionState) -> None:
+        prior_probs = state.grid_matrix.probabilities.copy()
+        state.tick_count += 1
+        self._update_reachability(state)
+
+        current_probs = self._recompute_from_impulse(state)
         blended = self._blend_history(prior_probs, current_probs)
         state.grid_matrix.probabilities = blended
         self._update_drone_last_seen(state)
         state.grid_matrix.sync_to_grid()
-        state.tick_count += 1
         state.mpp = compute_mpp(state.grid_matrix.grid, blended)
 
     def _blend_history(self, prior: np.ndarray, current: np.ndarray) -> np.ndarray:
@@ -238,11 +238,7 @@ class MissionStore:
             return current
         if decay >= 1.0:
             return prior
-        blended = decay * prior + (1.0 - decay) * current
-        total = blended.sum()
-        if total > 0:
-            blended /= total
-        return blended
+        return decay * prior + (1.0 - decay) * current
 
     def _update_drone_last_seen(self, state: MissionState) -> None:
         tick_start = (state.lkp_timestamp or state.created_at) + timedelta(
@@ -303,24 +299,6 @@ class MissionStore:
         state.grid_matrix.node_fields.reachability = reach.astype(np.float64, copy=True)
         state.grid_matrix.node_fields.reachability_score = score.astype(np.float64, copy=True)
 
-    def _finalize_probabilities(
-        self, state: MissionState, probs: np.ndarray
-    ) -> np.ndarray:
-        if (
-            state.layers.topography
-            and state.terrain is not None
-            and state.terrain.reachability is not None
-        ):
-            weight = get_layer_weight(state.layers, "topography")
-            return apply_reachability_to_grid(
-                probs,
-                state.grid_matrix.grid,
-                state.terrain_grid,
-                state.terrain.reachability,
-                weight,
-            )
-        return probs
-
     async def tick(self, mission_id: UUID) -> TickResult:
         state = self._require(mission_id)
         if not state.simulation_running and state.mode == MissionMode.LIVE:
@@ -344,6 +322,11 @@ class MissionStore:
         async with state._lock:
             filtered = ensure_min_one_dict(layers)
             state.layers.apply_update(filtered)
+            self._update_reachability(state)
+            probs = self._recompute_from_impulse(state)
+            state.grid_matrix.probabilities = probs
+            state.grid_matrix.sync_to_grid()
+            state.mpp = compute_mpp(state.grid_matrix.grid, probs)
         return state
 
     async def pause(self, mission_id: UUID) -> MissionState:

@@ -1,0 +1,121 @@
+# Interactive heatmap — per-layer field rules
+
+The grid starts as an **impulse at the LKP** (center cell = 1, all others = 0). Each enabled layer then **independently transforms** the full matrix using its static per-cell fields (`NodeFields`). Values are **not** re-normalized to sum to 1 — the frontend scales by peak for display.
+
+## Pipeline
+
+```
+t=0:  P[lkp] = 1,  P[elsewhere] = 0
+      ↓
+for each active layer (registry order):
+      P ← layer.apply_field(P, node_fields, weight)
+      ↓
+optional land/sea mask (zero land or zero water)
+      ↓
+return P   (raw cell values, any total mass)
+```
+
+Layers run in **registry order** in `app/engine/layers/registry.py`. Each layer receives the output of the previous layer.
+
+## Layer catalog
+
+### 1. Topography (`topography`) — **implemented**
+
+**Fields used:** `reachability_score`, `is_land`, `slope`
+
+**Rule:** Spread mass from the LKP anchor along the Tobler/Dijkstra walking reach field.
+
+```
+anchor = P[lkp_row, lkp_col]
+target[r,c] = anchor × reachability_score[r,c]
+target[water] = 0
+target[steep] ×= topo_steep_weight     (slope ≥ topo_steep_threshold_deg)
+P ← (1 − w) × P + w × target
+P[water] = 0
+```
+
+**Intuition:** If `P` is the initial impulse, the result is the **reachable walking envelope** from the pin — high near LKP, fading with travel time, zero on water and reduced on steep terrain.
+
+**Reachability refresh:** `reachability_score` is recomputed each tick as simulated time grows (`mission_store._update_reachability`). Horizon advances by one `step_sec` per tick (default 60 s simulated time per 1 s wall clock at pace 1×).
+
+---
+
+### 2. Roads (`roads`) — **implemented**
+
+**Fields used:** `road_proximity`
+
+**Rule:** Multiplicative boost on cells close to OSM roads.
+
+```
+P[r,c] ← P[r,c] × (1 + w × road_kde_bonus × road_proximity[r,c])
+```
+
+**Intuition:** Road-adjacent cells gain probability mass; the effect is local and proportional to OSM proximity (0..1). No re-normalization.
+
+---
+
+### 3. Weather (`weather`) — *planned*
+
+**Fields used:** `wind_u`, `wind_v` (per-cell; filled from env at create)
+
+**Planned rule:** Shift mass one step downwind (discrete advection).
+
+```
+Δrow, Δcol from wind vector and dt
+P' ← advect(P, wind, dt_sec)
+P ← (1 − w) × P + w × P'
+```
+
+---
+
+### 4. Subject injured (`subject_injured`) — *planned*
+
+**Fields used:** none (global layer flag)
+
+**Planned rule:** Contract the distribution — retain mass near current peak, reduce spread.
+
+```
+P ← P × (1 − w × (1 − injured_velocity_factor))   at non-peak cells
+```
+
+Or Gaussian blur reduction by `injured_velocity_factor`.
+
+---
+
+### 5. Sea drift (`sea_drift`) — *planned*
+
+**Fields used:** `current_u`, `current_v`, `is_land`
+
+**Planned rule:** Advect on water only along constant current; zero land cells.
+
+```
+P' ← advect(P, current, dt) on water cells
+P[land] = 0
+P ← (1 − w) × P + w × P'
+```
+
+Auto-enabled when LKP is on water (`mission_store.create`).
+
+---
+
+## Configuration knobs
+
+| Layer | Config keys |
+|-------|-------------|
+| Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
+| Roads | `road_kde_bonus` |
+| Weather | `momentum_reference_dt_sec`, wind from env |
+| Subject | `injured_velocity_factor` |
+| Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |
+
+## Adding a layer
+
+1. Subclass `BaseProbabilityLayer` in `app/engine/layers/<name>.py`
+2. Implement `apply_field(ctx, weight) -> np.ndarray`
+3. Register in `registry.py`
+4. Add toggle to `LayerFlags` in `app/models/layers.py`
+5. Document the rule in this file
+
+Legacy `transition_weights()` remains on the base class for reference but is **not** used by the interactive pipeline.
+
+See also: [LAYERS.md](LAYERS.md) for grid architecture and node field definitions.
