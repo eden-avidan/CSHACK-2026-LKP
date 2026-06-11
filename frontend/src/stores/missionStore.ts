@@ -1,12 +1,8 @@
 import { create } from 'zustand'
 import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
-<<<<<<< HEAD
-import { BASE_STEP_SEC } from '../utils/formatTime'
-import type { DetectionEvent } from '../types/ws-messages'
-=======
 import { BASE_STEP_SEC, toDatetimeLocalValue } from '../utils/formatTime'
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
+import type { DetectionEvent } from '../types/ws-messages'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
@@ -113,22 +109,15 @@ interface MissionStore {
   setMode: (mode: MissionMode) => void
   setPace: (pace: number) => void
   setLkpTimestamp: (ts: string | null) => void
-<<<<<<< HEAD
-=======
   setSimulationStartTimestamp: (ts: string | null) => void
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
   setMission: (
     id: string,
     lkp: LatLon,
     mode: MissionMode,
     pace: number,
     stepSec?: number,
-<<<<<<< HEAD
-    liveStartTickCount?: number,
-=======
     tickCount?: number,
     simulationRunning?: boolean,
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
   ) => void
   setStepSec: (stepSec: number) => void
   setSimulationRunning: (running: boolean) => void
@@ -199,13 +188,9 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
 
-<<<<<<< HEAD
-  setMission: (id, lkp, mode, pace, stepSec, liveStartTickCount = 0) =>
-=======
   setSimulationStartTimestamp: (simulationStartTimestamp) => set({ simulationStartTimestamp }),
 
   setMission: (id, lkp, mode, pace, stepSec, tickCount, simulationRunning) =>
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
     set((state) => ({
       missionId: id,
       lkp,
@@ -213,12 +198,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       mppTrail: [lkp],
       status: 'searching',
       mode,
-<<<<<<< HEAD
-      tickCount: liveStartTickCount,
-      liveStartTickCount,
-=======
       tickCount: tickCount ?? 0,
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
+      liveStartTickCount: tickCount ?? 0,
       engineTickVersion: 0,
       simulationRunning: simulationRunning ?? mode === 'live',
       layers: state.layers,

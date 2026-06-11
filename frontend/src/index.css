@@ -134,6 +134,54 @@ body {
   }
 }
 
+.drone-marker {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.drone-marker .drone-icon {
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 4px rgba(34, 197, 94, 0.9));
+  animation: drone-hover 2.2s ease-in-out infinite;
+}
+
+.drone-marker .drone-pulse {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.55);
+  z-index: 1;
+  animation: drone-pulse 1.8s ease-out infinite;
+}
+
+@keyframes drone-pulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+@keyframes drone-hover {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
 .footer {
   padding: 0.5rem 1.25rem;
   background: #1a2332;

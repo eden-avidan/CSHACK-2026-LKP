@@ -29,7 +29,7 @@ from app.models.mission import (
 )
 from app.services.drone_detection import (
     DetectionRecord,
-    altitude_matches_node,
+    cells_within_radius,
     get_default_detection_jsonl_path,
     get_default_drone_track_jsonl_path,
     load_detection_records,
@@ -161,15 +161,11 @@ class MissionStore:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
         else:
-<<<<<<< HEAD
-            resolved_step, resolved_interval = _pace_to_timing(pace)
-=======
             if step_sec is not None and update_interval_sec is not None:
                 resolved_step = step_sec
                 resolved_interval = update_interval_sec
             else:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
             simulation_running = True
 
         node_fields = build_node_fields(
@@ -417,15 +413,38 @@ class MissionStore:
     ) -> None:
         if position is None:
             return
-        try:
-            row, col = map_detection_to_grid_cell(
-                state.grid_matrix.grid, position.lat, position.lon
-            )
-        except ValueError:
-            return
-        if not altitude_matches_node(state.grid_matrix.node_fields, row, col, record.altitude):
-            return
-        clean[row, col] = 0.0 if record.person else 1.0
+        # Pure 2D overflight match: the cell(s) the drone flew over are cleared
+        # regardless of the drone's flight altitude. The drone's altitude is an
+        # absolute flight height (e.g. ~505 m ASL) while node altitude is the
+        # ground DEM elevation, so they must never be compared to decide 2D
+        # coverage — doing so silently dropped every real-data clear.
+        #
+        # A "no person" fix clears its whole camera footprint (a disc of radius
+        # drone_coverage_radius_m), so a sweep suppresses a realistic area. A
+        # positive detection is point-like and only touches its own cell.
+        if record.person:
+            try:
+                cells = [
+                    map_detection_to_grid_cell(
+                        state.grid_matrix.grid, position.lat, position.lon
+                    )
+                ]
+            except ValueError:
+                return
+            value = 0.0
+        else:
+            try:
+                cells = cells_within_radius(
+                    state.grid_matrix.grid,
+                    position.lat,
+                    position.lon,
+                    settings.drone_coverage_radius_m,
+                )
+            except ValueError:
+                return
+            value = 1.0
+        for row, col in cells:
+            clean[row, col] = value
 
     def build_drone_track(self, mission_id: UUID) -> Optional[DroneTrackMessage]:
         """Current flown path + position without advancing the simulation (for connect)."""

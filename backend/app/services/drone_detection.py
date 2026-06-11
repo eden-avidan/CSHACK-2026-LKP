@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -8,11 +9,10 @@ from typing import Any
 
 import numpy as np
 
-from app.geospatial.grid import ProbabilityGrid, grid_extent_m
+from app.geospatial.grid import ProbabilityGrid, cell_centroid_utm, grid_extent_m
 
 DETECTION_JSONL_NAME = Path("figure_recognition") / "results" / "person_detection_output.jsonl"
 DRONE_TRACK_JSONL_NAME = Path("figure_recognition") / "results" / "synthetic_drone_track.jsonl"
-ALTITUDE_MATCH_THRESHOLD_M = 20.0
 
 
 @dataclass
@@ -50,27 +50,6 @@ def _parse_timestamp(value: Any) -> datetime | None:
         return None
 
 
-<<<<<<< HEAD
-def load_detection_records(path: Path) -> list[DetectionRecord]:
-    if not path.exists():
-        return []
-
-    records: list[DetectionRecord] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                raw = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-
-            # Keep both outcomes: person-found rows drive detection events, while
-            # person-not-found rows (with a GPS fix) mark "clean" cells the drone
-            # overflew without spotting anyone.
-            person_found = bool(raw.get("person_found", raw.get("person", False)))
-=======
 def load_detection_records(path: Path) -> list[DetectionRecord]:
     if not path.exists():
         return []
@@ -91,9 +70,10 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
     for raw in raw_records:
             if not isinstance(raw, dict):
                 continue
-            if not raw.get("person_found", raw.get("person", False)):
-                continue
->>>>>>> 49d662201c706af5a6f8b324353f75b011ecf7f3
+            # Keep both outcomes: person-found rows drive detection events, while
+            # person-not-found rows (with a GPS fix) mark "clean" cells the drone
+            # overflew without spotting anyone.
+            person_found = bool(raw.get("person_found", raw.get("person", False)))
 
             ts = _parse_timestamp(raw.get("timestamp") or raw.get("ts"))
             if ts is None:
@@ -170,6 +150,14 @@ def map_detection_to_grid_cell(
     latitude: float,
     longitude: float,
 ) -> tuple[int, int]:
+    """Map a WGS84 ``(latitude, longitude)`` fix to a grid ``(row, col)``.
+
+    This is a purely 2D, planimetric lookup: the drone's flight altitude is
+    irrelevant to *which ground cell it overflew* and must never be mixed in
+    here. Internally we project lon/lat -> UTM (always_xy), so ``to_utm`` is
+    called as ``(longitude, latitude)`` even though the public argument order
+    is ``(latitude, longitude)``.
+    """
     e, n = grid.crs.to_utm(longitude, latitude)
     west, _east, _south, north = grid_extent_m(grid.rows, grid.metadata.resolution_m)
     res = grid.metadata.resolution_m
@@ -185,13 +173,38 @@ def map_detection_to_grid_cell(
     return row, col
 
 
-def altitude_matches_node(
-    node_fields: Any,
-    row: int,
-    col: int,
-    altitude: float | None,
-) -> bool:
-    if altitude is None:
-        return True
-    node_alt = float(node_fields.altitude[row, col])
-    return abs(node_alt - altitude) <= ALTITUDE_MATCH_THRESHOLD_M
+def cells_within_radius(
+    grid: ProbabilityGrid,
+    latitude: float,
+    longitude: float,
+    radius_m: float,
+) -> list[tuple[int, int]]:
+    """Grid cells whose centroid lies within ``radius_m`` of a WGS84 point.
+
+    Models the drone's ground coverage footprint (camera swath) as a disc, so a
+    single GPS fix marks a realistic area rather than one cell. Distances are
+    measured in UTM meters (reusing the grid's CRS), never in raw degrees. The
+    cell directly under the point is always included; cells outside the grid are
+    skipped. Raises ``ValueError`` if the point itself falls outside the grid.
+    """
+    center = map_detection_to_grid_cell(grid, latitude, longitude)
+    if radius_m <= 0.0:
+        return [center]
+
+    e, n = grid.crs.to_utm(longitude, latitude)
+    res = grid.metadata.resolution_m
+    reach = int(math.ceil(radius_m / res))
+    r0, c0 = center
+    radius_sq = radius_m * radius_m
+
+    cells: list[tuple[int, int]] = []
+    for dr in range(-reach, reach + 1):
+        for dc in range(-reach, reach + 1):
+            row, col = r0 + dr, c0 + dc
+            if not (0 <= row < grid.rows and 0 <= col < grid.cols):
+                continue
+            ce, cn = cell_centroid_utm(grid, row, col)
+            if (ce - e) ** 2 + (cn - n) ** 2 <= radius_sq:
+                cells.append((row, col))
+
+    return cells or [center]

@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
     grid_size: int = 128
-    grid_resolution_m: float = 50.0
+    grid_resolution_m: float = 1
     filter_hz: float = 1.0  # live heatmap broadcast rate (Hz); 1.0 = one update per second
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
@@ -72,7 +72,12 @@ class Settings(BaseSettings):
     # and renormalized, so cleared areas lose mass and slowly recover as the clean
     # score decays and probability re-diffuses.
     drone_clean_decay: float = 0.95
-    drone_clean_suppression_strength: float = 1
+    drone_clean_suppression_strength: float = 0.7
+    # Ground coverage footprint (camera swath) of a single drone GPS fix, in
+    # meters. Each "no person" fix clears every cell whose centroid falls within
+    # this radius, so a sweep suppresses a realistic area instead of one cell.
+    # 0 -> legacy single-cell behavior.
+    drone_coverage_radius_m: float = 80.0
     # Delay (mission-time seconds) before the synthetic drone "launches" and starts
     # sweeping, so it doesn't move the instant the mission begins.
     drone_track_launch_delay_sec: float = 30.0

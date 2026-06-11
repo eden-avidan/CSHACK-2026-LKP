@@ -63,13 +63,12 @@ def test_offline_mode_batch_ticks():
             )
             assert state.mode == MissionMode.OFFLINE
             assert state.simulation_running is True
-<<<<<<< HEAD
-            assert state.tick_count >= 1
-=======
             assert state.pace == 2.0
             assert state.step_sec == pytest.approx(BASE_STEP_SEC * 2.0)
             # 2h elapsed / 20s per tick = 360 ticks
             assert state.tick_count == 360
+
+    asyncio.run(run())
 
 
 def test_offline_simulation_start_before_lkp_rejected():
@@ -86,7 +85,6 @@ def test_offline_simulation_start_before_lkp_rejected():
                     lkp_timestamp=lkp_time,
                     simulation_start_timestamp=sim_start,
                 )
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
 
     asyncio.run(run())
 

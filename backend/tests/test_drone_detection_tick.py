@@ -12,12 +12,19 @@ import numpy as np
 import pytest
 
 from app.core.config import settings
+from app.engine.grid_matrix import GridMatrix
 from app.models.mission import LatLon, MissionMode
 from app.models.detection import DetectionEventMessage
 from app.api.ws.mission import broadcast_tick_result
+from app.geospatial.grid import lkp_cell_indices
 from app.services.mission_store import MissionStore
 from app.services.mission_store import TickResult
-from app.services.drone_detection import load_detection_records
+from app.services.drone_detection import (
+    DetectionRecord,
+    cells_within_radius,
+    load_detection_records,
+    map_detection_to_grid_cell,
+)
 
 HAIFA = LatLon(lat=32.7940, lon=34.9896)
 
@@ -101,6 +108,173 @@ def test_load_detection_records_from_json_array(tmp_path: Path):
     assert records[0].confidence_percent == pytest.approx(80.0)
 
 
+# --- coordinate mapping: lat/lon order, altitude, fixture ------------------
+
+# Known fixture: a 128x128 grid at 50 m resolution anchored on the Haifa LKP.
+# The LKP sits at the matrix center; offsets below are hand-checked against the
+# 111_320 m/deg latitude scale (~1 cell == 50 m == ~0.00045 deg lat).
+_GRID_SIZE = 128
+_GRID_RES_M = 50.0
+
+
+def _haifa_grid() -> GridMatrix:
+    return GridMatrix.create(HAIFA, size=_GRID_SIZE, resolution_m=_GRID_RES_M)
+
+
+def test_lkp_coordinate_maps_to_center_cell():
+    grid = _haifa_grid().grid
+    row, col = map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon)
+    assert (row, col) == lkp_cell_indices(_GRID_SIZE)
+
+
+def test_known_coordinate_maps_to_expected_nearby_cell():
+    """A point ~150 m north and ~150 m east of the LKP lands 3 cells away."""
+    grid = _haifa_grid().grid
+    center_row, center_col = lkp_cell_indices(_GRID_SIZE)
+    # ~150 m north, ~150 m east of the LKP.
+    lat = HAIFA.lat + 150.0 / 111_320.0
+    import math
+
+    lon = HAIFA.lon + 150.0 / (111_320.0 * math.cos(math.radians(HAIFA.lat)))
+    row, col = map_detection_to_grid_cell(grid, lat, lon)
+    # North -> smaller row (row 0 is the north edge); East -> larger col.
+    assert row == center_row - 3
+    assert col == center_col + 3
+
+
+def test_latlon_order_is_not_swapped():
+    """Latitude drives the row axis, longitude the column axis."""
+    grid = _haifa_grid().grid
+    center_row, center_col = map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon)
+
+    north = map_detection_to_grid_cell(grid, HAIFA.lat + 0.001, HAIFA.lon)
+    east = map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon + 0.001)
+
+    # Moving north changes only the row (and decreases it); moving east changes
+    # only the column (and increases it). If lat/lon were swapped these axes
+    # would be exchanged.
+    assert north[0] < center_row and north[1] == center_col
+    assert east[1] > center_col and east[0] == center_row
+
+
+def test_swapped_latlon_lands_in_a_different_place():
+    """Feeding (lon, lat) instead of (lat, lon) must NOT resolve to the LKP."""
+    grid = _haifa_grid().grid
+    correct = map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon)
+    with pytest.raises(ValueError):
+        # 34.98.. as a latitude / 32.79.. as a longitude is far outside the grid.
+        map_detection_to_grid_cell(grid, HAIFA.lon, HAIFA.lat)
+    assert correct == lkp_cell_indices(_GRID_SIZE)
+
+
+def test_altitude_does_not_affect_2d_cell_mapping():
+    """Cell mapping is planimetric: it takes no altitude and is unchanged by it.
+
+    Regression guard for the bug where a drone's flight altitude (e.g. ~505 m
+    ASL) was compared against the node's ground DEM elevation, causing real
+    overflights to be silently dropped.
+    """
+    store = MissionStore()
+    matrix = _haifa_grid()
+    clean = matrix.node_fields.searched_clean
+    # Give the LKP cell a realistic ground elevation so a naive altitude check
+    # against the drone's flight altitude would fail.
+    center_row, center_col = lkp_cell_indices(_GRID_SIZE)
+    matrix.node_fields.altitude[center_row, center_col] = 150.0
+
+    state = type("S", (), {})()
+    state.grid_matrix = matrix
+
+    high_altitude_record = DetectionRecord(
+        timestamp=datetime.now(timezone.utc),
+        latitude=HAIFA.lat,
+        longitude=HAIFA.lon,
+        altitude=505.0,  # ~1658 ft, a real DJI flight altitude
+        person=False,
+    )
+    position = LatLon(lat=HAIFA.lat, lon=HAIFA.lon)
+    store._mark_clean_cell(state, clean, high_altitude_record, position)
+
+    assert clean[center_row, center_col] == pytest.approx(1.0)
+
+
+# --- coverage footprint: a fix clears a disc, not a single cell -------------
+
+
+def test_zero_radius_clears_only_the_single_cell():
+    grid = _haifa_grid().grid
+    cells = cells_within_radius(grid, HAIFA.lat, HAIFA.lon, 0.0)
+    assert cells == [map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon)]
+
+
+def test_coverage_footprint_clears_disc_of_cells():
+    grid = _haifa_grid().grid
+    center = map_detection_to_grid_cell(grid, HAIFA.lat, HAIFA.lon)
+    radius = 80.0
+    cells = cells_within_radius(grid, HAIFA.lat, HAIFA.lon, radius)
+
+    # More than one cell, and the cell under the point is included.
+    assert len(cells) > 1
+    assert center in cells
+
+    # Every returned cell's centroid is genuinely within the radius (UTM meters).
+    from app.geospatial.grid import cell_centroid_utm
+
+    e, n = grid.crs.to_utm(HAIFA.lon, HAIFA.lat)
+    for row, col in cells:
+        ce, cn = cell_centroid_utm(grid, row, col)
+        assert ((ce - e) ** 2 + (cn - n) ** 2) ** 0.5 <= radius + 1e-9
+
+    # An 80 m disc on a 50 m grid is the 3x3 block around the center.
+    assert len(cells) == 9
+
+
+def test_larger_radius_clears_more_cells():
+    grid = _haifa_grid().grid
+    small = cells_within_radius(grid, HAIFA.lat, HAIFA.lon, 80.0)
+    large = cells_within_radius(grid, HAIFA.lat, HAIFA.lon, 200.0)
+    assert len(large) > len(small)
+
+
+def test_mark_clean_cell_uses_coverage_footprint():
+    """A 'no person' fix clears its whole footprint; a detection stays point-like."""
+    store = MissionStore()
+    center_row, center_col = lkp_cell_indices(_GRID_SIZE)
+
+    # No-person sweep -> footprint disc.
+    matrix = _haifa_grid()
+    clean = matrix.node_fields.searched_clean
+    state = type("S", (), {})()
+    state.grid_matrix = matrix
+    sweep = DetectionRecord(
+        timestamp=datetime.now(timezone.utc),
+        latitude=HAIFA.lat,
+        longitude=HAIFA.lon,
+        altitude=505.0,
+        person=False,
+    )
+    store._mark_clean_cell(state, clean, sweep, LatLon(lat=HAIFA.lat, lon=HAIFA.lon))
+    assert int((clean >= 1.0 - 1e-9).sum()) == 9
+    assert clean[center_row, center_col] == pytest.approx(1.0)
+
+    # Positive detection -> only its own cell is touched (set back to 0.0).
+    matrix2 = _haifa_grid()
+    clean2 = matrix2.node_fields.searched_clean
+    clean2.fill(1.0)
+    state2 = type("S", (), {})()
+    state2.grid_matrix = matrix2
+    found = DetectionRecord(
+        timestamp=datetime.now(timezone.utc),
+        latitude=HAIFA.lat,
+        longitude=HAIFA.lon,
+        altitude=505.0,
+        person=True,
+    )
+    store._mark_clean_cell(state2, clean2, found, LatLon(lat=HAIFA.lat, lon=HAIFA.lon))
+    assert clean2[center_row, center_col] == pytest.approx(0.0)
+    assert int((clean2 <= 1e-9).sum()) == 1
+
+
 def test_tick_marks_searched_clean(tmp_path: Path):
     async def run() -> None:
         store = MissionStore()
@@ -155,6 +329,58 @@ def test_tick_clean_suppresses_probability(tmp_path: Path):
             cleared = clean >= 1.0 - 1e-9
             assert cleared.any()
             assert float(probs[cleared].max()) == pytest.approx(0.0, abs=1e-9)
+            assert probs.sum() == pytest.approx(1.0, abs=1e-6)
+
+    asyncio.run(run())
+
+
+def test_tick_with_high_altitude_drone_reduces_local_probability(tmp_path: Path):
+    """End-to-end regression: a real-style record carrying a high flight
+    altitude must still suppress probability around the drone's cell.
+
+    Before the fix, the altitude gate (drone ~505 m ASL vs ground DEM) dropped
+    the clear, so probability was never reduced along the actual drone path.
+    """
+
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        sample_ts = two_hours_ago + timedelta(seconds=5)
+        path = tmp_path / "person_detection_output.jsonl"
+        # person=false overflight WITH a realistic flight altitude (~1658 ft).
+        path.write_text(
+            f"{{\"ts\": \"{sample_ts.isoformat().replace('+00:00','Z')}\", "
+            "\"person\": false, \"latitude\": 32.7940, \"longitude\": 34.9896, "
+            "\"altitude\": 505.0}\n"
+        )
+
+        # Non-flat terrain so the LKP cell has a real ground elevation that a
+        # naive altitude check would compare against (and fail).
+        terrain = _terrain(settings.grid_size)
+        terrain.elevation[:] = 150.0
+
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = terrain
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
+            await store.tick(state.mission_id)
+
+            probs = state.grid_matrix.probabilities
+            clean = state.grid_matrix.node_fields.searched_clean
+            cleared = clean >= 1.0 - 1e-9
+
+            # The high-altitude overflight still clears its cell...
+            assert cleared.any()
+            # ...and the clear is local, not smeared across the whole grid.
+            assert int(cleared.sum()) < 0.01 * probs.size
+            # ...and drives probability there to zero (full suppression strength).
+            assert float(probs[cleared].max()) == pytest.approx(0.0, abs=1e-9)
+            # The reduction is local to the drone path: probability survives
+            # elsewhere, so the global peak is NOT in a cleared cell.
+            peak = np.unravel_index(int(np.argmax(probs)), probs.shape)
+            assert not cleared[peak]
             assert probs.sum() == pytest.approx(1.0, abs=1e-6)
 
     asyncio.run(run())

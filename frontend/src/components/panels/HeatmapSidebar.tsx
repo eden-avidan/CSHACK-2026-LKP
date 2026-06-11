@@ -161,20 +161,17 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       let resolvedStepSec: number | undefined
       let resolvedTickCount = 0
       let resolvedSimulationRunning: boolean | undefined
-      let resolvedTickCount: number | undefined
       if (missionRes.ok) {
         const mission = (await missionRes.json()) as {
           step_sec?: number
           tick_count?: number
           simulation_running?: boolean
-          tick_count?: number
         }
         if (typeof mission.step_sec === 'number') resolvedStepSec = mission.step_sec
         if (typeof mission.tick_count === 'number') resolvedTickCount = mission.tick_count
         if (typeof mission.simulation_running === 'boolean') {
           resolvedSimulationRunning = mission.simulation_running
         }
-        if (typeof mission.tick_count === 'number') resolvedTickCount = mission.tick_count
       }
 
       if (nodeFieldsRes.ok) {
@@ -189,12 +186,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           metadata: GridMetadata
           probabilities: number[]
         }
-<<<<<<< HEAD
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec, resolvedTickCount)
-        setHeatmapFull(heat.metadata, heat.probabilities)
-      } else {
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec, resolvedTickCount)
-=======
         setMission(
           data.mission_id,
           pinnedLkp,
@@ -215,7 +206,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           resolvedTickCount,
           resolvedSimulationRunning,
         )
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
       }
       if (resolvedSimulationRunning !== undefined) {
         setSimulationRunning(resolvedSimulationRunning)
@@ -233,16 +223,12 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     }
   }, [pinnedLkp, mode, lkpTimestamp, simulationStartTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
-<<<<<<< HEAD
   const liveTickCount = Math.max(0, tickCount - liveStartTickCount)
   const simulatedElapsedSec = liveTickCount * stepSec
-=======
-  const simulatedElapsedSec = tickCount * stepSec
   const offlineSimTime =
     mode === 'offline' && lkpTimestamp
       ? formatSimulatedDateTime(simulatedDateTime(lkpTimestamp, tickCount, stepSec))
       : null
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
 
   const togglePauseResume = useCallback(async () => {
     if (!missionId) return
@@ -391,11 +377,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
               aria-label="Last known position timestamp"
             />
           </label>
-<<<<<<< HEAD
-          <label className="field pace-slider">
-            <span>
-              Pace - {pace.toFixed(1)}x ({Math.round(stepSec)}s sim / tick)
-=======
           <label className="field">
             <span>Start live simulation at</span>
             <input
@@ -409,7 +390,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           <label className="field pace-slider">
             <span>
               Pace — {pace.toFixed(1)}× ({Math.round(stepSec)}s sim / tick)
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
             </span>
             <input
               type="range"
@@ -419,20 +399,12 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
               value={pace}
               onChange={(e) => setPace(Number(e.target.value))}
               disabled={!!missionId && mode !== 'offline'}
-<<<<<<< HEAD
               aria-label="Offline simulation pace multiplier"
-            />
-          </label>
-          <p className="pace-hint">
-            Computes from the last known time, then keeps updating every second at this pace.
-=======
-              aria-label="Simulation pace multiplier"
             />
           </label>
           <p className="pace-hint">
             Batch-computes the heatmap from LKP → start time, then plays forward like live.
             Pace speeds simulated time after start ({BASE_STEP_SEC}s/tick at 1×).
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
           </p>
         </section>
       )}
@@ -462,13 +434,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           Mission: <code>{missionId.slice(0, 8)}…</code>
           {simulationRunning && wsStatus === 'open'
             ? ' · live'
-<<<<<<< HEAD
-            : !simulationRunning
-              ? ' · paused'
-              : wsStatus !== 'open'
-                ? ` · ${wsStatus}`
-                : ''}
-=======
             : mode === 'offline' && simulationRunning && wsStatus === 'open'
               ? ' · replay'
               : simulationRunning === false
@@ -476,7 +441,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
                 : wsStatus !== 'open'
                   ? ` · ${wsStatus}`
                   : ''}
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
         </p>
       )}
 
@@ -494,18 +458,14 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             {routeLoading ? 'Planning Route…' : 'Find Drone Route'}
           </button>
           {routeSummary && <p className="route-summary">{routeSummary}</p>}
-<<<<<<< HEAD
-=======
-          {(mode === 'live' || mode === 'offline') && (
->>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
-            <button
-              type="button"
-              className={simulationRunning ? 'secondary' : undefined}
-              onClick={togglePauseResume}
-              disabled={pauseLoading}
-            >
-              {pauseLoading ? '…' : simulationRunning ? 'Stop' : 'Resume'}
-            </button>
+          <button
+            type="button"
+            className={simulationRunning ? 'secondary' : undefined}
+            onClick={togglePauseResume}
+            disabled={pauseLoading}
+          >
+            {pauseLoading ? '…' : simulationRunning ? 'Stop' : 'Resume'}
+          </button>
           <button type="button" className="secondary" onClick={newPin}>
             New Pin
           </button>
