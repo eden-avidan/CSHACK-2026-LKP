@@ -45,6 +45,8 @@ def build_node_fields(
 
     if terrain.reachability is not None:
         fields.reachability = terrain.reachability.astype(np.float64, copy=True)
+    if terrain.reachability_score is not None:
+        fields.reachability_score = terrain.reachability_score.astype(np.float64, copy=True)
 
     env = get_mock_env() if weather_enabled else zero_env()
     fields.wind_u.fill(env.u_w)
@@ -68,6 +70,7 @@ def copy_node_fields(fields: NodeFields) -> NodeFields:
         current_u=fields.current_u.copy(),
         current_v=fields.current_v.copy(),
         reachability=fields.reachability.copy(),
+        reachability_score=fields.reachability_score.copy(),
         latitude=fields.latitude.copy(),
         longitude=fields.longitude.copy(),
         altitude=fields.altitude.copy(),

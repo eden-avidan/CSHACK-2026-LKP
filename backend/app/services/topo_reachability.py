@@ -182,6 +182,33 @@ def travel_time_to_probability(
     return probability
 
 
+def compute_reachability_score(
+    terrain_grid: ProbabilityGrid,
+    elevation: np.ndarray,
+    start_row: int,
+    start_col: int,
+    max_hours: float,
+) -> np.ndarray:
+    """Linear 0..1 walking reachability for maps: 1 at LKP, 0 beyond horizon.
+
+    Unlike ``compute_reachability`` this is NOT normalized to sum to 1, so the
+    overlay shows a smooth falloff disk instead of a flat probability share.
+    """
+    if max_hours <= 0:
+        max_hours = 0.1
+    travel_time = least_travel_time_hours(
+        elevation,
+        terrain_grid.metadata.resolution_m,
+        start_row,
+        start_col,
+        max_hours,
+    )
+    reachable = np.isfinite(travel_time) & (travel_time <= max_hours)
+    score = np.zeros_like(travel_time, dtype=np.float64)
+    score[reachable] = (max_hours - travel_time[reachable]) / max_hours
+    return score
+
+
 def compute_reachability(
     terrain_grid: ProbabilityGrid,
     elevation: np.ndarray,

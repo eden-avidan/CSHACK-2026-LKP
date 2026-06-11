@@ -23,7 +23,8 @@ class NodeFields:
     wind_v: np.ndarray
     current_u: np.ndarray  # sea-surface current east component (m/s)
     current_v: np.ndarray  # sea-surface current north component (m/s)
-    reachability: np.ndarray
+    reachability: np.ndarray  # engine prior (normalized, sums to 1)
+    reachability_score: np.ndarray  # 0..1 linear travel-time score for maps
     latitude: np.ndarray   # cell-center latitude (degrees, WGS84)
     longitude: np.ndarray  # cell-center longitude (degrees, WGS84)
     altitude: np.ndarray   # cell-center altitude (meters above sea level);
@@ -49,6 +50,7 @@ class NodeFields:
             current_u=z.copy(),
             current_v=z.copy(),
             reachability=reach,
+            reachability_score=z.copy(),
             latitude=z.copy(),
             longitude=z.copy(),
             altitude=z.copy(),

@@ -61,6 +61,8 @@ class Settings(BaseSettings):
     # Terrain inspection: meters per cell (smaller = finer detail, same coverage).
     # Coverage stays grid_size * grid_resolution_m; cell count scales up accordingly.
     terrain_inspect_resolution_m: float = 25.0
+    # Tobler/Dijkstra horizon used by terrain debug inspect (hours).
+    terrain_inspect_reachability_hours: float = 2.0
 
     @property
     def cors_origin_list(self) -> list[str]:

@@ -15,8 +15,6 @@ export interface FieldRenderOptions {
 const CONTINUOUS_TERRAIN_FIELDS = new Set([
   'elevation',
   'slope',
-  'reachability',
-  'reachability_rel',
   'road_proximity',
   'current_speed',
   'current_heading',
@@ -24,10 +22,14 @@ const CONTINUOUS_TERRAIN_FIELDS = new Set([
 
 /** Min/max over finite values. */
 export function computeFieldRange(values: number[], fieldId?: string): FieldRange {
+  if (fieldId === 'reachability') {
+    const reachable = values.filter((v) => Number.isFinite(v) && v > 1e-9).sort((a, b) => a - b)
+    if (reachable.length === 0) return { min: 0, max: 1 }
+    return { min: 0, max: reachable[reachable.length - 1] }
+  }
   let min = Infinity
   let max = -Infinity
-  const usePercentile =
-    fieldId === 'elevation' || fieldId === 'slope' || fieldId === 'reachability'
+  const usePercentile = fieldId === 'elevation' || fieldId === 'slope'
   if (usePercentile) {
     const finite = values.filter((v) => Number.isFinite(v)).sort((a, b) => a - b)
     if (finite.length === 0) return { min: 0, max: 1 }
@@ -104,6 +106,7 @@ export function fieldValueToRGBA(
 
   const t = (value - range.min) / (range.max - range.min || 1)
   const clampedT = Math.max(0, Math.min(1, t))
+  if (fieldId === 'reachability' && value <= 1e-9) return [0, 0, 0, 0]
   if (clampedT <= 0.01 && !CONTINUOUS_TERRAIN_FIELDS.has(fieldId)) return [0, 0, 0, 0]
   const [r, g, b] = ramp(clampedT)
   const alpha = Math.min(0.85, 0.35 + clampedT * 0.55)

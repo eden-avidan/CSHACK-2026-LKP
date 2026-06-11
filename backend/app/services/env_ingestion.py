@@ -41,6 +41,7 @@ class TerrainContext:
     road_tangent_e: np.ndarray  # unit east component of nearest road
     road_tangent_n: np.ndarray  # unit north component of nearest road
     reachability: np.ndarray | None = None  # Tobler/Dijkstra prior on terrain grid
+    reachability_score: np.ndarray | None = None  # linear 0..1 map score
 
 
 def _flat_terrain(rows: int, cols: int) -> TerrainContext:
