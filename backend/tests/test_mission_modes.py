@@ -58,8 +58,26 @@ def test_offline_mode_batch_ticks():
                 lkp_timestamp=two_hours_ago,
             )
             assert state.mode == MissionMode.OFFLINE
-            assert state.simulation_running is False
+            assert state.simulation_running is True
             assert state.tick_count >= 1
+
+    asyncio.run(run())
+
+
+def test_offline_mode_continues_after_seed_batch():
+    async def run() -> None:
+        store = MissionStore()
+        two_minutes_ago = datetime.now(timezone.utc) - timedelta(minutes=2)
+        with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
+            mock.return_value = _terrain(128)
+            state = await store.create(
+                HAIFA,
+                mode=MissionMode.OFFLINE,
+                lkp_timestamp=two_minutes_ago,
+            )
+            seeded_tick_count = state.tick_count
+            await store.tick(state.mission_id)
+            assert state.tick_count == seeded_tick_count + 1
 
     asyncio.run(run())
 

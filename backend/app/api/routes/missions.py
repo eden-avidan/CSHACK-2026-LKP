@@ -9,7 +9,6 @@ from app.models.heatmap import HeatmapResponse
 from app.models.mission import (
     CreateMissionRequest,
     CreateMissionResponse,
-    MissionMode,
     MissionResponse,
     MissionStatus,
     UpdatePaceRequest,
@@ -55,7 +54,7 @@ async def create_mission(body: CreateMissionRequest) -> CreateMissionResponse:
         )
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
-    if state.mode == MissionMode.LIVE:
+    if state.simulation_running:
         start_tick_loop(state.mission_id)
     return CreateMissionResponse(mission_id=state.mission_id, status=MissionStatus.SEARCHING)
 
@@ -94,7 +93,7 @@ async def resume_mission(mission_id: UUID) -> MissionResponse:
         state = await mission_store.resume(mission_id)
     except KeyError:
         raise HTTPException(status_code=404, detail="Mission not found") from None
-    if state.mode == MissionMode.LIVE:
+    if state.simulation_running:
         start_tick_loop(mission_id)
     return _mission_response(state)
 

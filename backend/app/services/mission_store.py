@@ -151,7 +151,7 @@ class MissionStore:
             simulation_running = True
         else:
             resolved_step, resolved_interval = _pace_to_timing(1.0)
-            simulation_running = False
+            simulation_running = True
 
         node_fields = build_node_fields(
             terrain, size, weather_enabled=layer_flags.weather
@@ -311,7 +311,7 @@ class MissionStore:
 
     async def tick(self, mission_id: UUID) -> TickResult:
         state = self._require(mission_id)
-        if not state.simulation_running and state.mode == MissionMode.LIVE:
+        if not state.simulation_running:
             return TickResult(deltas=[], engine_tick=None)
         async with state._lock:
             await self._tick_unlocked(state)
@@ -348,8 +348,7 @@ class MissionStore:
     async def resume(self, mission_id: UUID) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode == MissionMode.LIVE:
-                state.simulation_running = True
+            state.simulation_running = True
         return state
 
     async def delete(self, mission_id: UUID) -> None:
