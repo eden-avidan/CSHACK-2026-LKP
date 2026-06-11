@@ -4,6 +4,25 @@ import type { LatLon } from '../types/geo'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
+export type TerrainFieldKind = 'scalar' | 'mask'
+
+export interface TerrainFieldMeta {
+  id: string
+  label: string
+  kind: TerrainFieldKind
+  unit?: string
+  description?: string
+}
+
+export interface TerrainData {
+  metadata: GridMetadata
+  rows: number
+  cols: number
+  fields: Record<string, number[]>
+  field_stats?: Record<string, { min: number; max: number; nonzero_frac: number }>
+  warnings?: string[]
+  available: TerrainFieldMeta[]
+}
 
 export interface LayerState {
   topography: boolean
@@ -45,6 +64,11 @@ interface MissionStore {
   lkpTimestamp: string | null
   pace: number
   wsSend: ((payload: unknown) => void) | null
+  terrainData: TerrainData | null
+  terrainField: string | null
+  terrainVersion: number
+  terrainMaskMode: boolean
+  terrainMaskThreshold: number
 
   setDraftLkp: (lkp: LatLon) => void
   setPinnedLkp: (lkp: LatLon | null) => void
@@ -61,6 +85,10 @@ interface MissionStore {
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
   setTickCount: (n: number) => void
+  setTerrainData: (data: TerrainData | null) => void
+  setTerrainField: (field: string | null) => void
+  setTerrainMaskMode: (on: boolean) => void
+  setTerrainMaskThreshold: (threshold: number) => void
 }
 
 export const useMissionStore = create<MissionStore>((set, get) => ({
@@ -83,6 +111,11 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   lkpTimestamp: defaultLkpTimestamp(),
   pace: 1,
   wsSend: null,
+  terrainData: null,
+  terrainField: null,
+  terrainVersion: 0,
+  terrainMaskMode: false,
+  terrainMaskThreshold: 0.5,
 
   setDraftLkp: (draftLkp) => set({ draftLkp }),
 
@@ -136,6 +169,10 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       lkpTimestamp: defaultLkpTimestamp(),
       pace: 1,
       wsSend: null,
+      terrainData: null,
+      terrainField: null,
+      terrainMaskMode: false,
+      terrainMaskThreshold: 0.5,
     }),
 
   setWsStatus: (wsStatus) => set({ wsStatus }),
@@ -192,4 +229,35 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   },
 
   setTickCount: (tickCount) => set({ tickCount }),
+
+  setTerrainData: (terrainData) =>
+    set((state) => {
+      if (!terrainData) {
+        return {
+          terrainData: null,
+          terrainField: null,
+          terrainVersion: state.terrainVersion + 1,
+        }
+      }
+      const stillValid =
+        state.terrainField !== null &&
+        terrainData.available.some((field) => field.id === state.terrainField)
+      return {
+        terrainData,
+        terrainField: stillValid ? state.terrainField : (terrainData.available[0]?.id ?? null),
+        terrainVersion: state.terrainVersion + 1,
+      }
+    }),
+
+  setTerrainField: (terrainField) =>
+    set((state) => ({ terrainField, terrainVersion: state.terrainVersion + 1 })),
+
+  setTerrainMaskMode: (terrainMaskMode) =>
+    set((state) => ({ terrainMaskMode, terrainVersion: state.terrainVersion + 1 })),
+
+  setTerrainMaskThreshold: (terrainMaskThreshold) =>
+    set((state) => ({
+      terrainMaskThreshold: Math.max(0, Math.min(1, terrainMaskThreshold)),
+      terrainVersion: state.terrainVersion + 1,
+    })),
 }))

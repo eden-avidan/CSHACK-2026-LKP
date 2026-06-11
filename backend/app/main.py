@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import heatmap, missions, negative_search
+from app.api.routes import heatmap, missions, negative_search, terrain
 from app.api.ws import mission as mission_ws
 from app.core.config import settings
 
@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(missions.router)
 app.include_router(heatmap.router)
 app.include_router(negative_search.router)
+app.include_router(terrain.router)
 app.include_router(mission_ws.router)
 
 

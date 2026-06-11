@@ -364,3 +364,51 @@ code {
   padding: 0.1rem 0.35rem;
   border-radius: 3px;
 }
+
+.terrain-inspector {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #2a3544;
+}
+
+.terrain-inspector h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e7ecf1;
+}
+
+.terrain-field-list {
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+}
+
+.terrain-field-list li {
+  margin-bottom: 0.55rem;
+}
+
+.terrain-mask-controls {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.6rem;
+  border: 1px solid #2a3544;
+  border-radius: 6px;
+  background: #0f1419;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.terrain-range {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.72rem;
+  color: #a0aec0;
+}
+
+.terrain-range p {
+  margin: 0.15rem 0;
+}
+
+.terrain-warning {
+  margin: 0.5rem 0;
+}

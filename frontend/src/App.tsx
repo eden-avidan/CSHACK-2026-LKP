@@ -2,9 +2,11 @@ import { useCallback, useState } from 'react'
 import type { Map } from 'mapbox-gl'
 import { MapContainer } from './components/map/MapContainer'
 import { HeatmapCanvas } from './components/map/HeatmapCanvas'
+import { TerrainOverlay } from './components/map/TerrainOverlay'
 import { TrackingOverlay } from './components/map/TrackingOverlay'
 import { HeatmapSidebar } from './components/panels/HeatmapSidebar'
 import { LayerControls } from './components/panels/LayerControls'
+import { TerrainInspector } from './components/panels/TerrainInspector'
 import { HeatmapLegend } from './components/panels/HeatmapLegend'
 
 export default function App() {
@@ -21,9 +23,11 @@ export default function App() {
         <aside className="sidebar left">
           <HeatmapSidebar map={map} />
           <LayerControls />
+          <TerrainInspector />
         </aside>
         <main className="map-area">
           <MapContainer onMapReady={onMapReady} />
+          <TerrainOverlay map={map} />
           <HeatmapCanvas map={map} />
           <TrackingOverlay map={map} />
         </main>
