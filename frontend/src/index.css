@@ -172,10 +172,21 @@ body {
 
 .coords,
 .mission-id,
+.live-timer,
 .status,
 .ws-status {
   font-size: 0.85rem;
   margin: 0.25rem 0;
+}
+
+.live-timer strong {
+  font-variant-numeric: tabular-nums;
+  color: #e7ecf1;
+}
+
+.live-timer-meta {
+  font-size: 0.75rem;
+  color: #718096;
 }
 
 button {

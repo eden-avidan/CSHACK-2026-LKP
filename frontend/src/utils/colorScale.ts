@@ -1,10 +1,14 @@
 const BLUE: [number, number, number] = [33, 102, 172]
 const YELLOW: [number, number, number] = [253, 231, 37]
-const RED: [number, number, number] = [178, 24, 43]
+const RED: [number, number, number] = [230, 12, 18]
 const EPS = 1e-8
 
 /** Stretch mid/low values so the blue→yellow→red ramp is more visible. */
 const COLOR_GAMMA = 0.45
+
+/** Blue tail stays see-through; peak red is nearly opaque. */
+const ALPHA_MIN = 0.22
+const ALPHA_MAX = 1.0
 
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t
@@ -56,10 +60,12 @@ export function probabilityToRGBA(p: number, range: ColorRange): [number, number
   if (t < 0.5) {
     rgb = lerpColor(BLUE, YELLOW, t * 2)
   } else {
-    rgb = lerpColor(YELLOW, RED, (t - 0.5) * 2)
+    const redT = (t - 0.5) * 2
+    rgb = lerpColor(YELLOW, RED, Math.pow(redT, 0.75))
   }
 
-  const alpha = Math.min(0.92, 0.12 + linear * 0.88)
+  // Low prob (blue) → faint; high prob (red) → solid crimson.
+  const alpha = ALPHA_MIN + Math.pow(linear, 0.7) * (ALPHA_MAX - ALPHA_MIN)
   return [rgb[0], rgb[1], rgb[2], Math.round(alpha * 255)]
 }
 

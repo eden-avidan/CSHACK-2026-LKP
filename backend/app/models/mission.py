@@ -21,7 +21,7 @@ class LatLon(BaseModel):
     lon: float = Field(ge=-180, le=180)
 
 
-BASE_STEP_SEC = 60.0
+BASE_STEP_SEC = 10.0
 
 
 def live_update_interval_sec() -> float:

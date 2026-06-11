@@ -7,6 +7,7 @@ import pytest
 
 from app.geospatial.grid import create_empty_grid
 from app.models.mission import LatLon
+from app.models.mission import BASE_STEP_SEC
 from app.services.topo_reachability import (
     compute_reachability,
     compute_reachability_score,
@@ -69,11 +70,11 @@ def test_reachability_score_linear_at_lkp():
 
 
 def test_mission_max_hours_grows_every_tick():
-    h0 = mission_max_hours(tick_count=0, step_sec=60.0)
-    h1 = mission_max_hours(tick_count=1, step_sec=60.0)
-    h2 = mission_max_hours(tick_count=2, step_sec=60.0)
-    assert h0 == pytest.approx(60.0 / 3600.0)
-    assert h1 == pytest.approx(120.0 / 3600.0)
+    h0 = mission_max_hours(tick_count=0, step_sec=BASE_STEP_SEC)
+    h1 = mission_max_hours(tick_count=1, step_sec=BASE_STEP_SEC)
+    h2 = mission_max_hours(tick_count=2, step_sec=BASE_STEP_SEC)
+    assert h0 == pytest.approx(BASE_STEP_SEC / 3600.0)
+    assert h1 == pytest.approx(2 * BASE_STEP_SEC / 3600.0)
     assert h0 < h1 < h2
 
 
@@ -82,9 +83,9 @@ def test_reachability_score_expands_as_horizon_grows():
     elevation = np.zeros((128, 128), dtype=np.float64)
     center = 64
     s0 = compute_reachability_score(
-        grid, elevation, center, center, mission_max_hours(tick_count=0, step_sec=60.0)
+        grid, elevation, center, center, mission_max_hours(tick_count=0, step_sec=BASE_STEP_SEC)
     )
     s1 = compute_reachability_score(
-        grid, elevation, center, center, mission_max_hours(tick_count=1, step_sec=60.0)
+        grid, elevation, center, center, mission_max_hours(tick_count=5, step_sec=BASE_STEP_SEC)
     )
     assert (s1 > 0.01).sum() > (s0 > 0.01).sum()

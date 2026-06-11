@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { DroneRoute, GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
+import { BASE_STEP_SEC } from '../utils/formatTime'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
@@ -64,6 +65,7 @@ interface MissionStore {
   draftLkp: LatLon | null
   lkpTimestamp: string | null
   pace: number
+  stepSec: number
   wsSend: ((payload: unknown) => void) | null
   terrainData: TerrainData | null
   terrainField: string | null
@@ -76,7 +78,8 @@ interface MissionStore {
   setMode: (mode: MissionMode) => void
   setPace: (pace: number) => void
   setLkpTimestamp: (ts: string | null) => void
-  setMission: (id: string, lkp: LatLon, mode: MissionMode, pace: number) => void
+  setMission: (id: string, lkp: LatLon, mode: MissionMode, pace: number, stepSec?: number) => void
+  setStepSec: (stepSec: number) => void
   setSimulationRunning: (running: boolean) => void
   resetMission: () => void
   setWsStatus: (status: WsStatus) => void
@@ -113,6 +116,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   draftLkp: null,
   lkpTimestamp: defaultLkpTimestamp(),
   pace: 1,
+  stepSec: BASE_STEP_SEC,
   wsSend: null,
   terrainData: null,
   terrainField: null,
@@ -126,11 +130,16 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setMode: (mode) => set({ mode }),
 
-  setPace: (pace) => set({ pace: Math.max(0.1, Math.min(120, pace)) }),
+  setPace: (pace) => {
+    const clamped = Math.max(0.1, Math.min(120, pace))
+    set({ pace: clamped, stepSec: BASE_STEP_SEC * clamped })
+  },
+
+  setStepSec: (stepSec) => set({ stepSec }),
 
   setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
 
-  setMission: (id, lkp, mode, pace) =>
+  setMission: (id, lkp, mode, pace, stepSec) =>
     set((state) => ({
       missionId: id,
       lkp,
@@ -143,6 +152,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       simulationRunning: mode === 'live',
       layers: state.layers,
       pace,
+      stepSec: stepSec ?? BASE_STEP_SEC * pace,
       terrainField: null,
       // Preserve grid/metadata when already loaded (REST prefetch before WS connect)
       metadata: state.metadata,
@@ -174,6 +184,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       draftLkp: null,
       lkpTimestamp: defaultLkpTimestamp(),
       pace: 1,
+      stepSec: BASE_STEP_SEC,
       wsSend: null,
       terrainData: null,
       terrainField: null,

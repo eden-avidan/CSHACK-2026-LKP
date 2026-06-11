@@ -3,36 +3,42 @@ import type { Map } from 'mapbox-gl'
 import { useMissionStore } from '../../stores/missionStore'
 import type { TerrainData } from '../../stores/missionStore'
 import { useWebSocket } from '../../hooks/useWebSocket'
-import { HAIFA_MAP_VIEW } from '../../types/geo'
 import type { GridMetadata } from '../../types/geo'
 import type { DroneRoute } from '../../types/geo'
+import { BASE_STEP_SEC, formatDuration } from '../../utils/formatTime'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
 interface HeatmapSidebarProps {
-  map: Map | null
+  map?: Map | null
 }
 
-export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
+export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const mode = useMissionStore((s) => s.mode)
   const layers = useMissionStore((s) => s.layers)
   const draftLkp = useMissionStore((s) => s.draftLkp)
   const pinnedLkp = useMissionStore((s) => s.pinnedLkp)
   const lkpTimestamp = useMissionStore((s) => s.lkpTimestamp)
   const pace = useMissionStore((s) => s.pace)
+  const stepSec = useMissionStore((s) => s.stepSec)
+  const tickCount = useMissionStore((s) => s.tickCount)
   const missionId = useMissionStore((s) => s.missionId)
   const wsStatus = useMissionStore((s) => s.wsStatus)
+  const simulationRunning = useMissionStore((s) => s.simulationRunning)
   const setMode = useMissionStore((s) => s.setMode)
   const setPinnedLkp = useMissionStore((s) => s.setPinnedLkp)
   const setLkpTimestamp = useMissionStore((s) => s.setLkpTimestamp)
   const setPace = useMissionStore((s) => s.setPace)
+  const setStepSec = useMissionStore((s) => s.setStepSec)
   const setMission = useMissionStore((s) => s.setMission)
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
   const setTerrainData = useMissionStore((s) => s.setTerrainData)
   const resetMission = useMissionStore((s) => s.resetMission)
   const setDroneRoute = useMissionStore((s) => s.setDroneRoute)
+  const setSimulationRunning = useMissionStore((s) => s.setSimulationRunning)
 
   const [loading, setLoading] = useState(false)
+  const [pauseLoading, setPauseLoading] = useState(false)
   const [routeLoading, setRouteLoading] = useState(false)
   const [routeSummary, setRouteSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -72,14 +78,18 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       return
     }
     const t = window.setTimeout(async () => {
-      await fetch(`${BACKEND_URL}/missions/${missionId}/pace`, {
+      const res = await fetch(`${BACKEND_URL}/missions/${missionId}/pace`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pace }),
       })
+      if (res.ok) {
+        const data = (await res.json()) as { step_sec?: number }
+        if (typeof data.step_sec === 'number') setStepSec(data.step_sec)
+      }
     }, 400)
     return () => clearTimeout(t)
-  }, [missionId, mode, pace])
+  }, [missionId, mode, pace, setStepSec])
 
   const pinLkp = useCallback(() => {
     if (draftLkp) {
@@ -119,10 +129,24 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       if (!res.ok) throw new Error(await res.text())
       const data = (await res.json()) as { mission_id: string }
 
-      const [heatmapRes, nodeFieldsRes] = await Promise.all([
+      const [heatmapRes, nodeFieldsRes, missionRes] = await Promise.all([
         fetch(`${BACKEND_URL}/missions/${data.mission_id}/heatmap`),
         fetch(`${BACKEND_URL}/missions/${data.mission_id}/node-fields`),
+        fetch(`${BACKEND_URL}/missions/${data.mission_id}`),
       ])
+
+      let resolvedStepSec: number | undefined
+      let resolvedSimulationRunning: boolean | undefined
+      if (missionRes.ok) {
+        const mission = (await missionRes.json()) as {
+          step_sec?: number
+          simulation_running?: boolean
+        }
+        if (typeof mission.step_sec === 'number') resolvedStepSec = mission.step_sec
+        if (typeof mission.simulation_running === 'boolean') {
+          resolvedSimulationRunning = mission.simulation_running
+        }
+      }
 
       if (nodeFieldsRes.ok) {
         const terrain = (await nodeFieldsRes.json()) as TerrainData
@@ -136,10 +160,13 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
           metadata: GridMetadata
           probabilities: number[]
         }
-        setMission(data.mission_id, pinnedLkp, mode, pace)
+        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
         setHeatmapFull(heat.metadata, heat.probabilities)
       } else {
-        setMission(data.mission_id, pinnedLkp, mode, pace)
+        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
+      }
+      if (resolvedSimulationRunning !== undefined) {
+        setSimulationRunning(resolvedSimulationRunning)
       }
     } catch (e) {
       if (e instanceof TypeError) {
@@ -152,9 +179,34 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, setMission, setHeatmapFull, setTerrainData])
+  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
-  const stopAndNew = useCallback(async () => {
+  const simulatedElapsedSec = tickCount * stepSec
+
+  const togglePauseResume = useCallback(async () => {
+    if (!missionId || mode !== 'live') return
+    setPauseLoading(true)
+    setError(null)
+    const endpoint = simulationRunning ? 'pause' : 'resume'
+    try {
+      const res = await fetch(`${BACKEND_URL}/missions/${missionId}/${endpoint}`, {
+        method: 'POST',
+      })
+      if (!res.ok) throw new Error(await res.text())
+      const data = (await res.json()) as { simulation_running?: boolean }
+      if (typeof data.simulation_running === 'boolean') {
+        setSimulationRunning(data.simulation_running)
+      } else {
+        setSimulationRunning(!simulationRunning)
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : `Failed to ${endpoint} mission`)
+    } finally {
+      setPauseLoading(false)
+    }
+  }, [missionId, mode, simulationRunning, setSimulationRunning])
+
+  const newPin = useCallback(async () => {
     if (!missionId) return
     setError(null)
     try {
@@ -163,10 +215,7 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       // reset locally even if backend unreachable
     }
     resetMission()
-    if (map) {
-      map.flyTo({ center: HAIFA_MAP_VIEW.center, zoom: HAIFA_MAP_VIEW.zoom, duration: 800 })
-    }
-  }, [missionId, resetMission, map])
+  }, [missionId, resetMission])
 
   const findDroneRoute = useCallback(async () => {
     if (!missionId) return
@@ -240,7 +289,9 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
             </p>
           )}
           <label className="field pace-slider">
-            <span>Pace — {pace.toFixed(1)}× reality</span>
+            <span>
+              Pace — {pace.toFixed(1)}× ({Math.round(stepSec)}s sim / tick)
+            </span>
             <input
               type="range"
               min={0.1}
@@ -252,7 +303,10 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
               aria-label="Simulation pace multiplier"
             />
           </label>
-          <p className="pace-hint">Heatmap refreshes every 1 s. Pace controls simulated time per tick.</p>
+          <p className="pace-hint">
+            Heatmap refreshes every 1 s wall clock. Base {BASE_STEP_SEC}s simulated time per tick;
+            pace slider speeds that up (e.g. 6× → {BASE_STEP_SEC * 6}s/tick).
+          </p>
         </section>
       )}
 
@@ -282,10 +336,26 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
         </section>
       )}
 
+      {missionId && mode === 'live' && (
+        <p className="live-timer" aria-live="polite">
+          Simulated time: <strong>{formatDuration(simulatedElapsedSec)}</strong>
+          <span className="live-timer-meta">
+            {' '}
+            ({tickCount} × {Math.round(stepSec)}s)
+          </span>
+        </p>
+      )}
+
       {missionId && (
         <p className="mission-id">
           Mission: <code>{missionId.slice(0, 8)}…</code>
-          {wsStatus === 'open' ? ' · live' : ` · ${wsStatus}`}
+          {mode === 'live' && simulationRunning && wsStatus === 'open'
+            ? ' · live'
+            : mode === 'live' && !simulationRunning
+              ? ' · paused'
+              : wsStatus !== 'open'
+                ? ` · ${wsStatus}`
+                : ''}
         </p>
       )}
 
@@ -303,8 +373,18 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
             {routeLoading ? 'Planning Route…' : 'Find Drone Route'}
           </button>
           {routeSummary && <p className="route-summary">{routeSummary}</p>}
-          <button type="button" className="secondary" onClick={stopAndNew}>
-            Stop &amp; New
+          {mode === 'live' && (
+            <button
+              type="button"
+              className={simulationRunning ? 'secondary' : undefined}
+              onClick={togglePauseResume}
+              disabled={pauseLoading}
+            >
+              {pauseLoading ? '…' : simulationRunning ? 'Stop' : 'Resume'}
+            </button>
+          )}
+          <button type="button" className="secondary" onClick={newPin}>
+            New Pin
           </button>
         </>
       )}
