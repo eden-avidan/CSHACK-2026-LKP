@@ -11,6 +11,8 @@ const MPP_SOURCE = 'mpp-marker'
 const MPP_LAYER = 'mpp-marker-layer'
 const DRIFT_SOURCE = 'drift-line'
 const DRIFT_LAYER = 'drift-line-layer'
+const DRONE_ROUTE_SOURCE = 'drone-route'
+const DRONE_ROUTE_LAYER = 'drone-route-layer'
 
 interface TrackingOverlayProps {
   map: mapboxgl.Map | null
@@ -94,7 +96,25 @@ function ensureTrackingLayers(map: mapboxgl.Map) {
     })
   }
 
-  for (const id of [DRIFT_LAYER, MPP_LAYER, LKP_LAYER]) {
+  if (!map.getSource(DRONE_ROUTE_SOURCE)) {
+    map.addSource(DRONE_ROUTE_SOURCE, {
+      type: 'geojson',
+      data: { type: 'FeatureCollection', features: [] },
+    })
+    map.addLayer({
+      id: DRONE_ROUTE_LAYER,
+      type: 'line',
+      source: DRONE_ROUTE_SOURCE,
+      paint: {
+        'line-color': '#38bdf8',
+        'line-width': 5,
+        'line-dasharray': [2, 1.5],
+        'line-opacity': 0.95,
+      },
+    })
+  }
+
+  for (const id of [DRIFT_LAYER, DRONE_ROUTE_LAYER, MPP_LAYER, LKP_LAYER]) {
     if (map.getLayer(id)) {
       map.moveLayer(id)
     }
@@ -110,6 +130,7 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
   const mppTrail = useMissionStore((s) => s.mppTrail)
   const engineTickVersion = useMissionStore((s) => s.engineTickVersion)
   const gridVersion = useMissionStore((s) => s.gridVersion)
+  const droneRoute = useMissionStore((s) => s.droneRoute)
   const [overlayReady, setOverlayReady] = useState(false)
   const [mppScreen, setMppScreen] = useState<{ x: number; y: number } | null>(null)
 
@@ -123,6 +144,7 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
     const lkpSrc = map.getSource(LKP_SOURCE) as mapboxgl.GeoJSONSource
     const mppSrc = map.getSource(MPP_SOURCE) as mapboxgl.GeoJSONSource
     const driftSrc = map.getSource(DRIFT_SOURCE) as mapboxgl.GeoJSONSource
+    const droneRouteSrc = map.getSource(DRONE_ROUTE_SOURCE) as mapboxgl.GeoJSONSource
 
     if (displayLkp) {
       lkpSrc.setData({
@@ -165,7 +187,20 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
       mppSrc.setData({ type: 'FeatureCollection', features: [] })
       driftSrc.setData({ type: 'FeatureCollection', features: [] })
     }
-  }, [map, overlayReady, missionId, displayLkp, mpp, mppTrail])
+
+    droneRouteSrc.setData({
+      type: 'FeatureCollection',
+      features: droneRoute
+        ? [
+            {
+              type: 'Feature',
+              geometry: droneRoute,
+              properties: { status: 'planned' },
+            },
+          ]
+        : [],
+    })
+  }, [map, overlayReady, missionId, displayLkp, mpp, mppTrail, droneRoute])
 
   useEffect(() => {
     if (!map) {

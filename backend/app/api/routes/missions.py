@@ -14,6 +14,7 @@ from app.models.mission import (
     MissionStatus,
     UpdatePaceRequest,
 )
+from app.models.routes import DroneRouteResponse, GeoJsonLineString
 from app.models.terrain import TerrainInspectResponse
 from app.services.mission_store import mission_store
 from app.services.terrain_serialize import build_inspect_response
@@ -127,6 +128,21 @@ async def get_mission_heatmap(mission_id: UUID) -> HeatmapResponse:
         mission_id=mission_id,
         metadata=state.grid.metadata,
         probabilities=flat,
+    )
+
+
+@router.post("/{mission_id}/drone-route", response_model=DroneRouteResponse)
+async def find_drone_route(mission_id: UUID) -> DroneRouteResponse:
+    try:
+        result = await mission_store.drone_route(mission_id)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Mission not found") from None
+    return DroneRouteResponse(
+        mission_id=mission_id,
+        route=GeoJsonLineString(coordinates=result.coordinates),
+        expected_coverage=result.expected_coverage,
+        length_m=result.length_m,
+        route_points=len(result.cells),
     )
 
 

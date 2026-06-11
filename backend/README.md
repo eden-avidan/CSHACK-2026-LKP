@@ -123,6 +123,7 @@ pytest -q --cov=app tests/
 | `POST` | `/missions` | `{ lkp: {lat, lon}, timestamp, subject_type, bbox? }` | `{ mission_id, status }` |
 | `GET` | `/missions/{id}` | — | Full mission state |
 | `GET` | `/heatmap/{mission_id}` | `?format=geojson\|binary` | Probability grid |
+| `POST` | `/missions/{id}/drone-route` | â€” | `{ mission_id, route: { type: "LineString", coordinates: [[lon, lat], ...] }, expected_coverage, length_m, route_points }` |
 | `POST` | `/negative-search` | `{ mission_id, polygon, pod, result }` | Updated grid summary |
 | `POST` | `/routes/optimize` | `{ mission_id, assets: [{id, type, endurance_m}] }` | `{ routes: [{ asset_id, geojson }] }` |
 

@@ -27,6 +27,11 @@ export interface GridMetadata {
   corners: GridCorners
 }
 
+export interface DroneRoute {
+  type: 'LineString'
+  coordinates: [number, number][]
+}
+
 /** Default map center: Haifa, Israel */
 export const HAIFA_CENTER: LatLon = { lat: 32.7940, lon: 34.9896 }
 export const HAIFA_MAP_VIEW: { center: [number, number]; zoom: number } = {
