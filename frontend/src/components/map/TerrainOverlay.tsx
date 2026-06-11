@@ -27,7 +27,11 @@ export function TerrainOverlay({ map }: TerrainOverlayProps) {
   useEffect(() => {
     if (!map) return
 
-    const active = terrainData && terrainField && terrainData.fields[terrainField]
+    const active =
+      terrainData &&
+      terrainField &&
+      terrainData.fields[terrainField] &&
+      terrainData.available.find((f) => f.id === terrainField)?.kind !== 'vector'
     if (!active) {
       if (map.getLayer(LAYER_ID) || map.getSource(SOURCE_ID)) removeTerrainLayer(map)
       lastBoundsRef.current = null

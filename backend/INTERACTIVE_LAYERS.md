@@ -120,14 +120,17 @@ P ← (1 − w) × P + w × target
 
 ---
 
-### 5. Sea drift (`sea_drift`) — *planned*
+### 5. Sea drift (`sea_drift`)
 
 **Fields used:** `current_u`, `current_v`, `is_land`
 
-**Planned rule:** Advect on water only along constant current; zero land cells.
+**Data source:** Open-Meteo Marine API — fetched once at mission create when `sea_drift` is enabled (LKP on water). Cached for the run; 3 s timeout with fallback vector from config.
+
+**Rule:** Advect probability on water cells along the live `[u_east, v_north]` current; land cells are zeroed by the engine land mask.
 
 ```
-P' ← advect(P, current, dt) on water cells
+current ← fetch_marine_current(LKP) once
+P' ← advect(P, current_u/v, dt) on water cells (aligned neighbors get higher weight)
 P[land] = 0
 P ← (1 − w) × P + w × P'
 ```
@@ -144,7 +147,7 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 | Roads | `road_l2_weight`, `road_topology_weight`, `cost_road`, `cost_offroad`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` (layer weight 0.68) |
 | Weather | `momentum_reference_dt_sec`, wind from env |
 | Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
-| Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |
+| Sea drift | `marine_api_timeout_sec`, `marine_current_fallback_u/v_mps`, `marine_drift_advection_strength`, `marine_drift_steps` |
 
 ## Adding a layer
 

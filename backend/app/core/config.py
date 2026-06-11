@@ -52,6 +52,14 @@ class Settings(BaseSettings):
     sea_drift_heading_deg: float = 90.0       # compass heading drift moves TOWARD (0=N, 90=E)
     sea_drift_strength: float = 1.2           # directional bias multiplier vs. baseline diffusion
 
+    # Open-Meteo Marine API (SeaDriftLayer)
+    marine_api_timeout_sec: float = 3.0
+    marine_current_fallback_u_mps: float = 1.0
+    marine_current_fallback_v_mps: float = 0.5
+    marine_drift_advection_strength: float = 2.5
+    marine_drift_self_weight: float = 0.15
+    marine_drift_steps: int = 2
+
     kde_edge_fade_cells: int = 0
     kde_bandwidth_factor: float = 1.1
     kde_radial_fade_end: float = 1.0

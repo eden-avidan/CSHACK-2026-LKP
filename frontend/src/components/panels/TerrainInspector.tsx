@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useMissionStore } from '../../stores/missionStore'
 import type { TerrainData } from '../../stores/missionStore'
 import { computeFieldRange } from '../../utils/fieldScale'
+import { formatMarineCurrentSummary } from '../../utils/currentVectors'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
@@ -71,6 +72,7 @@ export function TerrainInspector() {
   }, [terrainData, terrainField])
 
   const selectedMeta = terrainData?.available.find((f) => f.id === terrainField)
+  const marineSummary = formatMarineCurrentSummary(terrainData?.marine_current ?? null)
 
   const gridHint = terrainData
     ? `${terrainData.rows}×${terrainData.cols} cells · ${terrainData.metadata.resolution_m.toFixed(0)} m/cell`
@@ -103,6 +105,20 @@ export function TerrainInspector() {
             </p>
           )}
         </>
+      )}
+
+      {terrainData && marineSummary && (
+        <div className="marine-current-summary">
+          <p>
+            <strong>Init current at LKP:</strong> {marineSummary}
+          </p>
+          {terrainData.marine_current && (
+            <p className="layer-hint">
+              u={terrainData.marine_current.u_east_mps.toFixed(3)} m/s east · v=
+              {terrainData.marine_current.v_north_mps.toFixed(3)} m/s north
+            </p>
+          )}
+        </div>
       )}
 
       {error && <p className="error">{error}</p>}
@@ -176,7 +192,14 @@ export function TerrainInspector() {
             </div>
           ) : null}
 
-          {selectedMeta && selectedRange && (
+          {selectedMeta?.kind === 'vector' && (
+            <div className="terrain-range">
+              <p>Arrow map on water cells. Orange = LKP reference vector from Open-Meteo.</p>
+              <p>Cyan arrows scale with local speed (subsampled grid).</p>
+            </div>
+          )}
+
+          {selectedMeta && selectedMeta.kind !== 'vector' && selectedRange && (
             <div className="terrain-range">
               <p>
                 {selectedMeta.kind === 'mask'
