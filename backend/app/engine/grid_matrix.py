@@ -21,6 +21,8 @@ class NodeFields:
     road_tangent_n: np.ndarray
     wind_u: np.ndarray
     wind_v: np.ndarray
+    current_u: np.ndarray  # sea-surface current east component (m/s)
+    current_v: np.ndarray  # sea-surface current north component (m/s)
     reachability: np.ndarray
     latitude: np.ndarray   # cell-center latitude (degrees, WGS84)
     longitude: np.ndarray  # cell-center longitude (degrees, WGS84)
@@ -44,6 +46,8 @@ class NodeFields:
             road_tangent_n=z.copy(),
             wind_u=z.copy(),
             wind_v=z.copy(),
+            current_u=z.copy(),
+            current_v=z.copy(),
             reachability=reach,
             latitude=z.copy(),
             longitude=z.copy(),

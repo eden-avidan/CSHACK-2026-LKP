@@ -62,6 +62,34 @@ AVAILABLE_FIELDS = [
         unit="m/s",
         description="Per-cell wind north component at mission create.",
     ),
+    TerrainFieldMeta(
+        id="current_u",
+        label="Current east (u)",
+        kind="scalar",
+        unit="m/s",
+        description="Sea-surface current east component (water cells only).",
+    ),
+    TerrainFieldMeta(
+        id="current_v",
+        label="Current north (v)",
+        kind="scalar",
+        unit="m/s",
+        description="Sea-surface current north component (water cells only).",
+    ),
+    TerrainFieldMeta(
+        id="current_speed",
+        label="Current speed",
+        kind="scalar",
+        unit="m/s",
+        description="Sea-surface current magnitude √(u²+v²); zero on land.",
+    ),
+    TerrainFieldMeta(
+        id="current_heading",
+        label="Current heading",
+        kind="scalar",
+        unit="°",
+        description="Compass direction the current flows toward (0=N, 90=E).",
+    ),
 ]
 
 
@@ -73,6 +101,10 @@ def build_inspect_response(
 ) -> TerrainInspectResponse:
     """Build inspect payload from the exact NodeFields the grid engine uses."""
     size = grid.rows
+    current_speed = np.hypot(node_fields.current_u, node_fields.current_v)
+    current_heading = np.degrees(
+        np.arctan2(node_fields.current_u, node_fields.current_v)
+    ) % 360.0
     fields_np = {
         "road_proximity": node_fields.road_proximity,
         "is_road": node_fields.is_road.astype(np.float64),
@@ -82,6 +114,10 @@ def build_inspect_response(
         "is_land": node_fields.is_land.astype(np.float64),
         "wind_u": node_fields.wind_u,
         "wind_v": node_fields.wind_v,
+        "current_u": node_fields.current_u,
+        "current_v": node_fields.current_v,
+        "current_speed": current_speed,
+        "current_heading": current_heading,
     }
     fields = {
         key: np.asarray(value, dtype=float).flatten(order="C").tolist()

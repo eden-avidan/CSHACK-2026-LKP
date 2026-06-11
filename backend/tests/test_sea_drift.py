@@ -9,6 +9,7 @@ from __future__ import annotations
 import math
 
 import numpy as np
+import pytest
 
 from app.core.config import settings
 from app.engine.grid_engine import GridEngine
@@ -19,6 +20,11 @@ from app.engine.transition_context import TransitionContext
 from app.models.layers import LayerFlags
 from app.models.mission import LatLon
 from app.services.particle_types import EnvForcing
+
+try:
+    from app.engine.node_builder import _populate_sea_current
+except ImportError:
+    _populate_sea_current = None  # type: ignore[misc, assignment]
 
 # Open-water LKP (Mediterranean, west of Haifa) — far enough offshore that the
 # whole default grid is sea.
@@ -38,6 +44,28 @@ def _water_matrix(size: int = 32, res: float = 50.0) -> GridMatrix:
     fields.is_land = np.zeros((size, size), dtype=bool)
     matrix = GridMatrix.create(OPEN_SEA, size=size, resolution_m=res, node_fields=fields)
     return matrix
+
+
+def test_sea_current_populated_on_water_cells(monkeypatch):
+    if _populate_sea_current is None:
+        pytest.skip("node_builder unavailable")
+    monkeypatch.setattr(settings, "sea_drift_speed_mps", 0.5)
+    monkeypatch.setattr(settings, "sea_drift_heading_deg", 90.0)  # due east
+    fields = NodeFields.zeros(4)
+    fields.is_land = np.array(
+        [
+            [True, True, False, False],
+            [True, False, False, False],
+            [False, False, False, False],
+            [False, False, False, False],
+        ],
+        dtype=bool,
+    )
+    _populate_sea_current(fields)
+    assert fields.current_u[2, 2] == pytest.approx(0.5)
+    assert fields.current_v[2, 2] == pytest.approx(0.0)
+    assert fields.current_u[0, 0] == pytest.approx(0.0)
+    assert fields.current_v[0, 0] == pytest.approx(0.0)
 
 
 # --- the layer's transition vector ------------------------------------------

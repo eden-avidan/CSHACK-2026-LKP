@@ -12,10 +12,29 @@ export interface FieldRenderOptions {
   maskThreshold?: number // normalized 0..1 on scalar fields
 }
 
-/** Min/max over finite values, ignoring exact zeros for sparse fields. */
-export function computeFieldRange(values: number[]): FieldRange {
+const CONTINUOUS_TERRAIN_FIELDS = new Set([
+  'elevation',
+  'slope',
+  'reachability',
+  'road_proximity',
+  'current_speed',
+  'current_heading',
+])
+
+/** Min/max over finite values. */
+export function computeFieldRange(values: number[], fieldId?: string): FieldRange {
   let min = Infinity
   let max = -Infinity
+  const usePercentile =
+    fieldId === 'elevation' || fieldId === 'slope' || fieldId === 'reachability'
+  if (usePercentile) {
+    const finite = values.filter((v) => Number.isFinite(v)).sort((a, b) => a - b)
+    if (finite.length === 0) return { min: 0, max: 1 }
+    const lo = finite[Math.floor(finite.length * 0.02)] ?? finite[0]
+    const hi = finite[Math.floor(finite.length * 0.98)] ?? finite[finite.length - 1]
+    if (hi - lo < EPS) return { min: lo, max: lo + 1 }
+    return { min: lo, max: hi }
+  }
   for (let i = 0; i < values.length; i++) {
     const v = values[i]
     if (!Number.isFinite(v)) continue
@@ -83,9 +102,10 @@ export function fieldValueToRGBA(
   }
 
   const t = (value - range.min) / (range.max - range.min || 1)
-  if (t <= 0.01) return [0, 0, 0, 0]
-  const [r, g, b] = ramp(t)
-  const alpha = Math.min(0.8, 0.2 + t * 0.65)
+  const clampedT = Math.max(0, Math.min(1, t))
+  if (clampedT <= 0.01 && !CONTINUOUS_TERRAIN_FIELDS.has(fieldId)) return [0, 0, 0, 0]
+  const [r, g, b] = ramp(clampedT)
+  const alpha = Math.min(0.85, 0.35 + clampedT * 0.55)
   return [r, g, b, Math.round(alpha * 255)]
 }
 
@@ -126,7 +146,7 @@ export function paintField(
   canvas: HTMLCanvasElement,
   options?: FieldRenderOptions,
 ): void {
-  const range = computeFieldRange(values)
+  const range = computeFieldRange(values, fieldId)
   const outRows = rows * UPSCALE
   const outCols = cols * UPSCALE
   if (canvas.width !== outCols || canvas.height !== outRows) {

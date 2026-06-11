@@ -3,10 +3,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
-
-    particle_count: int = 5000
-    grid_size: int = 128
-    grid_resolution_m: float = 50.0
+    grid_size: int = 1024
+    grid_resolution_m: float = 1.0
     filter_hz: float = 1.0
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 

@@ -123,6 +123,48 @@ async def _fetch_elevation_open_elevation(
     return elevations
 
 
+def _upsample_bilinear(coarse: np.ndarray, rows: int, cols: int) -> np.ndarray:
+    """Expand a coarse sample grid to full resolution with bilinear interpolation."""
+    n_r, n_c = coarse.shape
+    if n_r == rows and n_c == cols:
+        return coarse.astype(np.float64, copy=True)
+    row_f = np.linspace(0.0, n_r - 1, rows)
+    col_f = np.linspace(0.0, n_c - 1, cols)
+    r0 = np.floor(row_f).astype(np.int64)
+    c0 = np.floor(col_f).astype(np.int64)
+    r1 = np.minimum(r0 + 1, n_r - 1)
+    c1 = np.minimum(c0 + 1, n_c - 1)
+    dr = (row_f - r0)[:, None]
+    dc = (col_f - c0)[None, :]
+    v00 = coarse[r0[:, None], c0[None, :]]
+    v01 = coarse[r0[:, None], c1[None, :]]
+    v10 = coarse[r1[:, None], c0[None, :]]
+    v11 = coarse[r1[:, None], c1[None, :]]
+    return (
+        v00 * (1.0 - dr) * (1.0 - dc)
+        + v01 * (1.0 - dr) * dc
+        + v10 * dr * (1.0 - dc)
+        + v11 * dr * dc
+    )
+
+
+def _smooth_elevation(elevation: np.ndarray, passes: int = 1) -> np.ndarray:
+    """Light 3×3 box smooth to soften block boundaries before slope."""
+    if passes <= 0:
+        return elevation
+    kernel = np.array([[1.0, 2.0, 1.0], [2.0, 4.0, 2.0], [1.0, 2.0, 1.0]], dtype=np.float64)
+    kernel /= kernel.sum()
+    out = elevation.astype(np.float64, copy=True)
+    for _ in range(passes):
+        padded = np.pad(out, 1, mode="edge")
+        smoothed = np.zeros_like(out)
+        for i in range(3):
+            for j in range(3):
+                smoothed += kernel[i, j] * padded[i : i + out.shape[0], j : j + out.shape[1]]
+        out = smoothed
+    return out
+
+
 async def fetch_elevations(grid: ProbabilityGrid) -> np.ndarray | None:
     rows, cols = grid.rows, grid.cols
 
@@ -155,17 +197,22 @@ async def fetch_elevations(grid: ProbabilityGrid) -> np.ndarray | None:
                 if not elevations:
                     logger.warning("%s returned no elevation data", name)
                     continue
-                sparse = np.zeros((rows, cols), dtype=np.float64)
-                for (row, col), elev in zip(sample_indices, elevations):
-                    sparse[row, col] = elev
-                filled = np.repeat(np.repeat(sparse, step, axis=0), step, axis=1)
+                n_sr = len(range(0, rows, step))
+                n_sc = len(range(0, cols, step))
+                coarse = np.zeros((n_sr, n_sc), dtype=np.float64)
+                for idx, (row, col) in enumerate(sample_indices):
+                    coarse[row // step, col // step] = elevations[idx]
+                filled = _upsample_bilinear(coarse, rows, cols)
+                filled = _smooth_elevation(filled, passes=1)
                 logger.info(
-                    "Fetched %d elevation samples via %s (step=%d)",
+                    "Fetched %d elevation samples via %s (step=%d, coarse=%dx%d)",
                     len(elevations),
                     name,
                     step,
+                    n_sr,
+                    n_sc,
                 )
-                return filled[:rows, :cols]
+                return filled
             except Exception as exc:
                 logger.warning("Elevation fetch failed (%s): %s", name, exc)
                 continue
@@ -485,11 +532,7 @@ async def build_terrain_context(grid: ProbabilityGrid) -> TerrainContext:
 
     elevation = await elevation_task
     elevation_missing = elevation is None or not np.isfinite(elevation).any()
-    elevation_is_flat_zero = (
-        elevation is not None
-        and np.nanmax(elevation) <= 0.0
-        and np.nanmin(elevation) >= 0.0
-    )
+    elevation_is_flat_zero = elevation is not None and np.nanmax(elevation) <= 1e-9
     if elevation_missing or elevation_is_flat_zero:
         logger.warning("Using flat terrain fallback (roads still applied)")
         terrain = _flat_terrain(rows, cols)
