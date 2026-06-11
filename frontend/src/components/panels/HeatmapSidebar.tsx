@@ -23,6 +23,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const pace = useMissionStore((s) => s.pace)
   const stepSec = useMissionStore((s) => s.stepSec)
   const tickCount = useMissionStore((s) => s.tickCount)
+  const liveStartTickCount = useMissionStore((s) => s.liveStartTickCount)
   const missionId = useMissionStore((s) => s.missionId)
   const wsStatus = useMissionStore((s) => s.wsStatus)
   const simulationRunning = useMissionStore((s) => s.simulationRunning)
@@ -73,7 +74,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   }, [missionId])
 
   useEffect(() => {
-    if (!missionId || mode !== 'live') return
+    if (!missionId) return
     if (!pacePatchReady.current) {
       pacePatchReady.current = true
       return
@@ -90,7 +91,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       }
     }, 400)
     return () => clearTimeout(t)
-  }, [missionId, mode, pace, setStepSec])
+  }, [missionId, pace, setStepSec])
 
   const pinLkp = useCallback(() => {
     if (draftLkp) {
@@ -140,13 +141,16 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       ])
 
       let resolvedStepSec: number | undefined
+      let resolvedTickCount = 0
       let resolvedSimulationRunning: boolean | undefined
       if (missionRes.ok) {
         const mission = (await missionRes.json()) as {
           step_sec?: number
+          tick_count?: number
           simulation_running?: boolean
         }
         if (typeof mission.step_sec === 'number') resolvedStepSec = mission.step_sec
+        if (typeof mission.tick_count === 'number') resolvedTickCount = mission.tick_count
         if (typeof mission.simulation_running === 'boolean') {
           resolvedSimulationRunning = mission.simulation_running
         }
@@ -164,10 +168,10 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
           metadata: GridMetadata
           probabilities: number[]
         }
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
+        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec, resolvedTickCount)
         setHeatmapFull(heat.metadata, heat.probabilities)
       } else {
-        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec)
+        setMission(data.mission_id, pinnedLkp, mode, pace, resolvedStepSec, resolvedTickCount)
       }
       if (resolvedSimulationRunning !== undefined) {
         setSimulationRunning(resolvedSimulationRunning)
@@ -185,10 +189,11 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     }
   }, [pinnedLkp, mode, lkpTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
-  const simulatedElapsedSec = tickCount * stepSec
+  const liveTickCount = Math.max(0, tickCount - liveStartTickCount)
+  const simulatedElapsedSec = liveTickCount * stepSec
 
   const togglePauseResume = useCallback(async () => {
-    if (!missionId || mode !== 'live') return
+    if (!missionId) return
     setPauseLoading(true)
     setError(null)
     const endpoint = simulationRunning ? 'pause' : 'resume'
@@ -208,7 +213,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     } finally {
       setPauseLoading(false)
     }
-  }, [missionId, mode, simulationRunning, setSimulationRunning])
+  }, [missionId, simulationRunning, setSimulationRunning])
 
   const newPin = useCallback(async () => {
     if (!missionId) return
@@ -334,18 +339,33 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
               aria-label="Last known position timestamp"
             />
           </label>
+          <label className="field pace-slider">
+            <span>
+              Pace - {pace.toFixed(1)}x ({Math.round(stepSec)}s sim / tick)
+            </span>
+            <input
+              type="range"
+              min={0.1}
+              max={120}
+              step={0.1}
+              value={pace}
+              onChange={(e) => setPace(Number(e.target.value))}
+              disabled={!!missionId && mode !== 'offline'}
+              aria-label="Offline simulation pace multiplier"
+            />
+          </label>
           <p className="pace-hint">
-            Computes where the subject likely is now based on elapsed time since last seen.
+            Computes from the last known time, then keeps updating every second at this pace.
           </p>
         </section>
       )}
 
-      {missionId && mode === 'live' && (
+      {missionId && (
         <p className="live-timer" aria-live="polite">
           Simulated time: <strong>{formatDuration(simulatedElapsedSec)}</strong>
           <span className="live-timer-meta">
             {' '}
-            ({tickCount} × {Math.round(stepSec)}s)
+            ({liveTickCount} × {Math.round(stepSec)}s)
           </span>
         </p>
       )}
@@ -353,9 +373,9 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
       {missionId && (
         <p className="mission-id">
           Mission: <code>{missionId.slice(0, 8)}…</code>
-          {mode === 'live' && simulationRunning && wsStatus === 'open'
+          {simulationRunning && wsStatus === 'open'
             ? ' · live'
-            : mode === 'live' && !simulationRunning
+            : !simulationRunning
               ? ' · paused'
               : wsStatus !== 'open'
                 ? ` · ${wsStatus}`
@@ -377,7 +397,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             {routeLoading ? 'Planning Route…' : 'Find Drone Route'}
           </button>
           {routeSummary && <p className="route-summary">{routeSummary}</p>}
-          {mode === 'live' && (
             <button
               type="button"
               className={simulationRunning ? 'secondary' : undefined}
@@ -386,7 +405,6 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
             >
               {pauseLoading ? '…' : simulationRunning ? 'Stop' : 'Resume'}
             </button>
-          )}
           <button type="button" className="secondary" onClick={newPin}>
             New Pin
           </button>

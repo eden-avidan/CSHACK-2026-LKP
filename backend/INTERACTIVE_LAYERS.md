@@ -42,15 +42,40 @@ P[water] = 0
 
 ### 2. Roads (`roads`) — **implemented**
 
-**Fields used:** `road_proximity`
+**Fields used:** `is_road`, `is_land`, `slope`, `road_proximity`
 
-**Rule:** Multiplicative boost on cells close to OSM roads.
+**Rule:** Continuous **cost-surface diffusion** — blends L2 (Euclidean) neighbor distance with terrain friction. No hard walls; roads form fast "fingers" with soft forest bleed.
+
+**Traversal cost map** (per cell):
+
+| Terrain | Cost (default) |
+|---------|----------------|
+| road | `cost_road` (1.0) |
+| off-road / light brush | `cost_offroad` (4.0) |
+| steep slope (≥ threshold) | `cost_steep_slope` (8.0) |
+| water | `cost_water` (20.0) |
+
+**Transition weight** A → neighbor B (L2 + topology blend):
 
 ```
-P[r,c] ← P[r,c] × (1 + w × road_kde_bonus × road_proximity[r,c])
+L2 = 1.0 (cardinal) or √2 (diagonal)
+w = scale × (road_l2_weight/L2 + road_topology_weight/(L2 × terrain_cost[B]))
+if off-road A and road B:  w ×= (1 + trail_magnetism_bonus)
 ```
 
-**Intuition:** Road-adjacent cells gain probability mass; the effect is local and proportional to OSM proximity (0..1). No re-normalization.
+Default blend: **28% pure L2** (Euclidean intent) + **72% cost-weighted** (terrain/road friction).
+
+Each tick, N diffusion steps (default **6**, ramped over `road_warmup_ticks`; **0 on tick 0**):
+
+```
+P' ← cost_surface_diffusion(P, terrain_cost, is_road)
+P'[lkp] ← max(P'[lkp], anchor × boost[lkp])
+P ← (1 − w_roads) × P + w_roads × P' × (1 + road_kde_bonus × road_proximity)
+```
+
+`w_roads` defaults to **0.68** — topography envelope remains, roads add clear trail channeling.
+
+**Intuition:** L2 keeps natural radial uncertainty; topology (cost map) channels mass toward trails and away from steep/water cells without hard walls.
 
 ---
 
@@ -116,7 +141,7 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 | Layer | Config keys |
 |-------|-------------|
 | Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
-| Roads | `road_kde_bonus` |
+| Roads | `road_l2_weight`, `road_topology_weight`, `cost_road`, `cost_offroad`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` (layer weight 0.68) |
 | Weather | `momentum_reference_dt_sec`, wind from env |
 | Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
 | Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |

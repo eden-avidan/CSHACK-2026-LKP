@@ -152,8 +152,8 @@ class MissionStore:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
         else:
-            resolved_step, resolved_interval = _pace_to_timing(1.0)
-            simulation_running = False
+            resolved_step, resolved_interval = _pace_to_timing(pace)
+            simulation_running = True
 
         node_fields = build_node_fields(
             terrain, size, weather_enabled=layer_flags.weather
@@ -192,7 +192,7 @@ class MissionStore:
             lkp_timestamp=lkp_ts,
             grid_matrix=grid_matrix,
             terrain_grid=terrain_grid,
-            pace=pace if mode == MissionMode.LIVE else 1.0,
+            pace=pace,
             step_sec=resolved_step,
             update_interval_sec=resolved_interval,
             simulation_running=simulation_running,
@@ -335,7 +335,7 @@ class MissionStore:
 
     async def tick(self, mission_id: UUID) -> TickResult:
         state = self._require(mission_id)
-        if not state.simulation_running and state.mode == MissionMode.LIVE:
+        if not state.simulation_running:
             return TickResult(deltas=[], engine_tick=None)
         async with state._lock:
             detection_events = await self._tick_unlocked(state)
@@ -377,8 +377,7 @@ class MissionStore:
     async def resume(self, mission_id: UUID) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode == MissionMode.LIVE:
-                state.simulation_running = True
+            state.simulation_running = True
         return state
 
     async def delete(self, mission_id: UUID) -> None:
@@ -417,8 +416,6 @@ class MissionStore:
     ) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode != MissionMode.LIVE:
-                return state
             if pace is not None:
                 state.pace = pace
                 state.step_sec, state.update_interval_sec = _pace_to_timing(pace)

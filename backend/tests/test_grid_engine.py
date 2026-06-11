@@ -56,43 +56,48 @@ def test_topography_zeros_water():
     assert out[8, 8] == 0.0
 
 
-def test_roads_boosts_near_road_cells():
+def test_roads_cost_surface_spreads_along_trail():
     size = 16
     fields = NodeFields.zeros(size)
-    fields.road_proximity[8, 8] = 1.0
-    fields.road_proximity[8, 9] = 0.0
+    row = 8
+    fields.is_road[row, :] = True
+    fields.road_proximity[row, :] = 1.0
+    fields.is_land.fill(True)
+
     matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0, node_fields=fields)
     matrix.probabilities.fill(0.0)
-    matrix.probabilities[8, 8] = 1.0
-    matrix.probabilities[8, 9] = 1.0
+    matrix.probabilities[row, row] = 1.0
 
     out = GridEngine().apply_layers(
         matrix,
         LayerFlags(topography=False, roads=True),
+        dt_sec=60.0,
+        tick_count=4,
         env=EnvForcing(),
     )
-    boost = 1.0 + settings.road_kde_bonus
-    assert out[8, 8] == 1.0 * boost
-    assert out[8, 9] == 1.0
+    assert out[row, row + 2] > out[row - 2, row + 2]
+    assert out[row - 1, row + 2] > 0.0
 
 
 def test_layers_chain_topography_then_roads():
     size = 16
     fields = NodeFields.zeros(size)
-    fields.reachability_score[8, 8] = 1.0
-    fields.reachability_score[8, 9] = 0.5
-    fields.road_proximity[8, 9] = 1.0
+    row, col = 8, 8
+    fields.reachability_score[row, col] = 1.0
+    fields.reachability_score[row, col + 1] = 0.5
+    fields.is_road[row, col : col + 2] = True
+    fields.road_proximity[row, col : col + 2] = 1.0
     fields.is_land.fill(True)
 
     matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0, node_fields=fields)
     out = GridEngine().apply_layers(
         matrix,
         LayerFlags(topography=True, roads=True),
+        dt_sec=60.0,
         env=EnvForcing(),
     )
-    boost = 1.0 + settings.road_kde_bonus
-    assert out[8, 8] == 1.0
-    assert out[8, 9] == 0.5 * boost
+    assert out[row, col + 1] >= 0.45
+    assert out[row, col + 1] > out[row - 2, col + 1]
 
 
 def test_layer_registry_loads_topography_by_default():
@@ -111,7 +116,35 @@ def test_grid_matrix_dimensions_match_config():
 def test_road_layer_apply_field_direct():
     size = 16
     fields = NodeFields.zeros(size)
-    fields.road_proximity[8, 8] = 0.8
+    row = 8
+    fields.is_road[row, :] = True
+    fields.road_proximity[row, 8] = 0.8
+    fields.is_land.fill(True)
+    matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0, node_fields=fields)
+    from app.engine.transition_context import TransitionContext
+
+    ctx = TransitionContext(
+        matrix=matrix,
+        node_fields=fields,
+        probabilities=matrix.probabilities,
+        dt_sec=60.0,
+        tick_count=4,
+        env=EnvForcing(),
+        size=size,
+        resolution_m=50.0,
+    )
+    out = RoadMagnetismLayer().apply_field(ctx, weight=1.0)
+    assert out[row, row + 2] > out[row - 2, row + 2]
+    assert out[row, row] > 0.0
+
+
+def test_road_layer_tick_zero_keeps_lkp_centered():
+    size = 16
+    fields = NodeFields.zeros(size)
+    row = 8
+    fields.is_road[row, :] = True
+    fields.road_proximity[row, :] = 1.0
+    fields.is_land.fill(True)
     matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0, node_fields=fields)
     from app.engine.transition_context import TransitionContext
 
@@ -126,7 +159,8 @@ def test_road_layer_apply_field_direct():
         resolution_m=50.0,
     )
     out = RoadMagnetismLayer().apply_field(ctx, weight=1.0)
-    assert out[8, 8] == 1.0 + settings.road_kde_bonus * 0.8
+    peak = np.unravel_index(int(np.argmax(out)), out.shape)
+    assert peak == (row, row)
 
 
 def test_topography_layer_apply_field_direct():
