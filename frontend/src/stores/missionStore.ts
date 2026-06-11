@@ -40,6 +40,7 @@ export interface LayerState {
   roads: boolean
   personality: boolean
   weather: boolean
+  sea_drift: boolean
 }
 
 export interface PersonalityProfile {
@@ -59,6 +60,7 @@ export const DEFAULT_LAYERS: LayerState = {
   roads: true,
   personality: false,
   weather: false,
+  sea_drift: false,
 }
 
 export const DEFAULT_STEP_SEC = 1

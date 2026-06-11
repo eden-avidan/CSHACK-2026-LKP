@@ -36,7 +36,14 @@ class SeaDriftLayer(BaseProbabilityLayer):
         if not np.any(is_water):
             return p_in
 
-        steps = max(1, settings.marine_drift_steps)
+        # The engine recomputes from the LKP impulse every tick, so the drift
+        # distance must grow with elapsed ticks for the slick to actually move
+        # downstream over time (otherwise it would sit at a fixed offset). Scale
+        # the advection steps with the tick count and cap them so the per-tick
+        # cost stays bounded once the mass reaches the grid edge.
+        steps_per_tick = max(1, settings.marine_drift_steps)
+        elapsed_ticks = max(1, ctx.tick_count)
+        steps = min(steps_per_tick * elapsed_ticks, max(steps_per_tick, settings.marine_drift_max_steps))
         advected = advect_on_water(
             p_in,
             fields.current_u,

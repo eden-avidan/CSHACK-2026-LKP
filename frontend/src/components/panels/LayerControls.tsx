@@ -26,6 +26,11 @@ const LAYER_CONFIG: {
     label: 'Weather / Wind',
     hint: 'Adds mock wind 4 m/s north + 2.5 m/s east to all particles (off by default for coastal missions).',
   },
+  {
+    key: 'sea_drift',
+    label: 'Sea Drift / Current',
+    hint: 'Advects probability across water cells along the live Open-Meteo marine current (auto-enabled when the LKP is offshore).',
+  },
 ]
 
 export function LayerControls() {

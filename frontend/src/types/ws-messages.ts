@@ -40,6 +40,7 @@ const layerStateSchema = z.object({
   roads: z.boolean(),
   personality: z.boolean(),
   weather: z.boolean(),
+  sea_drift: z.boolean(),
 })
 
 export const heatmapFullSchema = z.object({
