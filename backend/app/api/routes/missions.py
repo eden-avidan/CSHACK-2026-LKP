@@ -9,6 +9,7 @@ from app.models.heatmap import HeatmapResponse
 from app.models.mission import (
     CreateMissionRequest,
     CreateMissionResponse,
+    MissionMode,
     MissionResponse,
     MissionStatus,
     UpdatePaceRequest,
@@ -23,9 +24,12 @@ def _mission_response(state) -> MissionResponse:
     return MissionResponse(
         mission_id=state.mission_id,
         status=state.status,
+        mode=state.mode,
         lkp=state.lkp,
+        lkp_timestamp=state.lkp_timestamp,
         created_at=state.created_at,
         tick_count=state.tick_count,
+        pace=state.pace,
         step_sec=state.step_sec,
         update_interval_sec=state.update_interval_sec,
         simulation_running=state.simulation_running,
@@ -34,14 +38,21 @@ def _mission_response(state) -> MissionResponse:
 
 @router.post("", response_model=CreateMissionResponse)
 async def create_mission(body: CreateMissionRequest) -> CreateMissionResponse:
-    state = await mission_store.create(
-        body.lkp,
-        body.sigma_0_m,
-        step_sec=body.step_sec,
-        update_interval_sec=body.update_interval_sec,
-        layers=body.layers,
-    )
-    start_tick_loop(state.mission_id)
+    try:
+        state = await mission_store.create(
+            body.lkp,
+            body.sigma_0_m,
+            mode=body.mode,
+            lkp_timestamp=body.lkp_timestamp,
+            pace=body.pace,
+            step_sec=body.step_sec,
+            update_interval_sec=body.update_interval_sec,
+            layers=body.layers,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if state.mode == MissionMode.LIVE:
+        start_tick_loop(state.mission_id)
     return CreateMissionResponse(mission_id=state.mission_id, status=MissionStatus.SEARCHING)
 
 
@@ -57,7 +68,7 @@ async def get_mission(mission_id: UUID) -> MissionResponse:
 async def update_pace(mission_id: UUID, body: UpdatePaceRequest) -> MissionResponse:
     try:
         state = await mission_store.update_pace(
-            mission_id, body.step_sec, body.update_interval_sec
+            mission_id, body.pace, body.step_sec, body.update_interval_sec
         )
     except KeyError:
         raise HTTPException(status_code=404, detail="Mission not found") from None
@@ -79,7 +90,8 @@ async def resume_mission(mission_id: UUID) -> MissionResponse:
         state = await mission_store.resume(mission_id)
     except KeyError:
         raise HTTPException(status_code=404, detail="Mission not found") from None
-    start_tick_loop(mission_id)
+    if state.mode == MissionMode.LIVE:
+        start_tick_loop(mission_id)
     return _mission_response(state)
 
 

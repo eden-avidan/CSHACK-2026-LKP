@@ -66,9 +66,56 @@ body {
   border-top: 1px solid #2a3544;
 }
 
-.mission-control h2 {
+.mission-control h2,
+.heatmap-sidebar h2 {
   margin: 0 0 0.5rem;
   font-size: 1rem;
+}
+
+.heatmap-sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-fieldset {
+  border: 1px solid #2a3544;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.mode-fieldset legend {
+  font-size: 0.75rem;
+  color: #8899aa;
+  padding: 0 0.25rem;
+}
+
+.mode-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  margin: 0.35rem 0;
+  cursor: pointer;
+}
+
+.mode-section {
+  margin-bottom: 0.75rem;
+}
+
+.pin-btn {
+  margin-top: 0.25rem;
+}
+
+.pace-slider input[type='range'] {
+  width: 100%;
+  margin-top: 0.35rem;
+  accent-color: #3b82f6;
+}
+
+.pace-slider span {
+  font-size: 0.8rem;
+  color: #a0aec0;
 }
 
 .hint {

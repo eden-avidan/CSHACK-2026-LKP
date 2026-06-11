@@ -27,7 +27,7 @@ export function HeatmapCanvas({ map }: HeatmapCanvasProps) {
 
   useEffect(() => {
     if (!map) return
-    if (missionId === null && (metadata === null || grid === null)) {
+    if (missionId === null && metadata === null && grid === null) {
       removeHeatmapLayer(map)
       lastBoundsRef.current = null
     }
@@ -36,42 +36,53 @@ export function HeatmapCanvas({ map }: HeatmapCanvasProps) {
   useEffect(() => {
     if (!map || !metadata || !grid) return
 
-    const canvas = paintSync(grid, metadata.rows, metadata.cols)
-    if (!canvas) return
+    const syncLayer = () => {
+      const canvas = paintSync(grid, metadata.rows, metadata.cols)
+      if (!canvas) return
 
-    const coords: [[number, number], [number, number], [number, number], [number, number]] = [
-      [metadata.bounds.west, metadata.bounds.north],
-      [metadata.bounds.east, metadata.bounds.north],
-      [metadata.bounds.east, metadata.bounds.south],
-      [metadata.bounds.west, metadata.bounds.south],
-    ]
+      const coords: [[number, number], [number, number], [number, number], [number, number]] = [
+        [metadata.bounds.west, metadata.bounds.north],
+        [metadata.bounds.east, metadata.bounds.north],
+        [metadata.bounds.east, metadata.bounds.south],
+        [metadata.bounds.west, metadata.bounds.south],
+      ]
 
-    const boundsKey = `${metadata.bounds.west},${metadata.bounds.south},${metadata.bounds.east},${metadata.bounds.north}`
+      const boundsKey = `${metadata.bounds.west},${metadata.bounds.south},${metadata.bounds.east},${metadata.bounds.north}`
+      const dataUrl = canvas.toDataURL()
 
-    if (!map.getSource(SOURCE_ID)) {
-      map.addSource(SOURCE_ID, {
-        type: 'canvas',
-        canvas,
-        coordinates: coords,
-        animate: true,
-      })
-      map.addLayer({
-        id: LAYER_ID,
-        type: 'raster',
-        source: SOURCE_ID,
-        paint: { 'raster-opacity': 0.85 },
-      })
-      lastBoundsRef.current = boundsKey
-    } else {
-      const src = map.getSource(SOURCE_ID) as mapboxgl.CanvasSource
-      if (lastBoundsRef.current !== boundsKey) {
-        src.setCoordinates(coords)
+      if (!map.getSource(SOURCE_ID)) {
+        map.addSource(SOURCE_ID, {
+          type: 'image',
+          url: dataUrl,
+          coordinates: coords,
+        })
+        map.addLayer(
+          {
+            id: LAYER_ID,
+            type: 'raster',
+            source: SOURCE_ID,
+            paint: { 'raster-opacity': 0.85, 'raster-fade-duration': 0 },
+          },
+          undefined,
+        )
         lastBoundsRef.current = boundsKey
+      } else {
+        const src = map.getSource(SOURCE_ID) as mapboxgl.ImageSource
+        src.updateImage({ url: dataUrl })
+        if (lastBoundsRef.current !== boundsKey) {
+          src.setCoordinates(coords)
+          lastBoundsRef.current = boundsKey
+        }
       }
-      src.play()
+
+      map.triggerRepaint()
     }
 
-    map.triggerRepaint()
+    if (map.isStyleLoaded()) {
+      syncLayer()
+    } else {
+      map.once('load', syncLayer)
+    }
   }, [map, metadata, grid, gridVersion, paintSync])
 
   useEffect(() => {

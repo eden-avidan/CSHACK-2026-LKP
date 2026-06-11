@@ -32,7 +32,24 @@ class Settings(BaseSettings):
     land_elevation_threshold_m: float = 1.0
     engine_tick_particle_limit: int = 200
 
-    kde_edge_fade_cells: int = 22
+    kde_edge_fade_cells: int = 0
+    kde_bandwidth_factor: float = 1.1
+    kde_radial_fade_end: float = 1.0
+    heatmap_history_decay: float = 0.94
+    topo_reachability_floor_frac: float = 0.12
+    grid_base_outflow: float = 0.22
+
+    # Tobler/Dijkstra topography (topo_layout parity)
+    topo_probability_method: str = "linear"
+    topo_steep_threshold_deg: float = 30.0
+    topo_cliff_threshold_deg: float = 45.0
+    topo_neighborhood_size: int = 3
+    topo_ridge_threshold_m: float = 5.0
+    topo_valley_threshold_m: float = 5.0
+    topo_steep_weight: float = 0.7
+    topo_cliff_like_weight: float = 0.2
+    topo_valley_weight: float = 1.15
+    topo_ridge_weight: float = 0.9
 
     env_fetch_timeout_sec: float = 8.0
 

@@ -8,8 +8,8 @@ const LAYER_CONFIG: {
 }[] = [
   {
     key: 'topography',
-    label: 'Topography / Slope Drift',
-    hint: 'Slows movement (×0.7 noise), uphill ×0.25 / downhill ×1.3 speed, downhill bias, blocks water cells (elev ≤ 1 m).',
+    label: 'Topography / Reachability',
+    hint: 'Tobler hiking + Dijkstra isochrones from LKP; steep/cliff/valley/ridge class weights; blocks water cells.',
   },
   {
     key: 'roads',
@@ -48,6 +48,9 @@ export function LayerControls() {
   const toggleLayer = useCallback(
     (key: keyof LayerState) => {
       const next = { ...layers, [key]: !layers[key] }
+      if (!Object.values(next).some(Boolean)) {
+        next.topography = true
+      }
       setLayers(next)
       sendLayers(next)
     },

@@ -3,6 +3,7 @@ import type { GridMetadata } from '../types/geo'
 import type { LatLon } from '../types/geo'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
+export type MissionMode = 'live' | 'offline'
 
 export interface LayerState {
   topography: boolean
@@ -18,9 +19,16 @@ export const DEFAULT_LAYERS: LayerState = {
   weather: false,
 }
 
+function defaultLkpTimestamp(): string {
+  const d = new Date(Date.now() - 2 * 60 * 60 * 1000)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 interface MissionStore {
   missionId: string | null
   status: string
+  mode: MissionMode
   lkp: LatLon | null
   mpp: LatLon | null
   mppTrail: LatLon[]
@@ -32,15 +40,18 @@ interface MissionStore {
   metadata: GridMetadata | null
   grid: Float32Array | null
   gridVersion: number
-  pendingLkp: LatLon | null
-  stepSec: number
-  updateIntervalSec: number
+  pinnedLkp: LatLon | null
+  draftLkp: LatLon | null
+  lkpTimestamp: string | null
+  pace: number
   wsSend: ((payload: unknown) => void) | null
 
-  setPendingLkp: (lkp: LatLon) => void
-  setStepSec: (n: number) => void
-  setUpdateIntervalSec: (n: number) => void
-  setMission: (id: string, lkp: LatLon, stepSec: number, updateIntervalSec: number) => void
+  setDraftLkp: (lkp: LatLon) => void
+  setPinnedLkp: (lkp: LatLon | null) => void
+  setMode: (mode: MissionMode) => void
+  setPace: (pace: number) => void
+  setLkpTimestamp: (ts: string | null) => void
+  setMission: (id: string, lkp: LatLon, mode: MissionMode, pace: number) => void
   setSimulationRunning: (running: boolean) => void
   resetMission: () => void
   setWsStatus: (status: WsStatus) => void
@@ -55,6 +66,7 @@ interface MissionStore {
 export const useMissionStore = create<MissionStore>((set, get) => ({
   missionId: null,
   status: 'idle',
+  mode: 'live',
   lkp: null,
   mpp: null,
   mppTrail: [],
@@ -66,33 +78,39 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   metadata: null,
   grid: null,
   gridVersion: 0,
-  pendingLkp: null,
-  stepSec: 60,
-  updateIntervalSec: 60,
+  pinnedLkp: null,
+  draftLkp: null,
+  lkpTimestamp: defaultLkpTimestamp(),
+  pace: 1,
   wsSend: null,
 
-  setPendingLkp: (lkp) => set({ pendingLkp: lkp }),
+  setDraftLkp: (draftLkp) => set({ draftLkp }),
 
-  setStepSec: (stepSec) => set({ stepSec }),
+  setPinnedLkp: (pinnedLkp) => set({ pinnedLkp }),
 
-  setUpdateIntervalSec: (updateIntervalSec) => set({ updateIntervalSec }),
+  setMode: (mode) => set({ mode }),
 
-  setMission: (id, lkp, stepSec, updateIntervalSec) =>
+  setPace: (pace) => set({ pace: Math.max(0.1, Math.min(120, pace)) }),
+
+  setLkpTimestamp: (lkpTimestamp) => set({ lkpTimestamp }),
+
+  setMission: (id, lkp, mode, pace) =>
     set((state) => ({
       missionId: id,
       lkp,
       mpp: lkp,
       mppTrail: [lkp],
       status: 'searching',
+      mode,
       tickCount: 0,
       engineTickVersion: 0,
-      simulationRunning: true,
+      simulationRunning: mode === 'live',
       layers: state.layers,
-      stepSec,
-      updateIntervalSec,
-      metadata: null,
-      grid: null,
-      gridVersion: 0,
+      pace,
+      // Preserve grid/metadata when already loaded (REST prefetch before WS connect)
+      metadata: state.metadata,
+      grid: state.grid,
+      gridVersion: state.gridVersion,
     })),
 
   setSimulationRunning: (simulationRunning) => set({ simulationRunning }),
@@ -101,6 +119,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
     set({
       missionId: null,
       status: 'idle',
+      mode: 'live',
       lkp: null,
       mpp: null,
       mppTrail: [],
@@ -112,7 +131,10 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       metadata: null,
       grid: null,
       gridVersion: 0,
-      pendingLkp: null,
+      pinnedLkp: null,
+      draftLkp: null,
+      lkpTimestamp: defaultLkpTimestamp(),
+      pace: 1,
       wsSend: null,
     }),
 
@@ -120,10 +142,13 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
 
   setWsSend: (wsSend) => set({ wsSend }),
 
-  setLayers: (layers) =>
-    set({
-      layers: { ...get().layers, ...layers },
-    }),
+  setLayers: (layers) => {
+    const next = { ...get().layers, ...layers }
+    if (!Object.values(next).some(Boolean)) {
+      next.topography = true
+    }
+    set({ layers: next })
+  },
 
   setEngineTick: (mpp, tickCount, layers) =>
     set((state) => {

@@ -3,20 +3,6 @@ const YELLOW: [number, number, number] = [253, 231, 37]
 const RED: [number, number, number] = [178, 24, 43]
 const EPS = 1e-8
 
-/** Smooth fade to transparent near grid edges (matches backend kde_edge_fade_cells). */
-export function edgeFadeMultiplier(
-  row: number,
-  col: number,
-  rows: number,
-  cols: number,
-  fadeCells = 22,
-): number {
-  const dist = Math.min(row, col, rows - 1 - row, cols - 1 - col)
-  if (dist >= fadeCells) return 1
-  const t = dist / fadeCells
-  return t * t * (3 - 2 * t)
-}
-
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t
 }
@@ -30,32 +16,25 @@ function lerpColor(c1: [number, number, number], c2: [number, number, number], t
 }
 
 export interface ColorRange {
+  max: number
   logMin: number
   logMax: number
 }
 
-/** Percentile stretch so low/mid/high probability cells get distinct colors. */
+/** Scale colors against grid peak so the tail fades out naturally — no vignette needed. */
 export function computeColorRange(grid: Float32Array): ColorRange {
-  const values: number[] = []
+  let max = EPS
   for (let i = 0; i < grid.length; i++) {
-    if (grid[i] > EPS) values.push(grid[i])
+    if (grid[i] > max) max = grid[i]
   }
-
-  if (values.length === 0) {
-    return { logMin: Math.log(EPS), logMax: Math.log(EPS) }
-  }
-
-  values.sort((a, b) => a - b)
-  const p5 = values[Math.floor(values.length * 0.05)] ?? values[0]
-  const p95 = values[Math.floor(values.length * 0.95)] ?? values[values.length - 1]
-  const lo = Math.max(p5, EPS)
-  const hi = Math.max(p95, lo * 10)
-
-  return { logMin: Math.log(lo), logMax: Math.log(hi) }
+  return { max, logMin: Math.log(EPS), logMax: Math.log(max) }
 }
 
 export function probabilityToRGBA(p: number, range: ColorRange): [number, number, number, number] {
   if (p < EPS) return [0, 0, 0, 0]
+
+  const rel = p / range.max
+  if (rel < 0.008) return [0, 0, 0, 0]
 
   const span = range.logMax - range.logMin
   const t = span > 1e-12 ? (Math.log(p + EPS) - range.logMin) / span : 1
@@ -68,8 +47,7 @@ export function probabilityToRGBA(p: number, range: ColorRange): [number, number
     rgb = lerpColor(YELLOW, RED, (clamped - 0.5) * 2)
   }
 
-  // Low-probability cells stay more transparent so satellite terrain shows through
-  const alpha = clamped < 0.08 ? clamped * 2.5 : Math.min(0.75, 0.15 + clamped * 0.6)
+  const alpha = Math.min(0.75, Math.pow(rel, 0.55) * 0.8)
   return [rgb[0], rgb[1], rgb[2], Math.round(alpha * 255)]
 }
 

@@ -11,6 +11,8 @@ Global conventions: [../AGENT.md](../AGENT.md)
 | Module | Responsibility |
 |--------|----------------|
 | `particle_filter.py` | Initialize, predict, resample, KDE rasterization |
+| `topo_reachability.py` | Tobler + Dijkstra reachability prior (topography layer) |
+| `layers/` | Plugin layer pipeline — see [LAYERS.md](LAYERS.md) |
 | `negative_search.py` | Bayesian probability reduction in searched polygons |
 | `path_optimizer.py` | Multi-agent route scoring and GeoJSON output |
 | `env_ingestion.py` | Fetch and interpolate wind, current, elevation |
@@ -304,8 +306,20 @@ Buffer the path line by `swath_width / 2` to produce search polygon.
 
 ---
 
+## Mission Modes (API)
+
+| Mode | `POST /missions` | Tick loop | Pace |
+|------|------------------|-----------|------|
+| `live` | `mode`, `lkp`, `pace`, `layers` | Yes (1 s interval) | `step_sec = 60 × pace` |
+| `offline` | + required `lkp_timestamp` | No — batch compute at create | N/A |
+
+Layer integration contract: [LAYERS.md](LAYERS.md)
+
+---
+
 ## Related Documentation
 
 - [README.md](README.md) — Setup and endpoints
+- [LAYERS.md](LAYERS.md) — Layer plugin architecture
 - [../AGENT.md](../AGENT.md) — Global conventions
 - [../edge_drone/AGENT.md](../edge_drone/AGENT.md) — Incoming telemetry schema

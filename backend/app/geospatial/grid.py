@@ -116,7 +116,15 @@ def extract_field_for_grid(
     source: ProbabilityGrid,
     field: np.ndarray,
 ) -> np.ndarray:
-    """Sample a source-grid field at each display-grid cell centroid."""
+    """Sample a source-grid field at each display-grid cell centroid (bilinear)."""
+    if (
+        display.rows == source.rows
+        and display.cols == source.cols
+        and display.metadata.origin.lat == source.metadata.origin.lat
+        and display.metadata.origin.lon == source.metadata.origin.lon
+    ):
+        return field.astype(np.float64, copy=False)
+
     out = np.zeros((display.rows, display.cols), dtype=np.float64)
     max_r, max_c = field.shape[0] - 1, field.shape[1] - 1
     for row in range(display.rows):
@@ -127,9 +135,24 @@ def extract_field_for_grid(
             res = source.metadata.resolution_m
             col_f = (e - (source.crs.origin_e - half)) / res
             row_f = ((source.crs.origin_n + half) - n) / res
-            sr_i = int(np.clip(np.floor(row_f), 0, max_r))
-            sc_i = int(np.clip(np.floor(col_f), 0, max_c))
-            out[row, col] = field[sr_i, sc_i]
+            r0 = int(np.floor(row_f))
+            c0 = int(np.floor(col_f))
+            if r0 < 0 or c0 < 0 or r0 > max_r or c0 > max_c:
+                continue
+            r1 = min(r0 + 1, max_r)
+            c1 = min(c0 + 1, max_c)
+            dr = row_f - r0
+            dc = col_f - c0
+            v00 = field[r0, c0]
+            v01 = field[r0, c1]
+            v10 = field[r1, c0]
+            v11 = field[r1, c1]
+            out[row, col] = (
+                v00 * (1.0 - dr) * (1.0 - dc)
+                + v01 * (1.0 - dr) * dc
+                + v10 * dr * (1.0 - dc)
+                + v11 * dr * dc
+            )
     return out
 
 

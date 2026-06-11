@@ -104,7 +104,8 @@ function ensureTrackingLayers(map: mapboxgl.Map) {
 export function TrackingOverlay({ map }: TrackingOverlayProps) {
   const missionId = useMissionStore((s) => s.missionId)
   const lkp = useMissionStore((s) => s.lkp)
-  const pendingLkp = useMissionStore((s) => s.pendingLkp)
+  const pinnedLkp = useMissionStore((s) => s.pinnedLkp)
+  const draftLkp = useMissionStore((s) => s.draftLkp)
   const mpp = useMissionStore((s) => s.mpp)
   const mppTrail = useMissionStore((s) => s.mppTrail)
   const engineTickVersion = useMissionStore((s) => s.engineTickVersion)
@@ -112,7 +113,7 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
   const [overlayReady, setOverlayReady] = useState(false)
   const [mppScreen, setMppScreen] = useState<{ x: number; y: number } | null>(null)
 
-  const displayLkp: LatLon | null = missionId ? lkp : pendingLkp
+  const displayLkp: LatLon | null = missionId ? lkp : pinnedLkp ?? draftLkp
 
   const applyTracking = useCallback(() => {
     if (!map || !overlayReady) return
@@ -185,7 +186,7 @@ export function TrackingOverlay({ map }: TrackingOverlayProps) {
 
   useEffect(() => {
     applyTracking()
-  }, [applyTracking, engineTickVersion, gridVersion, pendingLkp?.lat, pendingLkp?.lon])
+  }, [applyTracking, engineTickVersion, gridVersion, pinnedLkp?.lat, pinnedLkp?.lon, draftLkp?.lat, draftLkp?.lon])
 
   useEffect(() => {
     if (!map || !missionId || !mpp) {

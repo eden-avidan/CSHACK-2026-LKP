@@ -12,7 +12,7 @@ interface MapContainerProps {
 export function MapContainer({ onMapReady }: MapContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
-  const setPendingLkp = useMissionStore((s) => s.setPendingLkp)
+  const setDraftLkp = useMissionStore((s) => s.setDraftLkp)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -32,14 +32,14 @@ export function MapContainer({ onMapReady }: MapContainerProps) {
     })
 
     map.on('click', (e) => {
-      setPendingLkp({ lat: e.lngLat.lat, lon: e.lngLat.lng })
+      setDraftLkp({ lat: e.lngLat.lat, lon: e.lngLat.lng })
     })
 
     return () => {
       map.remove()
       mapRef.current = null
     }
-  }, [onMapReady, setPendingLkp])
+  }, [onMapReady, setDraftLkp])
 
   return <div ref={containerRef} className="map-container" />
 }

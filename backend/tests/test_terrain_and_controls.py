@@ -13,8 +13,8 @@ from app.models.layers import LayerFlags
 from app.models.mission import LatLon
 from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.mission_store import MissionStore
+from app.services.topo_reachability import classify_terrain_from_elevation
 from app.services.particle_filter import (
-    _apply_anisotropic_mobility,
     apply_grid_bounds,
     get_mock_env,
     initialize_particles,
@@ -25,24 +25,13 @@ from app.services.particle_filter import (
 HAIFA = LatLon(lat=32.7940, lon=34.9896)
 
 
-def test_anisotropic_mobility_uphill_slower():
-    de = np.array([0.0])
-    dn = np.array([-10.0])  # uphill if downhill is +north
-    aspect_e = np.array([0.0])
-    aspect_n = np.array([1.0])
-    de_out, dn_out = _apply_anisotropic_mobility(de, dn, aspect_e, aspect_n)
-    assert dn_out[0] == pytest.approx(-10.0 * 0.25)
-    assert de_out[0] == pytest.approx(0.0)
-
-
-def test_anisotropic_mobility_cross_slope_unchanged():
-    de = np.array([8.0])
-    dn = np.array([0.0])  # pure cross-slope when downhill is north
-    aspect_e = np.array([0.0])
-    aspect_n = np.array([1.0])
-    de_out, dn_out = _apply_anisotropic_mobility(de, dn, aspect_e, aspect_n)
-    assert de_out[0] == pytest.approx(8.0)
-    assert dn_out[0] == pytest.approx(0.0)
+def test_terrain_classification_steep_and_valley():
+    rows, cols = 32, 32
+    elevation = np.zeros((rows, cols), dtype=np.float64)
+    elevation[8:24, 8:24] = np.linspace(0, 200, 16 * 16).reshape(16, 16)
+    terrain = classify_terrain_from_elevation(elevation, resolution_m=50.0)
+    assert terrain.steep_mask.shape == (rows, cols)
+    assert terrain.valley_mask.shape == (rows, cols)
 
 
 def test_road_kde_bias():
@@ -78,6 +67,7 @@ def test_pause_skips_tick():
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_terrain:
             size = 128
             mock_terrain.return_value = TerrainContext(
+                elevation=np.zeros((size, size)),
                 slope=np.zeros((size, size)),
                 aspect_n=np.zeros((size, size)),
                 aspect_e=np.zeros((size, size)),

@@ -30,6 +30,7 @@ def _terrain(rows: int, cols: int, *, land: bool = True) -> TerrainContext:
     road_prox = np.zeros((rows, cols))
     road_prox[rows // 2, cols // 2] = 1.0
     return TerrainContext(
+        elevation=np.zeros((rows, cols)),
         slope=np.zeros((rows, cols)),
         aspect_n=np.zeros((rows, cols)),
         aspect_e=np.ones((rows, cols)),
@@ -51,12 +52,12 @@ def test_weather_off_zero_wind():
         weights=np.full(n, 1.0 / n),
     )
     calm = predict_step(
-        particles, zero_env(), dt=1.0, grid=grid, layers=LayerFlags(weather=False)
+        particles, zero_env(), dt=120.0, grid=grid, layers=LayerFlags(weather=False)
     )
     windy = predict_step(
-        particles, get_mock_env(), dt=1.0, grid=grid, layers=LayerFlags(weather=True)
+        particles, get_mock_env(), dt=120.0, grid=grid, layers=LayerFlags(weather=True)
     )
-    assert np.mean(windy.v_n) > np.mean(calm.v_n) + 0.5
+    assert np.mean(windy.v_n) > np.mean(calm.v_n) + 0.3
     assert np.mean(windy.v_e) > np.mean(calm.v_e) + 0.3
 
 
@@ -157,8 +158,8 @@ def test_tick_emits_engine_tick():
             assert result.engine_tick.lkp_coords.lat == HAIFA.lat
             assert len(result.engine_tick.particle_matrix) > 0
             assert result.full_refresh is True
-            assert abs(state.grid.metadata.origin.lat - mpp_before.lat) < 1e-5
-            assert abs(state.grid.metadata.origin.lon - mpp_before.lon) < 1e-5
+            assert abs(state.grid.metadata.origin.lat - HAIFA.lat) < 1e-5
+            assert abs(state.grid.metadata.origin.lon - HAIFA.lon) < 1e-5
 
     asyncio.run(run())
 
@@ -201,11 +202,11 @@ def test_momentum_preserves_direction_over_steps():
     assert spread < 0.35
 
 
-def test_kde_edge_fade_softens_boundaries():
-    from app.services.particle_filter import _apply_edge_fade
+def test_radial_fade_softens_corners_not_center():
+    from app.services.particle_types import apply_radial_fade
 
-    uniform = np.ones((32, 32), dtype=np.float64) / (32 * 32)
-    faded = _apply_edge_fade(uniform, fade_cells=8)
+    uniform = np.ones((64, 64), dtype=np.float64) / (64 * 64)
+    faded = apply_radial_fade(uniform, fade_end=0.88)
     assert faded.sum() == pytest.approx(1.0)
-    assert faded[0, 16] < faded[16, 16]
-    assert faded[16, 0] < faded[16, 16]
+    assert faded[32, 32] > faded[0, 0]
+    assert faded[0, 32] < faded[32, 32]

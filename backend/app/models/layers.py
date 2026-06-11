@@ -24,6 +24,9 @@ class LayerFlags:
             self.subject_injured = bool(layers["subject_injured"])
         if "weather" in layers:
             self.weather = bool(layers["weather"])
+        from app.engine.layers.registry import ensure_min_one_layer
+
+        ensure_min_one_layer(self)
 
     def as_dict(self) -> dict[str, bool]:
         return {
@@ -32,6 +35,9 @@ class LayerFlags:
             "subject_injured": self.subject_injured,
             "weather": self.weather,
         }
+
+    def any_enabled(self) -> bool:
+        return self.topography or self.roads or self.subject_injured or self.weather
 
 
 class UpdateLayersMessage(BaseModel):

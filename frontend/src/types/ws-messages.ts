@@ -66,8 +66,8 @@ export const engineTickSchema = z.object({
   tick_count: z.number(),
   lkp_coords: latLonSchema,
   mpp_coords: latLonSchema,
-  layers: layerStateSchema.optional(),
-  particle_matrix: z.array(z.array(z.number())),
+  layers: layerStateSchema.partial().optional(),
+  particle_matrix: z.array(z.array(z.number())).optional(),
 })
 
 export const wsMessageSchema = z.union([

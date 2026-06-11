@@ -20,6 +20,7 @@ OPEN_ELEVATION_URL = "https://api.open-elevation.com/api/v1/lookup"
 
 @dataclass
 class TerrainContext:
+    elevation: np.ndarray
     slope: np.ndarray  # radians
     aspect_n: np.ndarray  # downhill north component (unit)
     aspect_e: np.ndarray  # downhill east component (unit)
@@ -27,10 +28,12 @@ class TerrainContext:
     is_land: np.ndarray  # bool
     road_tangent_e: np.ndarray  # unit east component of nearest road
     road_tangent_n: np.ndarray  # unit north component of nearest road
+    reachability: np.ndarray | None = None  # Tobler/Dijkstra prior on terrain grid
 
 
 def _flat_terrain(rows: int, cols: int) -> TerrainContext:
     return TerrainContext(
+        elevation=np.zeros((rows, cols), dtype=np.float64),
         slope=np.zeros((rows, cols), dtype=np.float64),
         aspect_n=np.zeros((rows, cols), dtype=np.float64),
         aspect_e=np.zeros((rows, cols), dtype=np.float64),
@@ -38,6 +41,7 @@ def _flat_terrain(rows: int, cols: int) -> TerrainContext:
         is_land=np.ones((rows, cols), dtype=bool),
         road_tangent_e=np.zeros((rows, cols), dtype=np.float64),
         road_tangent_n=np.zeros((rows, cols), dtype=np.float64),
+        reachability=None,
     )
 
 
@@ -181,6 +185,7 @@ async def build_terrain_context(grid: ProbabilityGrid) -> TerrainContext:
     road_proximity, road_tangent_e, road_tangent_n = rasterize_road_fields(grid, segments)
 
     return TerrainContext(
+        elevation=elevation,
         slope=slope,
         aspect_n=aspect_n,
         aspect_e=aspect_e,
@@ -188,4 +193,5 @@ async def build_terrain_context(grid: ProbabilityGrid) -> TerrainContext:
         is_land=is_land,
         road_tangent_e=road_tangent_e,
         road_tangent_n=road_tangent_n,
+        reachability=None,
     )

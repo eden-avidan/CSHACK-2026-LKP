@@ -307,9 +307,28 @@ Keep in sync with backend emission formats.
 
 ---
 
+## Heatmap Sidebar (`HeatmapSidebar.tsx`)
+
+Left panel controls:
+
+| Section | Controls |
+|---------|----------|
+| Mode | Radio: Live / Offline (mutually exclusive) |
+| Live | Pin LKP + pace slider (0.1–120×) |
+| Offline | Pin LKP + `datetime-local` for `lkp_timestamp` |
+| Layers | `LayerControls` — at least one layer; topography fallback |
+| Action | Run Heatmap → `POST /missions`; Stop & New → `DELETE` |
+
+Map click sets `draftLkp`; **Pin LKP** commits to `pinnedLkp`. Live pace updates via debounced `PATCH /missions/{id}/pace`.
+
+Backend layer contract: [../backend/LAYERS.md](../backend/LAYERS.md)
+
+---
+
 ## Related Documentation
 
 - [README.md](README.md) — Setup and component structure
 - [../AGENT.md](../AGENT.md) — Global conventions
+- [../backend/LAYERS.md](../backend/LAYERS.md) — Layer plugin architecture
 - [../backend/AGENT.md](../backend/AGENT.md) — Heatmap delta emission format
 - [../edge_drone/AGENT.md](../edge_drone/AGENT.md) — Source telemetry schema
