@@ -1,5 +1,5 @@
 import { useMissionStore } from '../../stores/missionStore'
-import { gridMax, isLowMassGrid } from '../../utils/colorScale'
+import { gridMax, gridMin, isLowMassGrid } from '../../utils/colorScale'
 
 export function HeatmapLegend() {
   const grid = useMissionStore((s) => s.grid)
@@ -7,8 +7,13 @@ export function HeatmapLegend() {
   let peakLabel = '—'
   let lowMass = false
   if (grid) {
+    const min = gridMin(grid)
     const max = gridMax(grid)
-    peakLabel = max > 1e-6 ? `${(max * 100).toFixed(2)}% peak` : 'no data'
+    const span = max - min
+    peakLabel =
+      span > 1e-6
+        ? `display 0–1 (raw ${min.toExponential(1)}…${max.toExponential(1)})`
+        : 'no data'
     lowMass = isLowMassGrid(grid)
   }
 
