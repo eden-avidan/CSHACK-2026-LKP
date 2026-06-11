@@ -68,6 +68,19 @@ def test_load_person_found_detection_payload_without_gps(tmp_path: Path):
     assert records[0].latitude is None
 
 
+def test_load_detection_records_from_json_array(tmp_path: Path):
+    path = tmp_path / "detections.JSON"
+    path.write_text(
+        '[{"timestamp":"2026-06-11T16:00:00Z","person_found":true,'
+        '"confidence":0.8,"confidence_percent":80.0,"latitude":32.7,"longitude":35.0}]'
+    )
+
+    records = load_detection_records(path)
+
+    assert len(records) == 1
+    assert records[0].confidence_percent == pytest.approx(80.0)
+
+
 def test_tick_updates_drone_last_seen(tmp_path: Path):
     async def run() -> None:
         store = MissionStore()

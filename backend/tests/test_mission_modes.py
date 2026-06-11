@@ -49,17 +49,43 @@ def test_live_mode_pace_derived_timing():
 def test_offline_mode_batch_ticks():
     async def run() -> None:
         store = MissionStore()
-        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        lkp_time = datetime.now(timezone.utc) - timedelta(hours=4)
+        sim_start = datetime.now(timezone.utc) - timedelta(hours=2)
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
             mock.return_value = _terrain(128)
             state = await store.create(
                 HAIFA,
                 mode=MissionMode.OFFLINE,
-                lkp_timestamp=two_hours_ago,
+                lkp_timestamp=lkp_time,
+                simulation_start_timestamp=sim_start,
+                pace=2.0,
             )
             assert state.mode == MissionMode.OFFLINE
             assert state.simulation_running is True
+<<<<<<< HEAD
             assert state.tick_count >= 1
+=======
+            assert state.pace == 2.0
+            assert state.step_sec == pytest.approx(BASE_STEP_SEC * 2.0)
+            # 2h elapsed / 20s per tick = 360 ticks
+            assert state.tick_count == 360
+
+
+def test_offline_simulation_start_before_lkp_rejected():
+    async def run() -> None:
+        store = MissionStore()
+        lkp_time = datetime.now(timezone.utc)
+        sim_start = lkp_time - timedelta(hours=1)
+        with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
+            mock.return_value = _terrain(128)
+            with pytest.raises(ValueError, match="simulation_start"):
+                await store.create(
+                    HAIFA,
+                    mode=MissionMode.OFFLINE,
+                    lkp_timestamp=lkp_time,
+                    simulation_start_timestamp=sim_start,
+                )
+>>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
 
     asyncio.run(run())
 

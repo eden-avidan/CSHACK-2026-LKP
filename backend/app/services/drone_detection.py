@@ -47,17 +47,22 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
     if not path.exists():
         return []
 
-    records: list[DetectionRecord] = []
-    with path.open("r", encoding="utf-8") as handle:
-        for line in handle:
-            line = line.strip()
-            if not line:
-                continue
+    text = path.read_text(encoding="utf-8-sig")
+    try:
+        parsed = json.loads(text)
+        raw_records = parsed if isinstance(parsed, list) else [parsed]
+    except json.JSONDecodeError:
+        raw_records = []
+        for line in text.splitlines():
             try:
-                raw = json.loads(line)
+                raw_records.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
 
+    records: list[DetectionRecord] = []
+    for raw in raw_records:
+            if not isinstance(raw, dict):
+                continue
             if not raw.get("person_found", raw.get("person", False)):
                 continue
 
