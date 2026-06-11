@@ -1,0 +1,1125 @@
+{"timestamp": "2026-06-09T17:21:40.766Z", "frame": 1, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:21:42.094Z", "frame": 5, "person_found": true, "confidence": 0.9386, "confidence_percent": 93.86, "bbox": [133, 1, 563, 355]}
+{"timestamp": "2026-06-09T17:21:43.298Z", "frame": 8, "person_found": true, "confidence": 0.9594, "confidence_percent": 95.94, "bbox": [154, 0, 551, 355]}
+{"timestamp": "2026-06-09T17:21:44.574Z", "frame": 11, "person_found": true, "confidence": 0.9473, "confidence_percent": 94.73, "bbox": [185, 24, 544, 355]}
+{"timestamp": "2026-06-09T17:21:45.879Z", "frame": 14, "person_found": true, "confidence": 0.7222, "confidence_percent": 72.22, "bbox": [318, 186, 338, 239]}
+{"timestamp": "2026-06-09T17:21:47.328Z", "frame": 17, "person_found": true, "confidence": 0.8324, "confidence_percent": 83.24, "bbox": [314, 186, 336, 243]}
+{"timestamp": "2026-06-09T17:21:48.380Z", "frame": 19, "person_found": true, "confidence": 0.7574, "confidence_percent": 75.74, "bbox": [316, 187, 336, 243]}
+{"timestamp": "2026-06-09T17:21:49.579Z", "frame": 21, "person_found": true, "confidence": 0.8094, "confidence_percent": 80.94, "bbox": [315, 188, 335, 245]}
+{"timestamp": "2026-06-09T17:21:50.966Z", "frame": 24, "person_found": true, "confidence": 0.8175, "confidence_percent": 81.75, "bbox": [322, 188, 340, 244]}
+{"timestamp": "2026-06-09T17:21:52.135Z", "frame": 27, "person_found": true, "confidence": 0.7928, "confidence_percent": 79.28, "bbox": [320, 187, 340, 246]}
+{"timestamp": "2026-06-09T17:21:53.410Z", "frame": 30, "person_found": true, "confidence": 0.5932, "confidence_percent": 59.32, "bbox": [310, 188, 330, 246]}
+{"timestamp": "2026-06-09T17:21:54.528Z", "frame": 33, "person_found": true, "confidence": 0.8036, "confidence_percent": 80.36, "bbox": [304, 184, 323, 247]}
+{"timestamp": "2026-06-09T17:21:55.622Z", "frame": 36, "person_found": true, "confidence": 0.9671, "confidence_percent": 96.71, "bbox": [135, 0, 531, 354]}
+{"timestamp": "2026-06-09T17:21:56.721Z", "frame": 39, "person_found": true, "confidence": 0.9604, "confidence_percent": 96.04, "bbox": [133, 0, 530, 355]}
+{"timestamp": "2026-06-09T17:21:57.809Z", "frame": 42, "person_found": true, "confidence": 0.9477, "confidence_percent": 94.77, "bbox": [147, 22, 474, 355]}
+{"timestamp": "2026-06-09T17:21:58.909Z", "frame": 45, "person_found": true, "confidence": 0.9509, "confidence_percent": 95.09, "bbox": [117, 0, 438, 355]}
+{"timestamp": "2026-06-09T17:22:00.001Z", "frame": 48, "person_found": true, "confidence": 0.9544, "confidence_percent": 95.44, "bbox": [101, 1, 449, 355]}
+{"timestamp": "2026-06-09T17:22:01.242Z", "frame": 51, "person_found": true, "confidence": 0.9481, "confidence_percent": 94.81, "bbox": [126, 30, 424, 355]}
+{"timestamp": "2026-06-09T17:22:02.428Z", "frame": 54, "person_found": true, "confidence": 0.8323, "confidence_percent": 83.23, "bbox": [294, 179, 316, 239]}
+{"timestamp": "2026-06-09T17:22:03.512Z", "frame": 57, "person_found": true, "confidence": 0.8137, "confidence_percent": 81.37, "bbox": [295, 180, 318, 241]}
+{"timestamp": "2026-06-09T17:22:04.594Z", "frame": 60, "person_found": true, "confidence": 0.8048, "confidence_percent": 80.48, "bbox": [300, 178, 324, 244]}
+{"timestamp": "2026-06-09T17:22:05.670Z", "frame": 63, "person_found": true, "confidence": 0.7913, "confidence_percent": 79.13, "bbox": [306, 182, 328, 244]}
+{"timestamp": "2026-06-09T17:22:06.752Z", "frame": 66, "person_found": true, "confidence": 0.7888, "confidence_percent": 78.88, "bbox": [301, 177, 323, 239]}
+{"timestamp": "2026-06-09T17:22:07.832Z", "frame": 69, "person_found": true, "confidence": 0.7001, "confidence_percent": 70.01, "bbox": [298, 180, 317, 243]}
+{"timestamp": "2026-06-09T17:22:08.938Z", "frame": 72, "person_found": true, "confidence": 0.7665, "confidence_percent": 76.65, "bbox": [293, 183, 315, 245]}
+{"timestamp": "2026-06-09T17:22:10.031Z", "frame": 75, "person_found": true, "confidence": 0.7957, "confidence_percent": 79.57, "bbox": [297, 184, 322, 244]}
+{"timestamp": "2026-06-09T17:22:11.105Z", "frame": 78, "person_found": true, "confidence": 0.7824, "confidence_percent": 78.24, "bbox": [311, 184, 334, 248]}
+{"timestamp": "2026-06-09T17:22:12.195Z", "frame": 81, "person_found": true, "confidence": 0.9409, "confidence_percent": 94.09, "bbox": [161, 6, 621, 355]}
+{"timestamp": "2026-06-09T17:22:13.396Z", "frame": 84, "person_found": true, "confidence": 0.9391, "confidence_percent": 93.91, "bbox": [139, 0, 473, 355]}
+{"timestamp": "2026-06-09T17:22:14.493Z", "frame": 87, "person_found": true, "confidence": 0.9543, "confidence_percent": 95.43, "bbox": [128, 1, 448, 355]}
+{"timestamp": "2026-06-09T17:22:15.552Z", "frame": 90, "person_found": true, "confidence": 0.9564, "confidence_percent": 95.64, "bbox": [142, 28, 437, 355]}
+{"timestamp": "2026-06-09T17:22:16.727Z", "frame": 93, "person_found": true, "confidence": 0.957, "confidence_percent": 95.7, "bbox": [163, 21, 465, 355]}
+{"timestamp": "2026-06-09T17:22:17.862Z", "frame": 96, "person_found": true, "confidence": 0.9609, "confidence_percent": 96.09, "bbox": [149, 1, 511, 356]}
+{"timestamp": "2026-06-09T17:22:18.981Z", "frame": 99, "person_found": true, "confidence": 0.8073, "confidence_percent": 80.73, "bbox": [316, 180, 341, 243]}
+{"timestamp": "2026-06-09T17:22:20.133Z", "frame": 102, "person_found": true, "confidence": 0.8063, "confidence_percent": 80.63, "bbox": [330, 180, 351, 245]}
+{"timestamp": "2026-06-09T17:22:21.258Z", "frame": 105, "person_found": true, "confidence": 0.8106, "confidence_percent": 81.06, "bbox": [337, 187, 359, 256]}
+{"timestamp": "2026-06-09T17:22:22.355Z", "frame": 108, "person_found": true, "confidence": 0.8426, "confidence_percent": 84.26, "bbox": [330, 192, 354, 265]}
+{"timestamp": "2026-06-09T17:22:23.428Z", "frame": 111, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:24.507Z", "frame": 114, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:25.688Z", "frame": 117, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:26.792Z", "frame": 120, "person_found": true, "confidence": 0.8477, "confidence_percent": 84.77, "bbox": [356, 98, 442, 284]}
+{"timestamp": "2026-06-09T17:22:27.870Z", "frame": 123, "person_found": true, "confidence": 0.9008, "confidence_percent": 90.08, "bbox": [338, 108, 451, 262]}
+{"timestamp": "2026-06-09T17:22:28.957Z", "frame": 126, "person_found": true, "confidence": 0.9058, "confidence_percent": 90.58, "bbox": [343, 144, 415, 273]}
+{"timestamp": "2026-06-09T17:22:30.025Z", "frame": 129, "person_found": true, "confidence": 0.8002, "confidence_percent": 80.02, "bbox": [340, 166, 373, 265]}
+{"timestamp": "2026-06-09T17:22:31.203Z", "frame": 132, "person_found": true, "confidence": 0.8087, "confidence_percent": 80.87, "bbox": [328, 193, 364, 271]}
+{"timestamp": "2026-06-09T17:22:32.572Z", "frame": 135, "person_found": true, "confidence": 0.8218, "confidence_percent": 82.18, "bbox": [346, 212, 375, 309]}
+{"timestamp": "2026-06-09T17:22:33.676Z", "frame": 138, "person_found": true, "confidence": 0.8674, "confidence_percent": 86.74, "bbox": [344, 212, 378, 300]}
+{"timestamp": "2026-06-09T17:22:34.788Z", "frame": 141, "person_found": true, "confidence": 0.807, "confidence_percent": 80.7, "bbox": [354, 206, 382, 285]}
+{"timestamp": "2026-06-09T17:22:35.868Z", "frame": 144, "person_found": true, "confidence": 0.7816, "confidence_percent": 78.16, "bbox": [362, 208, 387, 294]}
+{"timestamp": "2026-06-09T17:22:36.961Z", "frame": 147, "person_found": true, "confidence": 0.7465, "confidence_percent": 74.65, "bbox": [273, 167, 301, 248]}
+{"timestamp": "2026-06-09T17:22:38.137Z", "frame": 150, "person_found": true, "confidence": 0.7529, "confidence_percent": 75.29, "bbox": [277, 168, 309, 255]}
+{"timestamp": "2026-06-09T17:22:39.258Z", "frame": 153, "person_found": true, "confidence": 0.7193, "confidence_percent": 71.93, "bbox": [277, 168, 307, 253]}
+{"timestamp": "2026-06-09T17:22:40.325Z", "frame": 156, "person_found": true, "confidence": 0.8267, "confidence_percent": 82.67, "bbox": [284, 166, 314, 245]}
+{"timestamp": "2026-06-09T17:22:41.494Z", "frame": 159, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:42.599Z", "frame": 162, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:43.686Z", "frame": 165, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:44.775Z", "frame": 168, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:45.828Z", "frame": 171, "person_found": true, "confidence": 0.8934, "confidence_percent": 89.34, "bbox": [517, 141, 559, 260]}
+{"timestamp": "2026-06-09T17:22:46.900Z", "frame": 174, "person_found": true, "confidence": 0.8772, "confidence_percent": 87.72, "bbox": [489, 156, 530, 279]}
+{"timestamp": "2026-06-09T17:22:47.958Z", "frame": 177, "person_found": true, "confidence": 0.8762, "confidence_percent": 87.62, "bbox": [527, 212, 566, 329]}
+{"timestamp": "2026-06-09T17:22:49.058Z", "frame": 180, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:22:50.222Z", "frame": 183, "person_found": true, "confidence": 0.7452, "confidence_percent": 74.52, "bbox": [228, 2, 637, 352]}
+{"timestamp": "2026-06-09T17:22:51.311Z", "frame": 186, "person_found": true, "confidence": 0.9567, "confidence_percent": 95.67, "bbox": [124, 1, 550, 353]}
+{"timestamp": "2026-06-09T17:22:52.380Z", "frame": 189, "person_found": true, "confidence": 0.9616, "confidence_percent": 96.16, "bbox": [130, 0, 464, 354]}
+{"timestamp": "2026-06-09T17:22:53.465Z", "frame": 192, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [146, 16, 448, 354]}
+{"timestamp": "2026-06-09T17:22:54.543Z", "frame": 195, "person_found": true, "confidence": 0.9524, "confidence_percent": 95.24, "bbox": [217, 23, 496, 355]}
+{"timestamp": "2026-06-09T17:22:55.611Z", "frame": 198, "person_found": true, "confidence": 0.9571, "confidence_percent": 95.71, "bbox": [204, 25, 472, 355]}
+{"timestamp": "2026-06-09T17:22:56.702Z", "frame": 201, "person_found": true, "confidence": 0.9588, "confidence_percent": 95.88, "bbox": [189, 21, 441, 355]}
+{"timestamp": "2026-06-09T17:22:57.786Z", "frame": 204, "person_found": true, "confidence": 0.9605, "confidence_percent": 96.05, "bbox": [204, 24, 425, 355]}
+{"timestamp": "2026-06-09T17:22:58.872Z", "frame": 207, "person_found": true, "confidence": 0.9555, "confidence_percent": 95.55, "bbox": [215, 18, 426, 356]}
+{"timestamp": "2026-06-09T17:22:59.950Z", "frame": 210, "person_found": true, "confidence": 0.9417, "confidence_percent": 94.17, "bbox": [216, 21, 445, 356]}
+{"timestamp": "2026-06-09T17:23:01.040Z", "frame": 213, "person_found": true, "confidence": 0.9508, "confidence_percent": 95.08, "bbox": [215, 18, 437, 356]}
+{"timestamp": "2026-06-09T17:23:02.177Z", "frame": 216, "person_found": true, "confidence": 0.9503, "confidence_percent": 95.03, "bbox": [218, 19, 437, 355]}
+{"timestamp": "2026-06-09T17:23:03.313Z", "frame": 219, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [219, 19, 474, 356]}
+{"timestamp": "2026-06-09T17:23:04.392Z", "frame": 222, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [217, 20, 457, 355]}
+{"timestamp": "2026-06-09T17:23:05.482Z", "frame": 225, "person_found": true, "confidence": 0.9398, "confidence_percent": 93.98, "bbox": [216, 20, 457, 356]}
+{"timestamp": "2026-06-09T17:23:06.604Z", "frame": 228, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [217, 20, 427, 356]}
+{"timestamp": "2026-06-09T17:23:07.830Z", "frame": 231, "person_found": true, "confidence": 0.9605, "confidence_percent": 96.05, "bbox": [208, 22, 425, 356]}
+{"timestamp": "2026-06-09T17:23:08.912Z", "frame": 234, "person_found": true, "confidence": 0.9576, "confidence_percent": 95.76, "bbox": [208, 28, 426, 356]}
+{"timestamp": "2026-06-09T17:23:09.975Z", "frame": 237, "person_found": true, "confidence": 0.961, "confidence_percent": 96.1, "bbox": [209, 24, 427, 356]}
+{"timestamp": "2026-06-09T17:23:11.052Z", "frame": 240, "person_found": true, "confidence": 0.957, "confidence_percent": 95.7, "bbox": [162, 30, 422, 356]}
+{"timestamp": "2026-06-09T17:23:12.119Z", "frame": 243, "person_found": true, "confidence": 0.9589, "confidence_percent": 95.89, "bbox": [134, 26, 416, 356]}
+{"timestamp": "2026-06-09T17:23:13.195Z", "frame": 246, "person_found": true, "confidence": 0.957, "confidence_percent": 95.7, "bbox": [135, 19, 416, 356]}
+{"timestamp": "2026-06-09T17:23:14.298Z", "frame": 249, "person_found": true, "confidence": 0.9523, "confidence_percent": 95.23, "bbox": [144, 18, 418, 355]}
+{"timestamp": "2026-06-09T17:23:15.458Z", "frame": 252, "person_found": true, "confidence": 0.9596, "confidence_percent": 95.96, "bbox": [173, 20, 427, 355]}
+{"timestamp": "2026-06-09T17:23:16.532Z", "frame": 255, "person_found": true, "confidence": 0.9567, "confidence_percent": 95.67, "bbox": [210, 26, 429, 355]}
+{"timestamp": "2026-06-09T17:23:17.616Z", "frame": 258, "person_found": true, "confidence": 0.9562, "confidence_percent": 95.62, "bbox": [203, 22, 458, 356]}
+{"timestamp": "2026-06-09T17:23:18.699Z", "frame": 261, "person_found": true, "confidence": 0.9503, "confidence_percent": 95.03, "bbox": [164, 19, 464, 356]}
+{"timestamp": "2026-06-09T17:23:19.889Z", "frame": 264, "person_found": true, "confidence": 0.9541, "confidence_percent": 95.41, "bbox": [193, 19, 434, 355]}
+{"timestamp": "2026-06-09T17:23:21.215Z", "frame": 267, "person_found": true, "confidence": 0.956, "confidence_percent": 95.6, "bbox": [196, 31, 423, 356]}
+{"timestamp": "2026-06-09T17:23:22.333Z", "frame": 270, "person_found": true, "confidence": 0.9572, "confidence_percent": 95.72, "bbox": [184, 24, 422, 356]}
+{"timestamp": "2026-06-09T17:23:23.395Z", "frame": 273, "person_found": true, "confidence": 0.9581, "confidence_percent": 95.81, "bbox": [190, 22, 422, 356]}
+{"timestamp": "2026-06-09T17:23:24.480Z", "frame": 276, "person_found": true, "confidence": 0.9588, "confidence_percent": 95.88, "bbox": [192, 21, 424, 356]}
+{"timestamp": "2026-06-09T17:23:25.567Z", "frame": 279, "person_found": true, "confidence": 0.9587, "confidence_percent": 95.87, "bbox": [199, 22, 424, 355]}
+{"timestamp": "2026-06-09T17:23:26.667Z", "frame": 282, "person_found": true, "confidence": 0.956, "confidence_percent": 95.6, "bbox": [209, 22, 425, 356]}
+{"timestamp": "2026-06-09T17:23:27.793Z", "frame": 285, "person_found": true, "confidence": 0.9576, "confidence_percent": 95.76, "bbox": [211, 21, 425, 356]}
+{"timestamp": "2026-06-09T17:23:28.878Z", "frame": 288, "person_found": true, "confidence": 0.9463, "confidence_percent": 94.63, "bbox": [154, 24, 475, 356]}
+{"timestamp": "2026-06-09T17:23:29.966Z", "frame": 291, "person_found": true, "confidence": 0.9463, "confidence_percent": 94.63, "bbox": [164, 21, 463, 356]}
+{"timestamp": "2026-06-09T17:23:31.036Z", "frame": 294, "person_found": true, "confidence": 0.959, "confidence_percent": 95.9, "bbox": [171, 28, 442, 356]}
+{"timestamp": "2026-06-09T17:23:32.128Z", "frame": 297, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [197, 24, 427, 355]}
+{"timestamp": "2026-06-09T17:23:33.234Z", "frame": 300, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:23:34.318Z", "frame": 303, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:23:35.399Z", "frame": 306, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:23:36.470Z", "frame": 309, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:23:37.553Z", "frame": 312, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:23:38.648Z", "frame": 315, "person_found": true, "confidence": 0.9441, "confidence_percent": 94.41, "bbox": [181, 23, 419, 356]}
+{"timestamp": "2026-06-09T17:23:39.819Z", "frame": 318, "person_found": true, "confidence": 0.9442, "confidence_percent": 94.42, "bbox": [182, 22, 418, 356]}
+{"timestamp": "2026-06-09T17:23:40.918Z", "frame": 321, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [212, 24, 418, 356]}
+{"timestamp": "2026-06-09T17:23:42.031Z", "frame": 324, "person_found": true, "confidence": 0.9132, "confidence_percent": 91.32, "bbox": [196, 27, 427, 356]}
+{"timestamp": "2026-06-09T17:23:43.117Z", "frame": 327, "person_found": true, "confidence": 0.9471, "confidence_percent": 94.71, "bbox": [207, 27, 438, 356]}
+{"timestamp": "2026-06-09T17:23:44.345Z", "frame": 330, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [212, 22, 455, 355]}
+{"timestamp": "2026-06-09T17:23:45.556Z", "frame": 333, "person_found": true, "confidence": 0.9551, "confidence_percent": 95.51, "bbox": [215, 21, 459, 356]}
+{"timestamp": "2026-06-09T17:23:46.755Z", "frame": 336, "person_found": true, "confidence": 0.8567, "confidence_percent": 85.67, "bbox": [184, 22, 429, 356]}
+{"timestamp": "2026-06-09T17:23:47.910Z", "frame": 339, "person_found": true, "confidence": 0.9501, "confidence_percent": 95.01, "bbox": [195, 24, 428, 356]}
+{"timestamp": "2026-06-09T17:23:49.111Z", "frame": 342, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [244, 24, 431, 356]}
+{"timestamp": "2026-06-09T17:23:50.120Z", "frame": 344, "person_found": true, "confidence": 0.9434, "confidence_percent": 94.34, "bbox": [251, 24, 433, 356]}
+{"timestamp": "2026-06-09T17:23:51.324Z", "frame": 347, "person_found": true, "confidence": 0.9435, "confidence_percent": 94.35, "bbox": [251, 23, 432, 356]}
+{"timestamp": "2026-06-09T17:23:52.538Z", "frame": 350, "person_found": true, "confidence": 0.9384, "confidence_percent": 93.84, "bbox": [251, 25, 432, 356]}
+{"timestamp": "2026-06-09T17:23:53.677Z", "frame": 353, "person_found": true, "confidence": 0.9548, "confidence_percent": 95.48, "bbox": [221, 23, 431, 357]}
+{"timestamp": "2026-06-09T17:23:54.809Z", "frame": 356, "person_found": true, "confidence": 0.9481, "confidence_percent": 94.81, "bbox": [204, 27, 430, 356]}
+{"timestamp": "2026-06-09T17:23:55.978Z", "frame": 359, "person_found": true, "confidence": 0.9519, "confidence_percent": 95.19, "bbox": [219, 26, 430, 357]}
+{"timestamp": "2026-06-09T17:23:57.142Z", "frame": 362, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [219, 28, 429, 357]}
+{"timestamp": "2026-06-09T17:23:58.263Z", "frame": 365, "person_found": true, "confidence": 0.9526, "confidence_percent": 95.26, "bbox": [218, 26, 430, 356]}
+{"timestamp": "2026-06-09T17:23:59.342Z", "frame": 368, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [219, 25, 430, 357]}
+{"timestamp": "2026-06-09T17:24:00.621Z", "frame": 371, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [219, 25, 430, 357]}
+{"timestamp": "2026-06-09T17:24:01.914Z", "frame": 374, "person_found": true, "confidence": 0.9551, "confidence_percent": 95.51, "bbox": [221, 23, 430, 356]}
+{"timestamp": "2026-06-09T17:24:03.242Z", "frame": 377, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [218, 22, 428, 357]}
+{"timestamp": "2026-06-09T17:24:04.667Z", "frame": 380, "person_found": true, "confidence": 0.9563, "confidence_percent": 95.63, "bbox": [217, 23, 439, 356]}
+{"timestamp": "2026-06-09T17:24:05.941Z", "frame": 383, "person_found": true, "confidence": 0.9599, "confidence_percent": 95.99, "bbox": [219, 23, 458, 356]}
+{"timestamp": "2026-06-09T17:24:07.093Z", "frame": 386, "person_found": true, "confidence": 0.9596, "confidence_percent": 95.96, "bbox": [219, 22, 475, 356]}
+{"timestamp": "2026-06-09T17:24:08.195Z", "frame": 389, "person_found": true, "confidence": 0.9482, "confidence_percent": 94.82, "bbox": [222, 22, 429, 356]}
+{"timestamp": "2026-06-09T17:24:09.275Z", "frame": 392, "person_found": true, "confidence": 0.9471, "confidence_percent": 94.71, "bbox": [223, 26, 430, 356]}
+{"timestamp": "2026-06-09T17:24:10.372Z", "frame": 395, "person_found": true, "confidence": 0.9515, "confidence_percent": 95.15, "bbox": [210, 24, 433, 356]}
+{"timestamp": "2026-06-09T17:24:11.464Z", "frame": 398, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [213, 23, 429, 356]}
+{"timestamp": "2026-06-09T17:24:12.534Z", "frame": 401, "person_found": true, "confidence": 0.9456, "confidence_percent": 94.56, "bbox": [221, 21, 428, 356]}
+{"timestamp": "2026-06-09T17:24:13.619Z", "frame": 404, "person_found": true, "confidence": 0.943, "confidence_percent": 94.3, "bbox": [227, 22, 424, 356]}
+{"timestamp": "2026-06-09T17:24:14.736Z", "frame": 407, "person_found": true, "confidence": 0.9398, "confidence_percent": 93.98, "bbox": [230, 23, 424, 356]}
+{"timestamp": "2026-06-09T17:24:16.023Z", "frame": 410, "person_found": true, "confidence": 0.9495, "confidence_percent": 94.95, "bbox": [226, 25, 428, 356]}
+{"timestamp": "2026-06-09T17:24:17.231Z", "frame": 413, "person_found": true, "confidence": 0.9438, "confidence_percent": 94.38, "bbox": [232, 24, 424, 356]}
+{"timestamp": "2026-06-09T17:24:18.322Z", "frame": 416, "person_found": true, "confidence": 0.9451, "confidence_percent": 94.51, "bbox": [226, 25, 424, 357]}
+{"timestamp": "2026-06-09T17:24:19.445Z", "frame": 419, "person_found": true, "confidence": 0.9438, "confidence_percent": 94.38, "bbox": [222, 24, 426, 356]}
+{"timestamp": "2026-06-09T17:24:20.745Z", "frame": 422, "person_found": true, "confidence": 0.9467, "confidence_percent": 94.67, "bbox": [218, 23, 434, 356]}
+{"timestamp": "2026-06-09T17:24:21.776Z", "frame": 424, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [218, 25, 442, 356]}
+{"timestamp": "2026-06-09T17:24:22.990Z", "frame": 427, "person_found": true, "confidence": 0.9462, "confidence_percent": 94.62, "bbox": [218, 23, 465, 356]}
+{"timestamp": "2026-06-09T17:24:24.227Z", "frame": 430, "person_found": true, "confidence": 0.9291, "confidence_percent": 92.91, "bbox": [219, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:24:25.339Z", "frame": 433, "person_found": true, "confidence": 0.9395, "confidence_percent": 93.95, "bbox": [219, 22, 481, 356]}
+{"timestamp": "2026-06-09T17:24:26.428Z", "frame": 436, "person_found": true, "confidence": 0.9484, "confidence_percent": 94.84, "bbox": [218, 21, 472, 356]}
+{"timestamp": "2026-06-09T17:24:27.593Z", "frame": 439, "person_found": true, "confidence": 0.949, "confidence_percent": 94.9, "bbox": [218, 22, 477, 356]}
+{"timestamp": "2026-06-09T17:24:28.853Z", "frame": 442, "person_found": true, "confidence": 0.9595, "confidence_percent": 95.95, "bbox": [206, 21, 473, 356]}
+{"timestamp": "2026-06-09T17:24:29.938Z", "frame": 445, "person_found": true, "confidence": 0.9467, "confidence_percent": 94.67, "bbox": [221, 23, 457, 356]}
+{"timestamp": "2026-06-09T17:24:31.013Z", "frame": 448, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [222, 22, 461, 356]}
+{"timestamp": "2026-06-09T17:24:32.090Z", "frame": 451, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [224, 24, 482, 355]}
+{"timestamp": "2026-06-09T17:24:33.181Z", "frame": 454, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [224, 23, 484, 355]}
+{"timestamp": "2026-06-09T17:24:34.293Z", "frame": 457, "person_found": true, "confidence": 0.9526, "confidence_percent": 95.26, "bbox": [222, 23, 475, 355]}
+{"timestamp": "2026-06-09T17:24:35.351Z", "frame": 460, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [198, 24, 481, 355]}
+{"timestamp": "2026-06-09T17:24:36.442Z", "frame": 463, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [202, 22, 474, 356]}
+{"timestamp": "2026-06-09T17:24:37.524Z", "frame": 466, "person_found": true, "confidence": 0.8997, "confidence_percent": 89.97, "bbox": [147, 13, 519, 356]}
+{"timestamp": "2026-06-09T17:24:38.612Z", "frame": 469, "person_found": true, "confidence": 0.9167, "confidence_percent": 91.67, "bbox": [132, 13, 487, 355]}
+{"timestamp": "2026-06-09T17:24:39.690Z", "frame": 472, "person_found": true, "confidence": 0.8614, "confidence_percent": 86.14, "bbox": [127, 11, 508, 356]}
+{"timestamp": "2026-06-09T17:24:40.840Z", "frame": 475, "person_found": true, "confidence": 0.8962, "confidence_percent": 89.62, "bbox": [133, 12, 534, 357]}
+{"timestamp": "2026-06-09T17:24:41.924Z", "frame": 478, "person_found": true, "confidence": 0.853, "confidence_percent": 85.3, "bbox": [134, 11, 528, 357]}
+{"timestamp": "2026-06-09T17:24:42.972Z", "frame": 481, "person_found": true, "confidence": 0.8463, "confidence_percent": 84.63, "bbox": [130, 10, 505, 356]}
+{"timestamp": "2026-06-09T17:24:44.015Z", "frame": 484, "person_found": true, "confidence": 0.8562, "confidence_percent": 85.62, "bbox": [137, 9, 537, 357]}
+{"timestamp": "2026-06-09T17:24:45.092Z", "frame": 487, "person_found": true, "confidence": 0.8805, "confidence_percent": 88.05, "bbox": [133, 10, 548, 356]}
+{"timestamp": "2026-06-09T17:24:46.183Z", "frame": 490, "person_found": true, "confidence": 0.887, "confidence_percent": 88.7, "bbox": [133, 5, 515, 357]}
+{"timestamp": "2026-06-09T17:24:47.249Z", "frame": 493, "person_found": true, "confidence": 0.9376, "confidence_percent": 93.76, "bbox": [129, 4, 537, 356]}
+{"timestamp": "2026-06-09T17:24:48.299Z", "frame": 496, "person_found": true, "confidence": 0.9575, "confidence_percent": 95.75, "bbox": [153, 7, 550, 355]}
+{"timestamp": "2026-06-09T17:24:49.358Z", "frame": 499, "person_found": true, "confidence": 0.9508, "confidence_percent": 95.08, "bbox": [215, 23, 456, 355]}
+{"timestamp": "2026-06-09T17:24:50.397Z", "frame": 502, "person_found": true, "confidence": 0.9507, "confidence_percent": 95.07, "bbox": [217, 26, 453, 355]}
+{"timestamp": "2026-06-09T17:24:51.455Z", "frame": 505, "person_found": true, "confidence": 0.9493, "confidence_percent": 94.93, "bbox": [214, 24, 459, 355]}
+{"timestamp": "2026-06-09T17:24:52.496Z", "frame": 508, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [216, 23, 461, 355]}
+{"timestamp": "2026-06-09T17:24:53.764Z", "frame": 511, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [216, 23, 460, 355]}
+{"timestamp": "2026-06-09T17:24:54.905Z", "frame": 514, "person_found": true, "confidence": 0.947, "confidence_percent": 94.7, "bbox": [221, 22, 445, 355]}
+{"timestamp": "2026-06-09T17:24:55.987Z", "frame": 517, "person_found": true, "confidence": 0.9385, "confidence_percent": 93.85, "bbox": [226, 23, 420, 355]}
+{"timestamp": "2026-06-09T17:24:57.081Z", "frame": 520, "person_found": true, "confidence": 0.93, "confidence_percent": 93.0, "bbox": [130, 27, 437, 356]}
+{"timestamp": "2026-06-09T17:24:58.155Z", "frame": 523, "person_found": true, "confidence": 0.9496, "confidence_percent": 94.96, "bbox": [104, 29, 458, 355]}
+{"timestamp": "2026-06-09T17:24:59.227Z", "frame": 526, "person_found": true, "confidence": 0.9545, "confidence_percent": 95.45, "bbox": [110, 24, 484, 355]}
+{"timestamp": "2026-06-09T17:25:00.334Z", "frame": 529, "person_found": true, "confidence": 0.9575, "confidence_percent": 95.75, "bbox": [105, 27, 470, 355]}
+{"timestamp": "2026-06-09T17:25:01.532Z", "frame": 532, "person_found": true, "confidence": 0.9562, "confidence_percent": 95.62, "bbox": [106, 25, 471, 355]}
+{"timestamp": "2026-06-09T17:25:02.600Z", "frame": 535, "person_found": true, "confidence": 0.9578, "confidence_percent": 95.78, "bbox": [104, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:25:03.662Z", "frame": 538, "person_found": true, "confidence": 0.9578, "confidence_percent": 95.78, "bbox": [104, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:25:04.760Z", "frame": 541, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [105, 23, 474, 356]}
+{"timestamp": "2026-06-09T17:25:05.930Z", "frame": 544, "person_found": true, "confidence": 0.9462, "confidence_percent": 94.62, "bbox": [112, 24, 471, 356]}
+{"timestamp": "2026-06-09T17:25:07.026Z", "frame": 547, "person_found": true, "confidence": 0.9556, "confidence_percent": 95.56, "bbox": [138, 23, 463, 355]}
+{"timestamp": "2026-06-09T17:25:08.259Z", "frame": 550, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [175, 25, 467, 355]}
+{"timestamp": "2026-06-09T17:25:09.503Z", "frame": 553, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [171, 24, 457, 355]}
+{"timestamp": "2026-06-09T17:25:10.759Z", "frame": 556, "person_found": true, "confidence": 0.9525, "confidence_percent": 95.25, "bbox": [172, 25, 458, 355]}
+{"timestamp": "2026-06-09T17:25:12.015Z", "frame": 559, "person_found": true, "confidence": 0.9483, "confidence_percent": 94.83, "bbox": [172, 24, 459, 355]}
+{"timestamp": "2026-06-09T17:25:13.251Z", "frame": 562, "person_found": true, "confidence": 0.9504, "confidence_percent": 95.04, "bbox": [167, 25, 451, 355]}
+{"timestamp": "2026-06-09T17:25:14.397Z", "frame": 565, "person_found": true, "confidence": 0.9541, "confidence_percent": 95.41, "bbox": [168, 24, 455, 356]}
+{"timestamp": "2026-06-09T17:25:15.487Z", "frame": 568, "person_found": true, "confidence": 0.9523, "confidence_percent": 95.23, "bbox": [162, 23, 457, 355]}
+{"timestamp": "2026-06-09T17:25:16.616Z", "frame": 571, "person_found": true, "confidence": 0.9509, "confidence_percent": 95.09, "bbox": [166, 24, 464, 355]}
+{"timestamp": "2026-06-09T17:25:17.915Z", "frame": 574, "person_found": true, "confidence": 0.9547, "confidence_percent": 95.47, "bbox": [181, 24, 455, 355]}
+{"timestamp": "2026-06-09T17:25:19.138Z", "frame": 577, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [158, 28, 461, 355]}
+{"timestamp": "2026-06-09T17:25:20.313Z", "frame": 580, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [161, 26, 428, 355]}
+{"timestamp": "2026-06-09T17:25:21.440Z", "frame": 583, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [157, 24, 409, 355]}
+{"timestamp": "2026-06-09T17:25:22.554Z", "frame": 586, "person_found": true, "confidence": 0.9515, "confidence_percent": 95.15, "bbox": [155, 25, 409, 355]}
+{"timestamp": "2026-06-09T17:25:23.925Z", "frame": 589, "person_found": true, "confidence": 0.9553, "confidence_percent": 95.53, "bbox": [154, 24, 414, 356]}
+{"timestamp": "2026-06-09T17:25:25.318Z", "frame": 592, "person_found": true, "confidence": 0.9532, "confidence_percent": 95.32, "bbox": [165, 23, 424, 356]}
+{"timestamp": "2026-06-09T17:25:26.586Z", "frame": 595, "person_found": true, "confidence": 0.9515, "confidence_percent": 95.15, "bbox": [178, 22, 424, 355]}
+{"timestamp": "2026-06-09T17:25:27.680Z", "frame": 598, "person_found": true, "confidence": 0.9502, "confidence_percent": 95.02, "bbox": [195, 21, 425, 355]}
+{"timestamp": "2026-06-09T17:25:28.753Z", "frame": 601, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [187, 21, 431, 356]}
+{"timestamp": "2026-06-09T17:25:29.926Z", "frame": 604, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [176, 25, 433, 355]}
+{"timestamp": "2026-06-09T17:25:31.039Z", "frame": 607, "person_found": true, "confidence": 0.951, "confidence_percent": 95.1, "bbox": [172, 24, 438, 355]}
+{"timestamp": "2026-06-09T17:25:32.110Z", "frame": 610, "person_found": true, "confidence": 0.9533, "confidence_percent": 95.33, "bbox": [176, 24, 439, 355]}
+{"timestamp": "2026-06-09T17:25:33.215Z", "frame": 613, "person_found": true, "confidence": 0.9564, "confidence_percent": 95.64, "bbox": [173, 24, 435, 355]}
+{"timestamp": "2026-06-09T17:25:34.301Z", "frame": 616, "person_found": true, "confidence": 0.9438, "confidence_percent": 94.38, "bbox": [191, 23, 417, 356]}
+{"timestamp": "2026-06-09T17:25:35.383Z", "frame": 619, "person_found": true, "confidence": 0.9491, "confidence_percent": 94.91, "bbox": [199, 22, 417, 355]}
+{"timestamp": "2026-06-09T17:25:36.461Z", "frame": 622, "person_found": true, "confidence": 0.9555, "confidence_percent": 95.55, "bbox": [205, 23, 436, 355]}
+{"timestamp": "2026-06-09T17:25:37.551Z", "frame": 625, "person_found": true, "confidence": 0.9525, "confidence_percent": 95.25, "bbox": [199, 23, 461, 355]}
+{"timestamp": "2026-06-09T17:25:38.630Z", "frame": 628, "person_found": true, "confidence": 0.9393, "confidence_percent": 93.93, "bbox": [212, 23, 462, 355]}
+{"timestamp": "2026-06-09T17:25:39.727Z", "frame": 631, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [133, 3, 537, 354]}
+{"timestamp": "2026-06-09T17:25:40.802Z", "frame": 634, "person_found": true, "confidence": 0.9409, "confidence_percent": 94.09, "bbox": [173, 8, 543, 354]}
+{"timestamp": "2026-06-09T17:25:41.893Z", "frame": 637, "person_found": true, "confidence": 0.9335, "confidence_percent": 93.35, "bbox": [155, 5, 542, 356]}
+{"timestamp": "2026-06-09T17:25:43.073Z", "frame": 640, "person_found": true, "confidence": 0.9356, "confidence_percent": 93.56, "bbox": [200, 6, 550, 357]}
+{"timestamp": "2026-06-09T17:25:44.187Z", "frame": 643, "person_found": true, "confidence": 0.9449, "confidence_percent": 94.49, "bbox": [145, 6, 523, 356]}
+{"timestamp": "2026-06-09T17:25:45.277Z", "frame": 646, "person_found": true, "confidence": 0.9535, "confidence_percent": 95.35, "bbox": [106, 6, 529, 354]}
+{"timestamp": "2026-06-09T17:25:46.371Z", "frame": 649, "person_found": true, "confidence": 0.9529, "confidence_percent": 95.29, "bbox": [85, 6, 531, 354]}
+{"timestamp": "2026-06-09T17:25:47.452Z", "frame": 652, "person_found": true, "confidence": 0.9602, "confidence_percent": 96.02, "bbox": [99, 6, 503, 354]}
+{"timestamp": "2026-06-09T17:25:48.535Z", "frame": 655, "person_found": true, "confidence": 0.9542, "confidence_percent": 95.42, "bbox": [217, 28, 467, 355]}
+{"timestamp": "2026-06-09T17:25:49.587Z", "frame": 658, "person_found": true, "confidence": 0.9553, "confidence_percent": 95.53, "bbox": [211, 26, 462, 355]}
+{"timestamp": "2026-06-09T17:25:50.646Z", "frame": 661, "person_found": true, "confidence": 0.9506, "confidence_percent": 95.06, "bbox": [145, 26, 500, 355]}
+{"timestamp": "2026-06-09T17:25:51.723Z", "frame": 664, "person_found": true, "confidence": 0.9501, "confidence_percent": 95.01, "bbox": [188, 24, 493, 355]}
+{"timestamp": "2026-06-09T17:25:52.802Z", "frame": 667, "person_found": true, "confidence": 0.9551, "confidence_percent": 95.51, "bbox": [219, 26, 491, 355]}
+{"timestamp": "2026-06-09T17:25:53.881Z", "frame": 670, "person_found": true, "confidence": 0.9564, "confidence_percent": 95.64, "bbox": [219, 28, 491, 355]}
+{"timestamp": "2026-06-09T17:25:55.078Z", "frame": 673, "person_found": true, "confidence": 0.9568, "confidence_percent": 95.68, "bbox": [220, 24, 495, 355]}
+{"timestamp": "2026-06-09T17:25:56.168Z", "frame": 676, "person_found": true, "confidence": 0.9562, "confidence_percent": 95.62, "bbox": [220, 25, 496, 355]}
+{"timestamp": "2026-06-09T17:25:57.256Z", "frame": 679, "person_found": true, "confidence": 0.9563, "confidence_percent": 95.63, "bbox": [167, 24, 503, 355]}
+{"timestamp": "2026-06-09T17:25:58.334Z", "frame": 682, "person_found": true, "confidence": 0.9548, "confidence_percent": 95.48, "bbox": [203, 22, 479, 355]}
+{"timestamp": "2026-06-09T17:25:59.453Z", "frame": 685, "person_found": true, "confidence": 0.951, "confidence_percent": 95.1, "bbox": [200, 23, 478, 355]}
+{"timestamp": "2026-06-09T17:26:00.561Z", "frame": 688, "person_found": true, "confidence": 0.9524, "confidence_percent": 95.24, "bbox": [196, 24, 476, 355]}
+{"timestamp": "2026-06-09T17:26:01.639Z", "frame": 691, "person_found": true, "confidence": 0.9516, "confidence_percent": 95.16, "bbox": [217, 29, 473, 355]}
+{"timestamp": "2026-06-09T17:26:02.700Z", "frame": 694, "person_found": true, "confidence": 0.9524, "confidence_percent": 95.24, "bbox": [217, 25, 473, 355]}
+{"timestamp": "2026-06-09T17:26:03.767Z", "frame": 697, "person_found": true, "confidence": 0.9532, "confidence_percent": 95.32, "bbox": [219, 23, 465, 355]}
+{"timestamp": "2026-06-09T17:26:04.864Z", "frame": 700, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [222, 24, 466, 355]}
+{"timestamp": "2026-06-09T17:26:05.940Z", "frame": 703, "person_found": true, "confidence": 0.9476, "confidence_percent": 94.76, "bbox": [223, 24, 468, 355]}
+{"timestamp": "2026-06-09T17:26:07.106Z", "frame": 706, "person_found": true, "confidence": 0.9426, "confidence_percent": 94.26, "bbox": [222, 26, 477, 355]}
+{"timestamp": "2026-06-09T17:26:08.291Z", "frame": 709, "person_found": true, "confidence": 0.9426, "confidence_percent": 94.26, "bbox": [207, 18, 468, 356]}
+{"timestamp": "2026-06-09T17:26:09.393Z", "frame": 712, "person_found": true, "confidence": 0.9377, "confidence_percent": 93.77, "bbox": [205, 46, 537, 356]}
+{"timestamp": "2026-06-09T17:26:10.466Z", "frame": 715, "person_found": true, "confidence": 0.9607, "confidence_percent": 96.07, "bbox": [273, 1, 638, 354]}
+{"timestamp": "2026-06-09T17:26:11.599Z", "frame": 718, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:12.764Z", "frame": 721, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:13.901Z", "frame": 724, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:15.047Z", "frame": 727, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:16.204Z", "frame": 730, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:17.316Z", "frame": 733, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:26:18.454Z", "frame": 736, "person_found": true, "confidence": 0.9552, "confidence_percent": 95.52, "bbox": [151, 12, 570, 356]}
+{"timestamp": "2026-06-09T17:26:19.728Z", "frame": 739, "person_found": true, "confidence": 0.9553, "confidence_percent": 95.53, "bbox": [154, 25, 498, 356]}
+{"timestamp": "2026-06-09T17:26:21.005Z", "frame": 742, "person_found": true, "confidence": 0.951, "confidence_percent": 95.1, "bbox": [152, 28, 499, 356]}
+{"timestamp": "2026-06-09T17:26:22.449Z", "frame": 745, "person_found": true, "confidence": 0.9496, "confidence_percent": 94.96, "bbox": [173, 24, 530, 356]}
+{"timestamp": "2026-06-09T17:26:23.670Z", "frame": 748, "person_found": true, "confidence": 0.9581, "confidence_percent": 95.81, "bbox": [294, 33, 639, 355]}
+{"timestamp": "2026-06-09T17:26:24.988Z", "frame": 751, "person_found": true, "confidence": 0.8444, "confidence_percent": 84.44, "bbox": [319, 212, 345, 300]}
+{"timestamp": "2026-06-09T17:26:26.424Z", "frame": 754, "person_found": true, "confidence": 0.8407, "confidence_percent": 84.07, "bbox": [316, 212, 341, 304]}
+{"timestamp": "2026-06-09T17:26:27.447Z", "frame": 756, "person_found": true, "confidence": 0.8474, "confidence_percent": 84.74, "bbox": [312, 212, 344, 302]}
+{"timestamp": "2026-06-09T17:26:28.471Z", "frame": 758, "person_found": true, "confidence": 0.8378, "confidence_percent": 83.78, "bbox": [315, 213, 343, 304]}
+{"timestamp": "2026-06-09T17:26:29.476Z", "frame": 760, "person_found": true, "confidence": 0.8449, "confidence_percent": 84.49, "bbox": [317, 212, 341, 303]}
+{"timestamp": "2026-06-09T17:26:30.916Z", "frame": 763, "person_found": true, "confidence": 0.8437, "confidence_percent": 84.37, "bbox": [319, 211, 342, 299]}
+{"timestamp": "2026-06-09T17:26:32.252Z", "frame": 766, "person_found": true, "confidence": 0.7731, "confidence_percent": 77.31, "bbox": [318, 212, 345, 301]}
+{"timestamp": "2026-06-09T17:26:33.366Z", "frame": 769, "person_found": true, "confidence": 0.8617, "confidence_percent": 86.17, "bbox": [311, 213, 342, 303]}
+{"timestamp": "2026-06-09T17:26:34.581Z", "frame": 772, "person_found": true, "confidence": 0.811, "confidence_percent": 81.1, "bbox": [314, 212, 339, 300]}
+{"timestamp": "2026-06-09T17:26:35.665Z", "frame": 775, "person_found": true, "confidence": 0.8609, "confidence_percent": 86.09, "bbox": [312, 213, 341, 303]}
+{"timestamp": "2026-06-09T17:26:36.802Z", "frame": 778, "person_found": true, "confidence": 0.8628, "confidence_percent": 86.28, "bbox": [323, 212, 346, 303]}
+{"timestamp": "2026-06-09T17:26:37.891Z", "frame": 781, "person_found": true, "confidence": 0.8686, "confidence_percent": 86.86, "bbox": [312, 211, 345, 300]}
+{"timestamp": "2026-06-09T17:26:39.152Z", "frame": 784, "person_found": true, "confidence": 0.8416, "confidence_percent": 84.16, "bbox": [324, 210, 345, 301]}
+{"timestamp": "2026-06-09T17:26:40.275Z", "frame": 787, "person_found": true, "confidence": 0.8335, "confidence_percent": 83.35, "bbox": [318, 213, 342, 301]}
+{"timestamp": "2026-06-09T17:26:41.430Z", "frame": 790, "person_found": true, "confidence": 0.8658, "confidence_percent": 86.58, "bbox": [314, 212, 344, 295]}
+{"timestamp": "2026-06-09T17:26:42.571Z", "frame": 793, "person_found": true, "confidence": 0.8345, "confidence_percent": 83.45, "bbox": [314, 207, 339, 290]}
+{"timestamp": "2026-06-09T17:26:43.701Z", "frame": 796, "person_found": true, "confidence": 0.8187, "confidence_percent": 81.87, "bbox": [316, 209, 339, 286]}
+{"timestamp": "2026-06-09T17:26:44.806Z", "frame": 799, "person_found": true, "confidence": 0.7738, "confidence_percent": 77.38, "bbox": [320, 209, 341, 279]}
+{"timestamp": "2026-06-09T17:26:45.920Z", "frame": 802, "person_found": true, "confidence": 0.8393, "confidence_percent": 83.93, "bbox": [322, 207, 346, 279]}
+{"timestamp": "2026-06-09T17:26:47.099Z", "frame": 805, "person_found": true, "confidence": 0.8211, "confidence_percent": 82.11, "bbox": [323, 207, 345, 280]}
+{"timestamp": "2026-06-09T17:26:48.226Z", "frame": 808, "person_found": true, "confidence": 0.8347, "confidence_percent": 83.47, "bbox": [319, 210, 345, 286]}
+{"timestamp": "2026-06-09T17:26:49.353Z", "frame": 811, "person_found": true, "confidence": 0.7474, "confidence_percent": 74.74, "bbox": [322, 214, 343, 290]}
+{"timestamp": "2026-06-09T17:26:50.489Z", "frame": 814, "person_found": true, "confidence": 0.79, "confidence_percent": 79.0, "bbox": [322, 215, 341, 295]}
+{"timestamp": "2026-06-09T17:26:51.599Z", "frame": 817, "person_found": true, "confidence": 0.8682, "confidence_percent": 86.82, "bbox": [317, 213, 338, 295]}
+{"timestamp": "2026-06-09T17:26:52.722Z", "frame": 820, "person_found": true, "confidence": 0.8115, "confidence_percent": 81.15, "bbox": [321, 218, 344, 294]}
+{"timestamp": "2026-06-09T17:26:53.811Z", "frame": 823, "person_found": true, "confidence": 0.8455, "confidence_percent": 84.55, "bbox": [322, 219, 348, 298]}
+{"timestamp": "2026-06-09T17:26:54.888Z", "frame": 826, "person_found": true, "confidence": 0.8133, "confidence_percent": 81.33, "bbox": [322, 213, 347, 297]}
+{"timestamp": "2026-06-09T17:26:55.976Z", "frame": 829, "person_found": true, "confidence": 0.8546, "confidence_percent": 85.46, "bbox": [320, 212, 347, 298]}
+{"timestamp": "2026-06-09T17:26:57.072Z", "frame": 832, "person_found": true, "confidence": 0.8283, "confidence_percent": 82.83, "bbox": [324, 216, 345, 303]}
+{"timestamp": "2026-06-09T17:26:58.176Z", "frame": 835, "person_found": true, "confidence": 0.8012, "confidence_percent": 80.12, "bbox": [313, 213, 340, 299]}
+{"timestamp": "2026-06-09T17:26:59.366Z", "frame": 838, "person_found": true, "confidence": 0.8279, "confidence_percent": 82.79, "bbox": [321, 212, 345, 295]}
+{"timestamp": "2026-06-09T17:27:00.491Z", "frame": 841, "person_found": true, "confidence": 0.8157, "confidence_percent": 81.57, "bbox": [323, 216, 346, 294]}
+{"timestamp": "2026-06-09T17:27:01.637Z", "frame": 844, "person_found": true, "confidence": 0.8172, "confidence_percent": 81.72, "bbox": [324, 217, 345, 291]}
+{"timestamp": "2026-06-09T17:27:02.730Z", "frame": 847, "person_found": true, "confidence": 0.8053, "confidence_percent": 80.53, "bbox": [321, 214, 346, 290]}
+{"timestamp": "2026-06-09T17:27:03.807Z", "frame": 850, "person_found": true, "confidence": 0.7944, "confidence_percent": 79.44, "bbox": [316, 217, 344, 290]}
+{"timestamp": "2026-06-09T17:27:04.886Z", "frame": 853, "person_found": true, "confidence": 0.8506, "confidence_percent": 85.06, "bbox": [311, 220, 340, 295]}
+{"timestamp": "2026-06-09T17:27:06.004Z", "frame": 856, "person_found": true, "confidence": 0.7995, "confidence_percent": 79.95, "bbox": [312, 221, 339, 293]}
+{"timestamp": "2026-06-09T17:27:07.241Z", "frame": 859, "person_found": true, "confidence": 0.7456, "confidence_percent": 74.56, "bbox": [316, 218, 339, 293]}
+{"timestamp": "2026-06-09T17:27:08.414Z", "frame": 862, "person_found": true, "confidence": 0.7691, "confidence_percent": 76.91, "bbox": [318, 219, 341, 294]}
+{"timestamp": "2026-06-09T17:27:09.637Z", "frame": 865, "person_found": true, "confidence": 0.6961, "confidence_percent": 69.61, "bbox": [323, 223, 342, 296]}
+{"timestamp": "2026-06-09T17:36:43.395Z", "frame": 1, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:36:44.537Z", "frame": 5, "person_found": true, "confidence": 0.9386, "confidence_percent": 93.86, "bbox": [133, 1, 563, 355]}
+{"timestamp": "2026-06-09T17:36:45.644Z", "frame": 8, "person_found": true, "confidence": 0.9594, "confidence_percent": 95.94, "bbox": [154, 0, 551, 355]}
+{"timestamp": "2026-06-09T17:36:46.834Z", "frame": 11, "person_found": true, "confidence": 0.9473, "confidence_percent": 94.73, "bbox": [185, 24, 544, 355]}
+{"timestamp": "2026-06-09T17:36:48.012Z", "frame": 14, "person_found": true, "confidence": 0.7222, "confidence_percent": 72.22, "bbox": [318, 186, 338, 239]}
+{"timestamp": "2026-06-09T17:36:49.355Z", "frame": 17, "person_found": true, "confidence": 0.8324, "confidence_percent": 83.24, "bbox": [314, 186, 336, 243]}
+{"timestamp": "2026-06-09T17:36:50.628Z", "frame": 20, "person_found": true, "confidence": 0.7562, "confidence_percent": 75.62, "bbox": [315, 185, 336, 243]}
+{"timestamp": "2026-06-09T17:36:51.933Z", "frame": 23, "person_found": true, "confidence": 0.7875, "confidence_percent": 78.75, "bbox": [320, 188, 339, 248]}
+{"timestamp": "2026-06-09T17:36:53.007Z", "frame": 25, "person_found": true, "confidence": 0.8332, "confidence_percent": 83.32, "bbox": [321, 188, 342, 245]}
+{"timestamp": "2026-06-09T17:36:54.007Z", "frame": 27, "person_found": true, "confidence": 0.7928, "confidence_percent": 79.28, "bbox": [320, 187, 340, 246]}
+{"timestamp": "2026-06-09T17:36:55.221Z", "frame": 29, "person_found": true, "confidence": 0.751, "confidence_percent": 75.1, "bbox": [316, 188, 336, 243]}
+{"timestamp": "2026-06-09T17:36:56.385Z", "frame": 31, "person_found": true, "confidence": 0.7807, "confidence_percent": 78.07, "bbox": [306, 187, 327, 247]}
+{"timestamp": "2026-06-09T17:36:57.822Z", "frame": 34, "person_found": true, "confidence": 0.9554, "confidence_percent": 95.54, "bbox": [94, 0, 444, 354]}
+{"timestamp": "2026-06-09T17:36:59.134Z", "frame": 37, "person_found": true, "confidence": 0.9637, "confidence_percent": 96.37, "bbox": [104, 1, 504, 354]}
+{"timestamp": "2026-06-09T17:37:00.362Z", "frame": 40, "person_found": true, "confidence": 0.9568, "confidence_percent": 95.68, "bbox": [135, 3, 466, 354]}
+{"timestamp": "2026-06-09T17:37:01.489Z", "frame": 43, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [129, 0, 504, 355]}
+{"timestamp": "2026-06-09T17:37:02.764Z", "frame": 46, "person_found": true, "confidence": 0.956, "confidence_percent": 95.6, "bbox": [124, 1, 499, 355]}
+{"timestamp": "2026-06-09T17:37:03.875Z", "frame": 49, "person_found": true, "confidence": 0.958, "confidence_percent": 95.8, "bbox": [136, 17, 493, 355]}
+{"timestamp": "2026-06-09T17:37:05.039Z", "frame": 52, "person_found": true, "confidence": 0.9617, "confidence_percent": 96.17, "bbox": [117, 1, 446, 355]}
+{"timestamp": "2026-06-09T17:37:06.221Z", "frame": 55, "person_found": true, "confidence": 0.7776, "confidence_percent": 77.76, "bbox": [291, 177, 315, 239]}
+{"timestamp": "2026-06-09T17:37:07.354Z", "frame": 58, "person_found": true, "confidence": 0.7704, "confidence_percent": 77.04, "bbox": [299, 181, 319, 244]}
+{"timestamp": "2026-06-09T17:37:08.593Z", "frame": 61, "person_found": true, "confidence": 0.7285, "confidence_percent": 72.85, "bbox": [302, 180, 326, 243]}
+{"timestamp": "2026-06-09T17:37:09.743Z", "frame": 64, "person_found": true, "confidence": 0.7945, "confidence_percent": 79.45, "bbox": [305, 180, 328, 241]}
+{"timestamp": "2026-06-09T17:37:10.955Z", "frame": 67, "person_found": true, "confidence": 0.8321, "confidence_percent": 83.21, "bbox": [297, 179, 322, 244]}
+{"timestamp": "2026-06-09T17:37:12.254Z", "frame": 70, "person_found": true, "confidence": 0.7911, "confidence_percent": 79.11, "bbox": [291, 182, 315, 245]}
+{"timestamp": "2026-06-09T17:37:13.436Z", "frame": 73, "person_found": true, "confidence": 0.749, "confidence_percent": 74.9, "bbox": [291, 181, 316, 238]}
+{"timestamp": "2026-06-09T17:37:14.715Z", "frame": 76, "person_found": true, "confidence": 0.7687, "confidence_percent": 76.87, "bbox": [298, 184, 326, 246]}
+{"timestamp": "2026-06-09T17:37:15.871Z", "frame": 79, "person_found": true, "confidence": 0.7841, "confidence_percent": 78.41, "bbox": [314, 187, 335, 245]}
+{"timestamp": "2026-06-09T17:37:16.995Z", "frame": 82, "person_found": true, "confidence": 0.9428, "confidence_percent": 94.28, "bbox": [157, 2, 637, 354]}
+{"timestamp": "2026-06-09T17:37:18.017Z", "frame": 85, "person_found": true, "confidence": 0.9622, "confidence_percent": 96.22, "bbox": [159, 11, 539, 355]}
+{"timestamp": "2026-06-09T17:37:19.185Z", "frame": 88, "person_found": true, "confidence": 0.9533, "confidence_percent": 95.33, "bbox": [152, 29, 462, 355]}
+{"timestamp": "2026-06-09T17:37:20.528Z", "frame": 91, "person_found": true, "confidence": 0.9568, "confidence_percent": 95.68, "bbox": [130, 5, 445, 354]}
+{"timestamp": "2026-06-09T17:37:21.646Z", "frame": 94, "person_found": true, "confidence": 0.9581, "confidence_percent": 95.81, "bbox": [129, 0, 449, 354]}
+{"timestamp": "2026-06-09T17:37:22.760Z", "frame": 97, "person_found": true, "confidence": 0.9583, "confidence_percent": 95.83, "bbox": [137, 7, 437, 355]}
+{"timestamp": "2026-06-09T17:37:23.897Z", "frame": 100, "person_found": true, "confidence": 0.7956, "confidence_percent": 79.56, "bbox": [322, 182, 344, 248]}
+{"timestamp": "2026-06-09T17:37:24.955Z", "frame": 103, "person_found": true, "confidence": 0.8162, "confidence_percent": 81.62, "bbox": [330, 184, 352, 251]}
+{"timestamp": "2026-06-09T17:37:26.069Z", "frame": 106, "person_found": true, "confidence": 0.8396, "confidence_percent": 83.96, "bbox": [335, 187, 358, 257]}
+{"timestamp": "2026-06-09T17:37:27.244Z", "frame": 109, "person_found": true, "confidence": 0.8495, "confidence_percent": 84.95, "bbox": [326, 212, 351, 285]}
+{"timestamp": "2026-06-09T17:37:28.704Z", "frame": 112, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:30.124Z", "frame": 115, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:31.379Z", "frame": 118, "person_found": true, "confidence": 0.8946, "confidence_percent": 89.46, "bbox": [355, 86, 466, 324]}
+{"timestamp": "2026-06-09T17:37:32.520Z", "frame": 121, "person_found": true, "confidence": 0.9151, "confidence_percent": 91.51, "bbox": [336, 88, 468, 267]}
+{"timestamp": "2026-06-09T17:37:33.867Z", "frame": 124, "person_found": true, "confidence": 0.8966, "confidence_percent": 89.66, "bbox": [352, 126, 422, 267]}
+{"timestamp": "2026-06-09T17:37:35.063Z", "frame": 127, "person_found": true, "confidence": 0.7065, "confidence_percent": 70.65, "bbox": [350, 155, 398, 273]}
+{"timestamp": "2026-06-09T17:37:36.132Z", "frame": 130, "person_found": true, "confidence": 0.7869, "confidence_percent": 78.69, "bbox": [334, 172, 383, 258]}
+{"timestamp": "2026-06-09T17:37:37.479Z", "frame": 134, "person_found": true, "confidence": 0.881, "confidence_percent": 88.1, "bbox": [344, 217, 373, 305]}
+{"timestamp": "2026-06-09T17:37:38.609Z", "frame": 137, "person_found": true, "confidence": 0.8478, "confidence_percent": 84.78, "bbox": [347, 207, 376, 294]}
+{"timestamp": "2026-06-09T17:37:39.969Z", "frame": 140, "person_found": true, "confidence": 0.8111, "confidence_percent": 81.11, "bbox": [352, 209, 381, 298]}
+{"timestamp": "2026-06-09T17:37:41.131Z", "frame": 143, "person_found": true, "confidence": 0.8255, "confidence_percent": 82.55, "bbox": [354, 203, 382, 291]}
+{"timestamp": "2026-06-09T17:37:42.446Z", "frame": 146, "person_found": true, "confidence": 0.8455, "confidence_percent": 84.55, "bbox": [276, 159, 308, 251]}
+{"timestamp": "2026-06-09T17:37:43.614Z", "frame": 149, "person_found": true, "confidence": 0.8474, "confidence_percent": 84.74, "bbox": [277, 165, 310, 261]}
+{"timestamp": "2026-06-09T17:37:44.706Z", "frame": 152, "person_found": true, "confidence": 0.6741, "confidence_percent": 67.41, "bbox": [276, 170, 307, 255]}
+{"timestamp": "2026-06-09T17:37:45.803Z", "frame": 155, "person_found": true, "confidence": 0.5516, "confidence_percent": 55.16, "bbox": [280, 170, 312, 248]}
+{"timestamp": "2026-06-09T17:37:46.838Z", "frame": 158, "person_found": true, "confidence": 0.8456, "confidence_percent": 84.56, "bbox": [295, 167, 338, 283]}
+{"timestamp": "2026-06-09T17:37:47.870Z", "frame": 161, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:48.921Z", "frame": 164, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:49.967Z", "frame": 167, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:51.201Z", "frame": 170, "person_found": true, "confidence": 0.8857, "confidence_percent": 88.57, "bbox": [489, 148, 536, 273]}
+{"timestamp": "2026-06-09T17:37:52.341Z", "frame": 173, "person_found": true, "confidence": 0.8655, "confidence_percent": 86.55, "bbox": [517, 143, 556, 261]}
+{"timestamp": "2026-06-09T17:37:53.493Z", "frame": 176, "person_found": true, "confidence": 0.863, "confidence_percent": 86.3, "bbox": [516, 191, 551, 299]}
+{"timestamp": "2026-06-09T17:37:54.507Z", "frame": 179, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:55.635Z", "frame": 182, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:37:56.940Z", "frame": 185, "person_found": true, "confidence": 0.9346, "confidence_percent": 93.46, "bbox": [150, 0, 634, 354]}
+{"timestamp": "2026-06-09T17:37:58.217Z", "frame": 188, "person_found": true, "confidence": 0.9598, "confidence_percent": 95.98, "bbox": [125, 0, 495, 355]}
+{"timestamp": "2026-06-09T17:37:59.492Z", "frame": 191, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [145, 6, 445, 354]}
+{"timestamp": "2026-06-09T17:38:00.810Z", "frame": 194, "person_found": true, "confidence": 0.9556, "confidence_percent": 95.56, "bbox": [143, 20, 490, 354]}
+{"timestamp": "2026-06-09T17:38:02.198Z", "frame": 197, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [210, 26, 482, 355]}
+{"timestamp": "2026-06-09T17:38:03.224Z", "frame": 199, "person_found": true, "confidence": 0.9561, "confidence_percent": 95.61, "bbox": [203, 24, 457, 355]}
+{"timestamp": "2026-06-09T17:38:04.280Z", "frame": 201, "person_found": true, "confidence": 0.9588, "confidence_percent": 95.88, "bbox": [189, 21, 441, 355]}
+{"timestamp": "2026-06-09T17:38:05.303Z", "frame": 203, "person_found": true, "confidence": 0.9559, "confidence_percent": 95.59, "bbox": [192, 22, 432, 356]}
+{"timestamp": "2026-06-09T17:38:06.704Z", "frame": 206, "person_found": true, "confidence": 0.958, "confidence_percent": 95.8, "bbox": [212, 25, 424, 356]}
+{"timestamp": "2026-06-09T17:38:07.949Z", "frame": 209, "person_found": true, "confidence": 0.9515, "confidence_percent": 95.15, "bbox": [217, 22, 431, 356]}
+{"timestamp": "2026-06-09T17:38:09.084Z", "frame": 212, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [215, 19, 436, 356]}
+{"timestamp": "2026-06-09T17:38:10.209Z", "frame": 215, "person_found": true, "confidence": 0.9516, "confidence_percent": 95.16, "bbox": [216, 19, 439, 356]}
+{"timestamp": "2026-06-09T17:38:11.330Z", "frame": 218, "person_found": true, "confidence": 0.9474, "confidence_percent": 94.74, "bbox": [219, 21, 448, 355]}
+{"timestamp": "2026-06-09T17:38:12.409Z", "frame": 221, "person_found": true, "confidence": 0.9564, "confidence_percent": 95.64, "bbox": [219, 20, 457, 355]}
+{"timestamp": "2026-06-09T17:38:13.628Z", "frame": 224, "person_found": true, "confidence": 0.9535, "confidence_percent": 95.35, "bbox": [216, 21, 438, 356]}
+{"timestamp": "2026-06-09T17:38:15.140Z", "frame": 226, "person_found": true, "confidence": 0.9533, "confidence_percent": 95.33, "bbox": [216, 21, 429, 356]}
+{"timestamp": "2026-06-09T17:38:16.242Z", "frame": 228, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [217, 20, 427, 356]}
+{"timestamp": "2026-06-09T17:38:17.579Z", "frame": 231, "person_found": true, "confidence": 0.9605, "confidence_percent": 96.05, "bbox": [208, 22, 425, 356]}
+{"timestamp": "2026-06-09T17:38:18.885Z", "frame": 234, "person_found": true, "confidence": 0.9576, "confidence_percent": 95.76, "bbox": [208, 28, 426, 356]}
+{"timestamp": "2026-06-09T17:38:19.957Z", "frame": 236, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [209, 24, 426, 356]}
+{"timestamp": "2026-06-09T17:38:21.208Z", "frame": 239, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [162, 27, 425, 355]}
+{"timestamp": "2026-06-09T17:38:22.344Z", "frame": 242, "person_found": true, "confidence": 0.957, "confidence_percent": 95.7, "bbox": [137, 28, 417, 355]}
+{"timestamp": "2026-06-09T17:38:23.427Z", "frame": 245, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [133, 20, 415, 356]}
+{"timestamp": "2026-06-09T17:38:24.468Z", "frame": 248, "person_found": true, "confidence": 0.9568, "confidence_percent": 95.68, "bbox": [142, 19, 417, 355]}
+{"timestamp": "2026-06-09T17:38:25.532Z", "frame": 251, "person_found": true, "confidence": 0.957, "confidence_percent": 95.7, "bbox": [182, 18, 424, 355]}
+{"timestamp": "2026-06-09T17:38:26.628Z", "frame": 254, "person_found": true, "confidence": 0.9545, "confidence_percent": 95.45, "bbox": [207, 19, 429, 355]}
+{"timestamp": "2026-06-09T17:38:27.649Z", "frame": 257, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [203, 24, 460, 356]}
+{"timestamp": "2026-06-09T17:38:28.819Z", "frame": 260, "person_found": true, "confidence": 0.9543, "confidence_percent": 95.43, "bbox": [179, 20, 459, 356]}
+{"timestamp": "2026-06-09T17:38:29.914Z", "frame": 263, "person_found": true, "confidence": 0.9543, "confidence_percent": 95.43, "bbox": [184, 20, 448, 356]}
+{"timestamp": "2026-06-09T17:38:31.019Z", "frame": 266, "person_found": true, "confidence": 0.9584, "confidence_percent": 95.84, "bbox": [207, 32, 426, 355]}
+{"timestamp": "2026-06-09T17:38:32.064Z", "frame": 269, "person_found": true, "confidence": 0.9571, "confidence_percent": 95.71, "bbox": [186, 30, 421, 356]}
+{"timestamp": "2026-06-09T17:38:33.132Z", "frame": 272, "person_found": true, "confidence": 0.9585, "confidence_percent": 95.85, "bbox": [188, 21, 422, 356]}
+{"timestamp": "2026-06-09T17:38:34.231Z", "frame": 275, "person_found": true, "confidence": 0.9579, "confidence_percent": 95.79, "bbox": [191, 22, 423, 356]}
+{"timestamp": "2026-06-09T17:38:35.295Z", "frame": 278, "person_found": true, "confidence": 0.9591, "confidence_percent": 95.91, "bbox": [199, 22, 424, 355]}
+{"timestamp": "2026-06-09T17:38:36.318Z", "frame": 281, "person_found": true, "confidence": 0.958, "confidence_percent": 95.8, "bbox": [208, 24, 424, 355]}
+{"timestamp": "2026-06-09T17:38:37.666Z", "frame": 285, "person_found": true, "confidence": 0.9576, "confidence_percent": 95.76, "bbox": [211, 21, 425, 356]}
+{"timestamp": "2026-06-09T17:38:38.689Z", "frame": 288, "person_found": true, "confidence": 0.9463, "confidence_percent": 94.63, "bbox": [154, 24, 475, 356]}
+{"timestamp": "2026-06-09T17:38:39.751Z", "frame": 291, "person_found": true, "confidence": 0.9463, "confidence_percent": 94.63, "bbox": [164, 21, 463, 356]}
+{"timestamp": "2026-06-09T17:38:40.872Z", "frame": 294, "person_found": true, "confidence": 0.959, "confidence_percent": 95.9, "bbox": [171, 28, 442, 356]}
+{"timestamp": "2026-06-09T17:38:41.925Z", "frame": 297, "person_found": true, "confidence": 0.9569, "confidence_percent": 95.69, "bbox": [197, 24, 427, 355]}
+{"timestamp": "2026-06-09T17:38:42.930Z", "frame": 300, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:38:43.957Z", "frame": 303, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:38:45.008Z", "frame": 306, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:38:46.045Z", "frame": 309, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:38:47.062Z", "frame": 312, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:38:48.094Z", "frame": 315, "person_found": true, "confidence": 0.9441, "confidence_percent": 94.41, "bbox": [181, 23, 419, 356]}
+{"timestamp": "2026-06-09T17:38:49.146Z", "frame": 318, "person_found": true, "confidence": 0.9442, "confidence_percent": 94.42, "bbox": [182, 22, 418, 356]}
+{"timestamp": "2026-06-09T17:38:50.217Z", "frame": 321, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [212, 24, 418, 356]}
+{"timestamp": "2026-06-09T17:38:51.230Z", "frame": 324, "person_found": true, "confidence": 0.9132, "confidence_percent": 91.32, "bbox": [196, 27, 427, 356]}
+{"timestamp": "2026-06-09T17:38:52.258Z", "frame": 327, "person_found": true, "confidence": 0.9471, "confidence_percent": 94.71, "bbox": [207, 27, 438, 356]}
+{"timestamp": "2026-06-09T17:38:53.374Z", "frame": 330, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [212, 22, 455, 355]}
+{"timestamp": "2026-06-09T17:38:54.404Z", "frame": 333, "person_found": true, "confidence": 0.9551, "confidence_percent": 95.51, "bbox": [215, 21, 459, 356]}
+{"timestamp": "2026-06-09T17:38:55.440Z", "frame": 336, "person_found": true, "confidence": 0.8567, "confidence_percent": 85.67, "bbox": [184, 22, 429, 356]}
+{"timestamp": "2026-06-09T17:38:56.485Z", "frame": 339, "person_found": true, "confidence": 0.9501, "confidence_percent": 95.01, "bbox": [195, 24, 428, 356]}
+{"timestamp": "2026-06-09T17:38:57.530Z", "frame": 342, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [244, 24, 431, 356]}
+{"timestamp": "2026-06-09T17:38:58.584Z", "frame": 345, "person_found": true, "confidence": 0.9393, "confidence_percent": 93.93, "bbox": [251, 23, 433, 356]}
+{"timestamp": "2026-06-09T17:38:59.860Z", "frame": 348, "person_found": true, "confidence": 0.9428, "confidence_percent": 94.28, "bbox": [251, 25, 432, 356]}
+{"timestamp": "2026-06-09T17:39:01.182Z", "frame": 351, "person_found": true, "confidence": 0.9468, "confidence_percent": 94.68, "bbox": [239, 31, 434, 356]}
+{"timestamp": "2026-06-09T17:39:02.400Z", "frame": 354, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [217, 24, 429, 356]}
+{"timestamp": "2026-06-09T17:39:03.639Z", "frame": 357, "person_found": true, "confidence": 0.9547, "confidence_percent": 95.47, "bbox": [210, 27, 430, 356]}
+{"timestamp": "2026-06-09T17:39:04.847Z", "frame": 360, "person_found": true, "confidence": 0.9505, "confidence_percent": 95.05, "bbox": [219, 26, 430, 357]}
+{"timestamp": "2026-06-09T17:39:06.041Z", "frame": 363, "person_found": true, "confidence": 0.9508, "confidence_percent": 95.08, "bbox": [218, 28, 430, 356]}
+{"timestamp": "2026-06-09T17:39:07.073Z", "frame": 366, "person_found": true, "confidence": 0.9542, "confidence_percent": 95.42, "bbox": [219, 26, 430, 357]}
+{"timestamp": "2026-06-09T17:39:08.125Z", "frame": 369, "person_found": true, "confidence": 0.9538, "confidence_percent": 95.38, "bbox": [219, 24, 430, 357]}
+{"timestamp": "2026-06-09T17:39:09.198Z", "frame": 372, "person_found": true, "confidence": 0.9519, "confidence_percent": 95.19, "bbox": [220, 24, 430, 357]}
+{"timestamp": "2026-06-09T17:39:10.287Z", "frame": 375, "person_found": true, "confidence": 0.9555, "confidence_percent": 95.55, "bbox": [221, 23, 430, 357]}
+{"timestamp": "2026-06-09T17:39:11.317Z", "frame": 378, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [216, 22, 429, 357]}
+{"timestamp": "2026-06-09T17:39:12.322Z", "frame": 381, "person_found": true, "confidence": 0.9552, "confidence_percent": 95.52, "bbox": [218, 23, 443, 356]}
+{"timestamp": "2026-06-09T17:39:13.361Z", "frame": 384, "person_found": true, "confidence": 0.9577, "confidence_percent": 95.77, "bbox": [219, 23, 464, 356]}
+{"timestamp": "2026-06-09T17:39:14.554Z", "frame": 387, "person_found": true, "confidence": 0.9629, "confidence_percent": 96.29, "bbox": [220, 23, 477, 356]}
+{"timestamp": "2026-06-09T17:39:15.722Z", "frame": 390, "person_found": true, "confidence": 0.9484, "confidence_percent": 94.84, "bbox": [221, 25, 430, 356]}
+{"timestamp": "2026-06-09T17:39:16.766Z", "frame": 393, "person_found": true, "confidence": 0.9491, "confidence_percent": 94.91, "bbox": [221, 26, 433, 356]}
+{"timestamp": "2026-06-09T17:39:17.891Z", "frame": 396, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [204, 24, 432, 356]}
+{"timestamp": "2026-06-09T17:39:19.025Z", "frame": 399, "person_found": true, "confidence": 0.9494, "confidence_percent": 94.94, "bbox": [223, 21, 429, 356]}
+{"timestamp": "2026-06-09T17:39:20.387Z", "frame": 402, "person_found": true, "confidence": 0.9459, "confidence_percent": 94.59, "bbox": [223, 21, 427, 356]}
+{"timestamp": "2026-06-09T17:39:21.669Z", "frame": 405, "person_found": true, "confidence": 0.9422, "confidence_percent": 94.22, "bbox": [228, 22, 424, 356]}
+{"timestamp": "2026-06-09T17:39:22.783Z", "frame": 408, "person_found": true, "confidence": 0.9437, "confidence_percent": 94.37, "bbox": [229, 24, 425, 356]}
+{"timestamp": "2026-06-09T17:39:23.848Z", "frame": 411, "person_found": true, "confidence": 0.9482, "confidence_percent": 94.82, "bbox": [226, 24, 425, 356]}
+{"timestamp": "2026-06-09T17:39:25.183Z", "frame": 415, "person_found": true, "confidence": 0.9456, "confidence_percent": 94.56, "bbox": [229, 25, 424, 356]}
+{"timestamp": "2026-06-09T17:39:26.225Z", "frame": 418, "person_found": true, "confidence": 0.9414, "confidence_percent": 94.14, "bbox": [223, 23, 426, 356]}
+{"timestamp": "2026-06-09T17:39:27.286Z", "frame": 421, "person_found": true, "confidence": 0.9488, "confidence_percent": 94.88, "bbox": [218, 25, 431, 356]}
+{"timestamp": "2026-06-09T17:39:28.303Z", "frame": 424, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [218, 25, 442, 356]}
+{"timestamp": "2026-06-09T17:39:29.351Z", "frame": 427, "person_found": true, "confidence": 0.9462, "confidence_percent": 94.62, "bbox": [218, 23, 465, 356]}
+{"timestamp": "2026-06-09T17:39:30.460Z", "frame": 430, "person_found": true, "confidence": 0.9291, "confidence_percent": 92.91, "bbox": [219, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:39:31.487Z", "frame": 433, "person_found": true, "confidence": 0.9395, "confidence_percent": 93.95, "bbox": [219, 22, 481, 356]}
+{"timestamp": "2026-06-09T17:39:32.519Z", "frame": 436, "person_found": true, "confidence": 0.9484, "confidence_percent": 94.84, "bbox": [218, 21, 472, 356]}
+{"timestamp": "2026-06-09T17:39:33.528Z", "frame": 439, "person_found": true, "confidence": 0.949, "confidence_percent": 94.9, "bbox": [218, 22, 477, 356]}
+{"timestamp": "2026-06-09T17:39:34.568Z", "frame": 442, "person_found": true, "confidence": 0.9595, "confidence_percent": 95.95, "bbox": [206, 21, 473, 356]}
+{"timestamp": "2026-06-09T17:39:35.727Z", "frame": 445, "person_found": true, "confidence": 0.9467, "confidence_percent": 94.67, "bbox": [221, 23, 457, 356]}
+{"timestamp": "2026-06-09T17:39:36.848Z", "frame": 448, "person_found": true, "confidence": 0.9513, "confidence_percent": 95.13, "bbox": [222, 22, 461, 356]}
+{"timestamp": "2026-06-09T17:39:37.905Z", "frame": 451, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [224, 24, 482, 355]}
+{"timestamp": "2026-06-09T17:39:38.917Z", "frame": 454, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [224, 23, 484, 355]}
+{"timestamp": "2026-06-09T17:39:39.954Z", "frame": 457, "person_found": true, "confidence": 0.9526, "confidence_percent": 95.26, "bbox": [222, 23, 475, 355]}
+{"timestamp": "2026-06-09T17:39:40.994Z", "frame": 460, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [198, 24, 481, 355]}
+{"timestamp": "2026-06-09T17:39:42.090Z", "frame": 463, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [202, 22, 474, 356]}
+{"timestamp": "2026-06-09T17:39:43.141Z", "frame": 466, "person_found": true, "confidence": 0.8997, "confidence_percent": 89.97, "bbox": [147, 13, 519, 356]}
+{"timestamp": "2026-06-09T17:39:44.276Z", "frame": 469, "person_found": true, "confidence": 0.9167, "confidence_percent": 91.67, "bbox": [132, 13, 487, 355]}
+{"timestamp": "2026-06-09T17:39:45.364Z", "frame": 472, "person_found": true, "confidence": 0.8614, "confidence_percent": 86.14, "bbox": [127, 11, 508, 356]}
+{"timestamp": "2026-06-09T17:39:46.421Z", "frame": 475, "person_found": true, "confidence": 0.8962, "confidence_percent": 89.62, "bbox": [133, 12, 534, 357]}
+{"timestamp": "2026-06-09T17:39:47.431Z", "frame": 478, "person_found": true, "confidence": 0.853, "confidence_percent": 85.3, "bbox": [134, 11, 528, 357]}
+{"timestamp": "2026-06-09T17:39:48.452Z", "frame": 481, "person_found": true, "confidence": 0.8463, "confidence_percent": 84.63, "bbox": [130, 10, 505, 356]}
+{"timestamp": "2026-06-09T17:39:49.488Z", "frame": 484, "person_found": true, "confidence": 0.8562, "confidence_percent": 85.62, "bbox": [137, 9, 537, 357]}
+{"timestamp": "2026-06-09T17:39:50.500Z", "frame": 487, "person_found": true, "confidence": 0.8805, "confidence_percent": 88.05, "bbox": [133, 10, 548, 356]}
+{"timestamp": "2026-06-09T17:39:51.543Z", "frame": 490, "person_found": true, "confidence": 0.887, "confidence_percent": 88.7, "bbox": [133, 5, 515, 357]}
+{"timestamp": "2026-06-09T17:39:52.603Z", "frame": 493, "person_found": true, "confidence": 0.9376, "confidence_percent": 93.76, "bbox": [129, 4, 537, 356]}
+{"timestamp": "2026-06-09T17:39:53.649Z", "frame": 496, "person_found": true, "confidence": 0.9575, "confidence_percent": 95.75, "bbox": [153, 7, 550, 355]}
+{"timestamp": "2026-06-09T17:39:54.779Z", "frame": 499, "person_found": true, "confidence": 0.9508, "confidence_percent": 95.08, "bbox": [215, 23, 456, 355]}
+{"timestamp": "2026-06-09T17:39:55.861Z", "frame": 502, "person_found": true, "confidence": 0.9507, "confidence_percent": 95.07, "bbox": [217, 26, 453, 355]}
+{"timestamp": "2026-06-09T17:39:56.894Z", "frame": 505, "person_found": true, "confidence": 0.9493, "confidence_percent": 94.93, "bbox": [214, 24, 459, 355]}
+{"timestamp": "2026-06-09T17:39:57.914Z", "frame": 508, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [216, 23, 461, 355]}
+{"timestamp": "2026-06-09T17:39:58.946Z", "frame": 511, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [216, 23, 460, 355]}
+{"timestamp": "2026-06-09T17:39:59.955Z", "frame": 514, "person_found": true, "confidence": 0.947, "confidence_percent": 94.7, "bbox": [221, 22, 445, 355]}
+{"timestamp": "2026-06-09T17:40:00.993Z", "frame": 517, "person_found": true, "confidence": 0.9385, "confidence_percent": 93.85, "bbox": [226, 23, 420, 355]}
+{"timestamp": "2026-06-09T17:40:02.028Z", "frame": 520, "person_found": true, "confidence": 0.93, "confidence_percent": 93.0, "bbox": [130, 27, 437, 356]}
+{"timestamp": "2026-06-09T17:40:03.179Z", "frame": 523, "person_found": true, "confidence": 0.9496, "confidence_percent": 94.96, "bbox": [104, 29, 458, 355]}
+{"timestamp": "2026-06-09T17:40:04.387Z", "frame": 526, "person_found": true, "confidence": 0.9545, "confidence_percent": 95.45, "bbox": [110, 24, 484, 355]}
+{"timestamp": "2026-06-09T17:40:05.582Z", "frame": 529, "person_found": true, "confidence": 0.9575, "confidence_percent": 95.75, "bbox": [105, 27, 470, 355]}
+{"timestamp": "2026-06-09T17:40:06.910Z", "frame": 532, "person_found": true, "confidence": 0.9562, "confidence_percent": 95.62, "bbox": [106, 25, 471, 355]}
+{"timestamp": "2026-06-09T17:40:08.139Z", "frame": 535, "person_found": true, "confidence": 0.9578, "confidence_percent": 95.78, "bbox": [104, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:40:09.250Z", "frame": 538, "person_found": true, "confidence": 0.9578, "confidence_percent": 95.78, "bbox": [104, 23, 470, 356]}
+{"timestamp": "2026-06-09T17:40:10.294Z", "frame": 541, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [105, 23, 474, 356]}
+{"timestamp": "2026-06-09T17:40:11.330Z", "frame": 544, "person_found": true, "confidence": 0.9462, "confidence_percent": 94.62, "bbox": [112, 24, 471, 356]}
+{"timestamp": "2026-06-09T17:40:12.341Z", "frame": 547, "person_found": true, "confidence": 0.9556, "confidence_percent": 95.56, "bbox": [138, 23, 463, 355]}
+{"timestamp": "2026-06-09T17:40:13.408Z", "frame": 550, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [175, 25, 467, 355]}
+{"timestamp": "2026-06-09T17:40:14.711Z", "frame": 553, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [171, 24, 457, 355]}
+{"timestamp": "2026-06-09T17:40:16.043Z", "frame": 556, "person_found": true, "confidence": 0.9525, "confidence_percent": 95.25, "bbox": [172, 25, 458, 355]}
+{"timestamp": "2026-06-09T17:40:17.211Z", "frame": 559, "person_found": true, "confidence": 0.9483, "confidence_percent": 94.83, "bbox": [172, 24, 459, 355]}
+{"timestamp": "2026-06-09T17:40:18.505Z", "frame": 562, "person_found": true, "confidence": 0.9504, "confidence_percent": 95.04, "bbox": [167, 25, 451, 355]}
+{"timestamp": "2026-06-09T17:40:19.558Z", "frame": 564, "person_found": true, "confidence": 0.9477, "confidence_percent": 94.77, "bbox": [169, 24, 440, 356]}
+{"timestamp": "2026-06-09T17:40:20.795Z", "frame": 566, "person_found": true, "confidence": 0.9538, "confidence_percent": 95.38, "bbox": [162, 24, 456, 355]}
+{"timestamp": "2026-06-09T17:40:22.168Z", "frame": 569, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [163, 24, 459, 355]}
+{"timestamp": "2026-06-09T17:40:23.372Z", "frame": 572, "person_found": true, "confidence": 0.9494, "confidence_percent": 94.94, "bbox": [166, 24, 463, 355]}
+{"timestamp": "2026-06-09T17:40:24.518Z", "frame": 575, "person_found": true, "confidence": 0.9506, "confidence_percent": 95.06, "bbox": [160, 25, 459, 355]}
+{"timestamp": "2026-06-09T17:40:25.655Z", "frame": 578, "person_found": true, "confidence": 0.9554, "confidence_percent": 95.54, "bbox": [160, 29, 460, 355]}
+{"timestamp": "2026-06-09T17:40:26.790Z", "frame": 581, "person_found": true, "confidence": 0.9544, "confidence_percent": 95.44, "bbox": [163, 24, 414, 356]}
+{"timestamp": "2026-06-09T17:40:27.970Z", "frame": 584, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [157, 25, 409, 356]}
+{"timestamp": "2026-06-09T17:40:29.021Z", "frame": 587, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [155, 25, 408, 355]}
+{"timestamp": "2026-06-09T17:40:30.077Z", "frame": 590, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [161, 24, 420, 355]}
+{"timestamp": "2026-06-09T17:40:31.179Z", "frame": 593, "person_found": true, "confidence": 0.9511, "confidence_percent": 95.11, "bbox": [169, 23, 424, 355]}
+{"timestamp": "2026-06-09T17:40:32.317Z", "frame": 596, "person_found": true, "confidence": 0.9487, "confidence_percent": 94.87, "bbox": [189, 21, 424, 355]}
+{"timestamp": "2026-06-09T17:40:33.653Z", "frame": 599, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [193, 21, 424, 355]}
+{"timestamp": "2026-06-09T17:40:34.867Z", "frame": 602, "person_found": true, "confidence": 0.9523, "confidence_percent": 95.23, "bbox": [187, 22, 433, 356]}
+{"timestamp": "2026-06-09T17:40:35.990Z", "frame": 605, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [170, 24, 436, 355]}
+{"timestamp": "2026-06-09T17:40:37.084Z", "frame": 608, "person_found": true, "confidence": 0.9523, "confidence_percent": 95.23, "bbox": [174, 24, 439, 355]}
+{"timestamp": "2026-06-09T17:40:38.193Z", "frame": 611, "person_found": true, "confidence": 0.9546, "confidence_percent": 95.46, "bbox": [176, 24, 440, 355]}
+{"timestamp": "2026-06-09T17:40:39.303Z", "frame": 614, "person_found": true, "confidence": 0.9565, "confidence_percent": 95.65, "bbox": [173, 25, 431, 355]}
+{"timestamp": "2026-06-09T17:40:40.437Z", "frame": 617, "person_found": true, "confidence": 0.9457, "confidence_percent": 94.57, "bbox": [196, 24, 416, 356]}
+{"timestamp": "2026-06-09T17:40:41.533Z", "frame": 620, "person_found": true, "confidence": 0.9546, "confidence_percent": 95.46, "bbox": [198, 22, 430, 356]}
+{"timestamp": "2026-06-09T17:40:42.656Z", "frame": 623, "person_found": true, "confidence": 0.9477, "confidence_percent": 94.77, "bbox": [208, 23, 460, 355]}
+{"timestamp": "2026-06-09T17:40:43.762Z", "frame": 626, "person_found": true, "confidence": 0.9518, "confidence_percent": 95.18, "bbox": [206, 24, 456, 355]}
+{"timestamp": "2026-06-09T17:40:44.837Z", "frame": 629, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [212, 24, 484, 355]}
+{"timestamp": "2026-06-09T17:40:45.942Z", "frame": 632, "person_found": true, "confidence": 0.9476, "confidence_percent": 94.76, "bbox": [162, 3, 538, 354]}
+{"timestamp": "2026-06-09T17:40:47.128Z", "frame": 635, "person_found": true, "confidence": 0.9553, "confidence_percent": 95.53, "bbox": [115, 7, 535, 355]}
+{"timestamp": "2026-06-09T17:40:48.211Z", "frame": 638, "person_found": true, "confidence": 0.934, "confidence_percent": 93.4, "bbox": [191, 5, 550, 357]}
+{"timestamp": "2026-06-09T17:40:49.293Z", "frame": 641, "person_found": true, "confidence": 0.9443, "confidence_percent": 94.43, "bbox": [187, 6, 539, 357]}
+{"timestamp": "2026-06-09T17:40:50.382Z", "frame": 644, "person_found": true, "confidence": 0.9431, "confidence_percent": 94.31, "bbox": [133, 7, 520, 355]}
+{"timestamp": "2026-06-09T17:40:51.472Z", "frame": 647, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [100, 7, 524, 354]}
+{"timestamp": "2026-06-09T17:40:52.541Z", "frame": 650, "person_found": true, "confidence": 0.9557, "confidence_percent": 95.57, "bbox": [103, 6, 505, 354]}
+{"timestamp": "2026-06-09T17:40:53.617Z", "frame": 653, "person_found": true, "confidence": 0.9566, "confidence_percent": 95.66, "bbox": [94, 5, 506, 354]}
+{"timestamp": "2026-06-09T17:40:54.644Z", "frame": 656, "person_found": true, "confidence": 0.9547, "confidence_percent": 95.47, "bbox": [215, 27, 464, 355]}
+{"timestamp": "2026-06-09T17:40:55.706Z", "frame": 659, "person_found": true, "confidence": 0.959, "confidence_percent": 95.9, "bbox": [210, 26, 468, 355]}
+{"timestamp": "2026-06-09T17:40:56.790Z", "frame": 662, "person_found": true, "confidence": 0.9529, "confidence_percent": 95.29, "bbox": [159, 24, 495, 355]}
+{"timestamp": "2026-06-09T17:40:57.859Z", "frame": 665, "person_found": true, "confidence": 0.9517, "confidence_percent": 95.17, "bbox": [200, 25, 489, 355]}
+{"timestamp": "2026-06-09T17:40:59.036Z", "frame": 668, "person_found": true, "confidence": 0.9529, "confidence_percent": 95.29, "bbox": [218, 27, 490, 355]}
+{"timestamp": "2026-06-09T17:41:00.134Z", "frame": 671, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [219, 26, 492, 355]}
+{"timestamp": "2026-06-09T17:41:01.267Z", "frame": 674, "person_found": true, "confidence": 0.955, "confidence_percent": 95.5, "bbox": [220, 24, 496, 355]}
+{"timestamp": "2026-06-09T17:41:02.361Z", "frame": 677, "person_found": true, "confidence": 0.949, "confidence_percent": 94.9, "bbox": [210, 25, 498, 355]}
+{"timestamp": "2026-06-09T17:41:03.492Z", "frame": 680, "person_found": true, "confidence": 0.9554, "confidence_percent": 95.54, "bbox": [199, 22, 478, 355]}
+{"timestamp": "2026-06-09T17:41:04.627Z", "frame": 683, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [206, 22, 487, 355]}
+{"timestamp": "2026-06-09T17:41:05.749Z", "frame": 686, "person_found": true, "confidence": 0.9506, "confidence_percent": 95.06, "bbox": [195, 23, 478, 355]}
+{"timestamp": "2026-06-09T17:41:06.818Z", "frame": 689, "person_found": true, "confidence": 0.9576, "confidence_percent": 95.76, "bbox": [206, 25, 473, 355]}
+{"timestamp": "2026-06-09T17:41:07.943Z", "frame": 692, "person_found": true, "confidence": 0.9516, "confidence_percent": 95.16, "bbox": [217, 28, 476, 355]}
+{"timestamp": "2026-06-09T17:41:09.104Z", "frame": 695, "person_found": true, "confidence": 0.9532, "confidence_percent": 95.32, "bbox": [217, 24, 468, 355]}
+{"timestamp": "2026-06-09T17:41:10.245Z", "frame": 698, "person_found": true, "confidence": 0.9532, "confidence_percent": 95.32, "bbox": [219, 24, 464, 355]}
+{"timestamp": "2026-06-09T17:41:11.416Z", "frame": 701, "person_found": true, "confidence": 0.9459, "confidence_percent": 94.59, "bbox": [223, 23, 468, 356]}
+{"timestamp": "2026-06-09T17:41:12.514Z", "frame": 704, "person_found": true, "confidence": 0.9508, "confidence_percent": 95.08, "bbox": [222, 25, 468, 356]}
+{"timestamp": "2026-06-09T17:41:13.636Z", "frame": 707, "person_found": true, "confidence": 0.9515, "confidence_percent": 95.15, "bbox": [222, 23, 469, 355]}
+{"timestamp": "2026-06-09T17:41:14.764Z", "frame": 710, "person_found": true, "confidence": 0.9318, "confidence_percent": 93.18, "bbox": [207, 14, 475, 355]}
+{"timestamp": "2026-06-09T17:41:16.027Z", "frame": 713, "person_found": true, "confidence": 0.9401, "confidence_percent": 94.01, "bbox": [213, 8, 606, 355]}
+{"timestamp": "2026-06-09T17:41:17.253Z", "frame": 716, "person_found": true, "confidence": 0.9536, "confidence_percent": 95.36, "bbox": [350, 1, 637, 352]}
+{"timestamp": "2026-06-09T17:41:18.410Z", "frame": 719, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:19.526Z", "frame": 722, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:20.629Z", "frame": 725, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:21.698Z", "frame": 728, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:22.818Z", "frame": 731, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:23.991Z", "frame": 734, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:41:25.142Z", "frame": 737, "person_found": true, "confidence": 0.9554, "confidence_percent": 95.54, "bbox": [151, 2, 528, 356]}
+{"timestamp": "2026-06-09T17:41:26.290Z", "frame": 740, "person_found": true, "confidence": 0.9598, "confidence_percent": 95.98, "bbox": [151, 14, 490, 356]}
+{"timestamp": "2026-06-09T17:41:27.364Z", "frame": 743, "person_found": true, "confidence": 0.9472, "confidence_percent": 94.72, "bbox": [163, 36, 502, 356]}
+{"timestamp": "2026-06-09T17:41:28.438Z", "frame": 746, "person_found": true, "confidence": 0.9202, "confidence_percent": 92.02, "bbox": [221, 38, 577, 357]}
+{"timestamp": "2026-06-09T17:41:29.494Z", "frame": 749, "person_found": true, "confidence": 0.961, "confidence_percent": 96.1, "bbox": [304, 45, 639, 355]}
+{"timestamp": "2026-06-09T17:41:30.563Z", "frame": 752, "person_found": true, "confidence": 0.8057, "confidence_percent": 80.57, "bbox": [318, 214, 343, 302]}
+{"timestamp": "2026-06-09T17:41:31.644Z", "frame": 755, "person_found": true, "confidence": 0.8367, "confidence_percent": 83.67, "bbox": [316, 214, 343, 303]}
+{"timestamp": "2026-06-09T17:41:32.656Z", "frame": 758, "person_found": true, "confidence": 0.8378, "confidence_percent": 83.78, "bbox": [315, 213, 343, 304]}
+{"timestamp": "2026-06-09T17:41:33.734Z", "frame": 761, "person_found": true, "confidence": 0.8507, "confidence_percent": 85.07, "bbox": [317, 211, 341, 299]}
+{"timestamp": "2026-06-09T17:41:34.799Z", "frame": 764, "person_found": true, "confidence": 0.8507, "confidence_percent": 85.07, "bbox": [316, 209, 342, 296]}
+{"timestamp": "2026-06-09T17:41:35.979Z", "frame": 767, "person_found": true, "confidence": 0.8683, "confidence_percent": 86.83, "bbox": [317, 211, 345, 298]}
+{"timestamp": "2026-06-09T17:41:37.071Z", "frame": 770, "person_found": true, "confidence": 0.799, "confidence_percent": 79.9, "bbox": [318, 210, 341, 300]}
+{"timestamp": "2026-06-09T17:41:38.156Z", "frame": 773, "person_found": true, "confidence": 0.8127, "confidence_percent": 81.27, "bbox": [317, 212, 339, 302]}
+{"timestamp": "2026-06-09T17:41:39.255Z", "frame": 776, "person_found": true, "confidence": 0.8478, "confidence_percent": 84.78, "bbox": [317, 213, 343, 306]}
+{"timestamp": "2026-06-09T17:41:40.323Z", "frame": 779, "person_found": true, "confidence": 0.8167, "confidence_percent": 81.67, "bbox": [325, 213, 346, 302]}
+{"timestamp": "2026-06-09T17:41:41.385Z", "frame": 782, "person_found": true, "confidence": 0.863, "confidence_percent": 86.3, "bbox": [313, 212, 345, 302]}
+{"timestamp": "2026-06-09T17:41:42.448Z", "frame": 785, "person_found": true, "confidence": 0.8283, "confidence_percent": 82.83, "bbox": [321, 212, 344, 301]}
+{"timestamp": "2026-06-09T17:41:43.555Z", "frame": 788, "person_found": true, "confidence": 0.847, "confidence_percent": 84.7, "bbox": [320, 215, 344, 298]}
+{"timestamp": "2026-06-09T17:41:44.652Z", "frame": 791, "person_found": true, "confidence": 0.828, "confidence_percent": 82.8, "bbox": [318, 209, 342, 295]}
+{"timestamp": "2026-06-09T17:41:45.721Z", "frame": 794, "person_found": true, "confidence": 0.8386, "confidence_percent": 83.86, "bbox": [314, 211, 339, 288]}
+{"timestamp": "2026-06-09T17:41:46.778Z", "frame": 797, "person_found": true, "confidence": 0.807, "confidence_percent": 80.7, "bbox": [314, 208, 340, 281]}
+{"timestamp": "2026-06-09T17:41:47.936Z", "frame": 800, "person_found": true, "confidence": 0.751, "confidence_percent": 75.1, "bbox": [319, 207, 343, 282]}
+{"timestamp": "2026-06-09T17:41:49.065Z", "frame": 803, "person_found": true, "confidence": 0.8118, "confidence_percent": 81.18, "bbox": [324, 209, 345, 283]}
+{"timestamp": "2026-06-09T17:41:50.216Z", "frame": 806, "person_found": true, "confidence": 0.803, "confidence_percent": 80.3, "bbox": [322, 209, 344, 282]}
+{"timestamp": "2026-06-09T17:41:51.329Z", "frame": 809, "person_found": true, "confidence": 0.8703, "confidence_percent": 87.03, "bbox": [317, 208, 345, 287]}
+{"timestamp": "2026-06-09T17:41:52.411Z", "frame": 812, "person_found": true, "confidence": 0.8136, "confidence_percent": 81.36, "bbox": [320, 214, 344, 298]}
+{"timestamp": "2026-06-09T17:41:53.533Z", "frame": 815, "person_found": true, "confidence": 0.8009, "confidence_percent": 80.09, "bbox": [319, 216, 339, 297]}
+{"timestamp": "2026-06-09T17:41:54.646Z", "frame": 818, "person_found": true, "confidence": 0.8501, "confidence_percent": 85.01, "bbox": [314, 214, 339, 292]}
+{"timestamp": "2026-06-09T17:41:55.876Z", "frame": 821, "person_found": true, "confidence": 0.8093, "confidence_percent": 80.93, "bbox": [324, 217, 345, 297]}
+{"timestamp": "2026-06-09T17:41:57.137Z", "frame": 824, "person_found": true, "confidence": 0.8223, "confidence_percent": 82.23, "bbox": [325, 216, 347, 302]}
+{"timestamp": "2026-06-09T17:41:58.271Z", "frame": 827, "person_found": true, "confidence": 0.8175, "confidence_percent": 81.75, "bbox": [325, 214, 347, 293]}
+{"timestamp": "2026-06-09T17:41:59.352Z", "frame": 830, "person_found": true, "confidence": 0.8456, "confidence_percent": 84.56, "bbox": [325, 214, 347, 297]}
+{"timestamp": "2026-06-09T17:42:00.548Z", "frame": 833, "person_found": true, "confidence": 0.8058, "confidence_percent": 80.58, "bbox": [320, 216, 340, 304]}
+{"timestamp": "2026-06-09T17:42:01.662Z", "frame": 836, "person_found": true, "confidence": 0.8454, "confidence_percent": 84.54, "bbox": [316, 212, 343, 294]}
+{"timestamp": "2026-06-09T17:42:02.711Z", "frame": 839, "person_found": true, "confidence": 0.8398, "confidence_percent": 83.98, "bbox": [319, 216, 346, 296]}
+{"timestamp": "2026-06-09T17:42:03.789Z", "frame": 842, "person_found": true, "confidence": 0.8102, "confidence_percent": 81.02, "bbox": [314, 215, 345, 294]}
+{"timestamp": "2026-06-09T17:42:04.880Z", "frame": 845, "person_found": true, "confidence": 0.8256, "confidence_percent": 82.56, "bbox": [318, 213, 345, 292]}
+{"timestamp": "2026-06-09T17:42:06.017Z", "frame": 848, "person_found": true, "confidence": 0.8204, "confidence_percent": 82.04, "bbox": [323, 216, 346, 289]}
+{"timestamp": "2026-06-09T17:42:07.140Z", "frame": 851, "person_found": true, "confidence": 0.7856, "confidence_percent": 78.56, "bbox": [313, 220, 342, 293]}
+{"timestamp": "2026-06-09T17:42:08.326Z", "frame": 854, "person_found": true, "confidence": 0.8537, "confidence_percent": 85.37, "bbox": [311, 219, 339, 295]}
+{"timestamp": "2026-06-09T17:42:09.521Z", "frame": 857, "person_found": true, "confidence": 0.8275, "confidence_percent": 82.75, "bbox": [316, 217, 339, 295]}
+{"timestamp": "2026-06-09T17:42:10.713Z", "frame": 860, "person_found": true, "confidence": 0.7686, "confidence_percent": 76.86, "bbox": [316, 220, 340, 295]}
+{"timestamp": "2026-06-09T17:42:11.902Z", "frame": 863, "person_found": true, "confidence": 0.7387, "confidence_percent": 73.87, "bbox": [316, 218, 341, 292]}
+{"timestamp": "2026-06-09T17:42:13.110Z", "frame": 866, "person_found": true, "confidence": 0.7423, "confidence_percent": 74.23, "bbox": [321, 221, 342, 291]}
+{"timestamp": "2026-06-09T17:42:14.290Z", "frame": 869, "person_found": true, "confidence": 0.799, "confidence_percent": 79.9, "bbox": [322, 223, 339, 307]}
+{"timestamp": "2026-06-09T17:42:15.460Z", "frame": 872, "person_found": true, "confidence": 0.9521, "confidence_percent": 95.21, "bbox": [142, 32, 436, 355]}
+{"timestamp": "2026-06-09T17:42:16.704Z", "frame": 875, "person_found": true, "confidence": 0.9535, "confidence_percent": 95.35, "bbox": [148, 43, 459, 356]}
+{"timestamp": "2026-06-09T17:42:17.891Z", "frame": 878, "person_found": true, "confidence": 0.9527, "confidence_percent": 95.27, "bbox": [152, 1, 535, 354]}
+{"timestamp": "2026-06-09T17:42:19.041Z", "frame": 881, "person_found": true, "confidence": 0.8919, "confidence_percent": 89.19, "bbox": [135, 8, 636, 355]}
+{"timestamp": "2026-06-09T17:42:20.223Z", "frame": 884, "person_found": true, "confidence": 0.9436, "confidence_percent": 94.36, "bbox": [153, 23, 504, 355]}
+{"timestamp": "2026-06-09T17:42:21.373Z", "frame": 887, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [165, 13, 479, 356]}
+{"timestamp": "2026-06-09T17:42:22.517Z", "frame": 890, "person_found": true, "confidence": 0.9561, "confidence_percent": 95.61, "bbox": [126, 3, 521, 355]}
+{"timestamp": "2026-06-09T17:42:23.669Z", "frame": 893, "person_found": true, "confidence": 0.935, "confidence_percent": 93.5, "bbox": [143, 18, 460, 355]}
+{"timestamp": "2026-06-09T17:42:24.917Z", "frame": 896, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [144, 31, 450, 356]}
+{"timestamp": "2026-06-09T17:42:26.057Z", "frame": 899, "person_found": true, "confidence": 0.9507, "confidence_percent": 95.07, "bbox": [143, 2, 519, 355]}
+{"timestamp": "2026-06-09T17:42:27.141Z", "frame": 902, "person_found": true, "confidence": 0.9572, "confidence_percent": 95.72, "bbox": [138, 8, 529, 354]}
+{"timestamp": "2026-06-09T17:42:28.220Z", "frame": 905, "person_found": true, "confidence": 0.945, "confidence_percent": 94.5, "bbox": [127, 44, 454, 355]}
+{"timestamp": "2026-06-09T17:42:29.339Z", "frame": 908, "person_found": true, "confidence": 0.8559, "confidence_percent": 85.59, "bbox": [311, 222, 335, 306]}
+{"timestamp": "2026-06-09T17:42:30.474Z", "frame": 911, "person_found": true, "confidence": 0.8343, "confidence_percent": 83.43, "bbox": [305, 222, 332, 308]}
+{"timestamp": "2026-06-09T17:42:31.566Z", "frame": 914, "person_found": true, "confidence": 0.8219, "confidence_percent": 82.19, "bbox": [307, 223, 336, 304]}
+{"timestamp": "2026-06-09T17:42:32.687Z", "frame": 917, "person_found": true, "confidence": 0.8354, "confidence_percent": 83.54, "bbox": [314, 221, 340, 297]}
+{"timestamp": "2026-06-09T17:42:33.810Z", "frame": 920, "person_found": true, "confidence": 0.8303, "confidence_percent": 83.03, "bbox": [318, 217, 342, 298]}
+{"timestamp": "2026-06-09T17:42:34.925Z", "frame": 923, "person_found": true, "confidence": 0.8316, "confidence_percent": 83.16, "bbox": [316, 218, 341, 298]}
+{"timestamp": "2026-06-09T17:42:36.049Z", "frame": 926, "person_found": true, "confidence": 0.8817, "confidence_percent": 88.17, "bbox": [307, 220, 339, 298]}
+{"timestamp": "2026-06-09T17:42:37.227Z", "frame": 929, "person_found": true, "confidence": 0.7586, "confidence_percent": 75.86, "bbox": [315, 218, 339, 295]}
+{"timestamp": "2026-06-09T17:42:38.353Z", "frame": 932, "person_found": true, "confidence": 0.7975, "confidence_percent": 79.75, "bbox": [312, 216, 339, 296]}
+{"timestamp": "2026-06-09T17:42:39.470Z", "frame": 935, "person_found": true, "confidence": 0.8152, "confidence_percent": 81.52, "bbox": [315, 220, 340, 297]}
+{"timestamp": "2026-06-09T17:42:40.555Z", "frame": 938, "person_found": true, "confidence": 0.8507, "confidence_percent": 85.07, "bbox": [314, 220, 340, 295]}
+{"timestamp": "2026-06-09T17:42:41.614Z", "frame": 941, "person_found": true, "confidence": 0.8225, "confidence_percent": 82.25, "bbox": [311, 218, 336, 303]}
+{"timestamp": "2026-06-09T17:42:42.714Z", "frame": 944, "person_found": true, "confidence": 0.8022, "confidence_percent": 80.22, "bbox": [307, 218, 330, 300]}
+{"timestamp": "2026-06-09T17:42:43.799Z", "frame": 947, "person_found": true, "confidence": 0.8415, "confidence_percent": 84.15, "bbox": [304, 218, 330, 303]}
+{"timestamp": "2026-06-09T17:42:44.905Z", "frame": 950, "person_found": true, "confidence": 0.8503, "confidence_percent": 85.03, "bbox": [303, 218, 336, 301]}
+{"timestamp": "2026-06-09T17:42:45.973Z", "frame": 953, "person_found": true, "confidence": 0.8422, "confidence_percent": 84.22, "bbox": [310, 217, 341, 307]}
+{"timestamp": "2026-06-09T17:42:47.052Z", "frame": 956, "person_found": true, "confidence": 0.8393, "confidence_percent": 83.93, "bbox": [312, 218, 342, 305]}
+{"timestamp": "2026-06-09T17:42:48.150Z", "frame": 959, "person_found": true, "confidence": 0.8346, "confidence_percent": 83.46, "bbox": [316, 219, 341, 295]}
+{"timestamp": "2026-06-09T17:42:49.305Z", "frame": 962, "person_found": true, "confidence": 0.8696, "confidence_percent": 86.96, "bbox": [315, 216, 339, 291]}
+{"timestamp": "2026-06-09T17:42:50.447Z", "frame": 965, "person_found": true, "confidence": 0.8425, "confidence_percent": 84.25, "bbox": [316, 216, 339, 289]}
+{"timestamp": "2026-06-09T17:42:51.522Z", "frame": 968, "person_found": true, "confidence": 0.8556, "confidence_percent": 85.56, "bbox": [315, 219, 339, 294]}
+{"timestamp": "2026-06-09T17:42:52.646Z", "frame": 971, "person_found": true, "confidence": 0.8471, "confidence_percent": 84.71, "bbox": [314, 220, 338, 295]}
+{"timestamp": "2026-06-09T17:42:53.756Z", "frame": 974, "person_found": true, "confidence": 0.83, "confidence_percent": 83.0, "bbox": [310, 219, 334, 295]}
+{"timestamp": "2026-06-09T17:42:54.895Z", "frame": 977, "person_found": true, "confidence": 0.8454, "confidence_percent": 84.54, "bbox": [310, 221, 333, 301]}
+{"timestamp": "2026-06-09T17:42:55.995Z", "frame": 980, "person_found": true, "confidence": 0.8309, "confidence_percent": 83.09, "bbox": [313, 222, 337, 295]}
+{"timestamp": "2026-06-09T17:42:57.192Z", "frame": 983, "person_found": true, "confidence": 0.8612, "confidence_percent": 86.12, "bbox": [312, 220, 338, 297]}
+{"timestamp": "2026-06-09T17:42:58.583Z", "frame": 986, "person_found": true, "confidence": 0.8418, "confidence_percent": 84.18, "bbox": [310, 220, 338, 305]}
+{"timestamp": "2026-06-09T17:42:59.746Z", "frame": 988, "person_found": true, "confidence": 0.8375, "confidence_percent": 83.75, "bbox": [302, 220, 338, 306]}
+{"timestamp": "2026-06-09T17:43:00.817Z", "frame": 990, "person_found": true, "confidence": 0.8322, "confidence_percent": 83.22, "bbox": [302, 221, 330, 305]}
+{"timestamp": "2026-06-09T17:43:02.211Z", "frame": 993, "person_found": true, "confidence": 0.8679, "confidence_percent": 86.79, "bbox": [298, 217, 324, 311]}
+{"timestamp": "2026-06-09T17:43:03.508Z", "frame": 996, "person_found": true, "confidence": 0.8615, "confidence_percent": 86.15, "bbox": [289, 221, 321, 310]}
+{"timestamp": "2026-06-09T17:43:04.804Z", "frame": 999, "person_found": true, "confidence": 0.8593, "confidence_percent": 85.93, "bbox": [260, 222, 301, 308]}
+{"timestamp": "2026-06-09T17:43:05.894Z", "frame": 1001, "person_found": true, "confidence": 0.8401, "confidence_percent": 84.01, "bbox": [256, 224, 290, 316]}
+{"timestamp": "2026-06-09T17:43:07.159Z", "frame": 1004, "person_found": true, "confidence": 0.8735, "confidence_percent": 87.35, "bbox": [267, 217, 311, 319]}
+{"timestamp": "2026-06-09T17:43:08.433Z", "frame": 1007, "person_found": true, "confidence": 0.8406, "confidence_percent": 84.06, "bbox": [280, 215, 317, 320]}
+{"timestamp": "2026-06-09T17:43:09.642Z", "frame": 1010, "person_found": true, "confidence": 0.8799, "confidence_percent": 87.99, "bbox": [281, 215, 319, 308]}
+{"timestamp": "2026-06-09T17:43:10.764Z", "frame": 1013, "person_found": true, "confidence": 0.844, "confidence_percent": 84.4, "bbox": [301, 212, 332, 295]}
+{"timestamp": "2026-06-09T17:43:11.990Z", "frame": 1016, "person_found": true, "confidence": 0.8034, "confidence_percent": 80.34, "bbox": [311, 211, 334, 289]}
+{"timestamp": "2026-06-09T17:43:13.076Z", "frame": 1019, "person_found": true, "confidence": 0.8289, "confidence_percent": 82.89, "bbox": [312, 212, 330, 291]}
+{"timestamp": "2026-06-09T17:43:14.403Z", "frame": 1022, "person_found": true, "confidence": 0.8447, "confidence_percent": 84.47, "bbox": [308, 214, 330, 288]}
+{"timestamp": "2026-06-09T17:43:15.685Z", "frame": 1025, "person_found": true, "confidence": 0.8739, "confidence_percent": 87.39, "bbox": [311, 213, 336, 290]}
+{"timestamp": "2026-06-09T17:43:16.975Z", "frame": 1028, "person_found": true, "confidence": 0.8438, "confidence_percent": 84.38, "bbox": [316, 215, 341, 295]}
+{"timestamp": "2026-06-09T17:43:18.011Z", "frame": 1030, "person_found": true, "confidence": 0.8669, "confidence_percent": 86.69, "bbox": [315, 215, 341, 295]}
+{"timestamp": "2026-06-09T17:43:19.244Z", "frame": 1033, "person_found": true, "confidence": 0.8283, "confidence_percent": 82.83, "bbox": [317, 216, 341, 293]}
+{"timestamp": "2026-06-09T17:43:20.376Z", "frame": 1036, "person_found": true, "confidence": 0.8396, "confidence_percent": 83.96, "bbox": [315, 216, 339, 287]}
+{"timestamp": "2026-06-09T17:43:21.442Z", "frame": 1039, "person_found": true, "confidence": 0.8478, "confidence_percent": 84.78, "bbox": [313, 215, 337, 282]}
+{"timestamp": "2026-06-09T17:43:22.507Z", "frame": 1042, "person_found": true, "confidence": 0.8266, "confidence_percent": 82.66, "bbox": [311, 214, 335, 287]}
+{"timestamp": "2026-06-09T17:43:23.532Z", "frame": 1045, "person_found": true, "confidence": 0.8267, "confidence_percent": 82.67, "bbox": [307, 216, 330, 295]}
+{"timestamp": "2026-06-09T17:43:24.618Z", "frame": 1048, "person_found": true, "confidence": 0.6827, "confidence_percent": 68.27, "bbox": [298, 218, 327, 296]}
+{"timestamp": "2026-06-09T17:43:25.668Z", "frame": 1051, "person_found": true, "confidence": 0.8114, "confidence_percent": 81.14, "bbox": [300, 219, 331, 295]}
+{"timestamp": "2026-06-09T17:43:26.789Z", "frame": 1054, "person_found": true, "confidence": 0.8024, "confidence_percent": 80.24, "bbox": [312, 215, 338, 298]}
+{"timestamp": "2026-06-09T17:43:27.846Z", "frame": 1057, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [122, 2, 508, 355]}
+{"timestamp": "2026-06-09T17:43:28.999Z", "frame": 1060, "person_found": true, "confidence": 0.9491, "confidence_percent": 94.91, "bbox": [127, 25, 469, 355]}
+{"timestamp": "2026-06-09T17:43:30.130Z", "frame": 1063, "person_found": true, "confidence": 0.9607, "confidence_percent": 96.07, "bbox": [127, 1, 448, 355]}
+{"timestamp": "2026-06-09T17:43:31.382Z", "frame": 1066, "person_found": true, "confidence": 0.9588, "confidence_percent": 95.88, "bbox": [83, 0, 456, 354]}
+{"timestamp": "2026-06-09T17:43:32.540Z", "frame": 1069, "person_found": true, "confidence": 0.953, "confidence_percent": 95.3, "bbox": [128, 1, 456, 355]}
+{"timestamp": "2026-06-09T17:43:33.685Z", "frame": 1072, "person_found": true, "confidence": 0.95, "confidence_percent": 95.0, "bbox": [150, 23, 466, 356]}
+{"timestamp": "2026-06-09T17:43:34.882Z", "frame": 1075, "person_found": true, "confidence": 0.8409, "confidence_percent": 84.09, "bbox": [308, 218, 330, 296]}
+{"timestamp": "2026-06-09T17:43:36.010Z", "frame": 1078, "person_found": true, "confidence": 0.8639, "confidence_percent": 86.39, "bbox": [305, 218, 330, 296]}
+{"timestamp": "2026-06-09T17:43:37.162Z", "frame": 1081, "person_found": true, "confidence": 0.8247, "confidence_percent": 82.47, "bbox": [306, 217, 330, 293]}
+{"timestamp": "2026-06-09T17:43:38.283Z", "frame": 1084, "person_found": true, "confidence": 0.8434, "confidence_percent": 84.34, "bbox": [306, 220, 329, 295]}
+{"timestamp": "2026-06-09T17:43:39.441Z", "frame": 1087, "person_found": true, "confidence": 0.827, "confidence_percent": 82.7, "bbox": [302, 216, 329, 290]}
+{"timestamp": "2026-06-09T17:43:40.557Z", "frame": 1090, "person_found": true, "confidence": 0.8311, "confidence_percent": 83.11, "bbox": [301, 215, 326, 287]}
+{"timestamp": "2026-06-09T17:43:41.646Z", "frame": 1093, "person_found": true, "confidence": 0.8418, "confidence_percent": 84.18, "bbox": [305, 221, 328, 294]}
+{"timestamp": "2026-06-09T17:43:42.742Z", "frame": 1096, "person_found": true, "confidence": 0.8384, "confidence_percent": 83.84, "bbox": [312, 217, 335, 291]}
+{"timestamp": "2026-06-09T17:43:43.800Z", "frame": 1099, "person_found": true, "confidence": 0.8245, "confidence_percent": 82.45, "bbox": [318, 218, 343, 293]}
+{"timestamp": "2026-06-09T17:43:44.894Z", "frame": 1102, "person_found": true, "confidence": 0.8328, "confidence_percent": 83.28, "bbox": [320, 221, 347, 294]}
+{"timestamp": "2026-06-09T17:43:45.953Z", "frame": 1105, "person_found": true, "confidence": 0.8466, "confidence_percent": 84.66, "bbox": [320, 220, 345, 297]}
+{"timestamp": "2026-06-09T17:43:47.036Z", "frame": 1108, "person_found": true, "confidence": 0.8488, "confidence_percent": 84.88, "bbox": [322, 220, 348, 294]}
+{"timestamp": "2026-06-09T17:43:48.137Z", "frame": 1111, "person_found": true, "confidence": 0.8489, "confidence_percent": 84.89, "bbox": [323, 223, 351, 298]}
+{"timestamp": "2026-06-09T17:43:49.567Z", "frame": 1114, "person_found": true, "confidence": 0.7956, "confidence_percent": 79.56, "bbox": [328, 224, 355, 296]}
+{"timestamp": "2026-06-09T17:43:51.226Z", "frame": 1117, "person_found": true, "confidence": 0.8294, "confidence_percent": 82.94, "bbox": [337, 226, 361, 303]}
+{"timestamp": "2026-06-09T17:43:52.333Z", "frame": 1119, "person_found": true, "confidence": 0.8248, "confidence_percent": 82.48, "bbox": [342, 224, 367, 296]}
+{"timestamp": "2026-06-09T17:43:53.343Z", "frame": 1121, "person_found": true, "confidence": 0.8458, "confidence_percent": 84.58, "bbox": [333, 224, 363, 302]}
+{"timestamp": "2026-06-09T17:43:54.566Z", "frame": 1123, "person_found": true, "confidence": 0.8458, "confidence_percent": 84.58, "bbox": [328, 228, 359, 305]}
+{"timestamp": "2026-06-09T17:43:55.918Z", "frame": 1125, "person_found": true, "confidence": 0.875, "confidence_percent": 87.5, "bbox": [325, 231, 359, 312]}
+{"timestamp": "2026-06-09T17:43:57.093Z", "frame": 1127, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [152, 12, 637, 354]}
+{"timestamp": "2026-06-09T17:43:58.207Z", "frame": 1129, "person_found": true, "confidence": 0.9467, "confidence_percent": 94.67, "bbox": [121, 0, 441, 354]}
+{"timestamp": "2026-06-09T17:43:59.710Z", "frame": 1132, "person_found": true, "confidence": 0.9523, "confidence_percent": 95.23, "bbox": [116, 4, 431, 355]}
+{"timestamp": "2026-06-09T17:44:00.923Z", "frame": 1134, "person_found": true, "confidence": 0.8493, "confidence_percent": 84.93, "bbox": [304, 222, 336, 307]}
+{"timestamp": "2026-06-09T17:44:01.942Z", "frame": 1136, "person_found": true, "confidence": 0.8201, "confidence_percent": 82.01, "bbox": [305, 218, 332, 304]}
+{"timestamp": "2026-06-09T17:44:03.352Z", "frame": 1139, "person_found": true, "confidence": 0.7986, "confidence_percent": 79.86, "bbox": [303, 218, 331, 297]}
+{"timestamp": "2026-06-09T17:44:04.726Z", "frame": 1142, "person_found": true, "confidence": 0.8426, "confidence_percent": 84.26, "bbox": [302, 212, 329, 286]}
+{"timestamp": "2026-06-09T17:44:05.938Z", "frame": 1145, "person_found": true, "confidence": 0.8071, "confidence_percent": 80.71, "bbox": [302, 207, 326, 285]}
+{"timestamp": "2026-06-09T17:44:07.443Z", "frame": 1148, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-09T17:44:08.458Z", "frame": 1150, "person_found": true, "confidence": 0.741, "confidence_percent": 74.1, "bbox": [301, 204, 324, 282]}
+{"timestamp": "2026-06-09T17:44:09.645Z", "frame": 1152, "person_found": true, "confidence": 0.8436, "confidence_percent": 84.36, "bbox": [298, 201, 323, 286]}
+{"timestamp": "2026-06-09T17:44:10.948Z", "frame": 1154, "person_found": true, "confidence": 0.8063, "confidence_percent": 80.63, "bbox": [292, 203, 321, 292]}
+{"timestamp": "2026-06-09T17:44:13.341Z", "frame": 1157, "person_found": true, "confidence": 0.8534, "confidence_percent": 85.34, "bbox": [291, 216, 321, 306]}
+{"timestamp": "2026-06-11T07:53:17.034Z", "frame": 1, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T07:53:18.031Z", "frame": 5, "person_found": true, "confidence": 0.9577, "confidence_percent": 95.77, "bbox": [138, 4, 454, 355]}
+{"timestamp": "2026-06-11T07:53:19.277Z", "frame": 10, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T07:53:20.500Z", "frame": 15, "person_found": true, "confidence": 0.831, "confidence_percent": 83.1, "bbox": [294, 203, 319, 290]}
+{"timestamp": "2026-06-11T07:53:22.154Z", "frame": 19, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T07:53:23.369Z", "frame": 24, "person_found": true, "confidence": 0.8087, "confidence_percent": 80.87, "bbox": [325, 213, 347, 297]}
+{"timestamp": "2026-06-11T07:53:24.534Z", "frame": 27, "person_found": true, "confidence": 0.8938, "confidence_percent": 89.38, "bbox": [337, 161, 405, 265]}
+{"timestamp": "2026-06-11T07:53:25.688Z", "frame": 29, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [60, 55, 444, 355]}
+{"timestamp": "2026-06-11T07:53:26.788Z", "frame": 31, "person_found": true, "confidence": 0.8332, "confidence_percent": 83.32, "bbox": [316, 205, 342, 294]}
+{"timestamp": "2026-06-11T07:53:28.021Z", "frame": 33, "person_found": true, "confidence": 0.8529, "confidence_percent": 85.29, "bbox": [326, 202, 356, 295]}
+{"timestamp": "2026-06-11T07:53:29.120Z", "frame": 35, "person_found": true, "confidence": 0.797, "confidence_percent": 79.7, "bbox": [305, 214, 329, 287]}
+{"timestamp": "2026-06-11T07:53:30.635Z", "frame": 38, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:01:37.306Z", "frame": 1, "person_found": true, "confidence": 0.8253, "confidence_percent": 82.53, "bbox": [295, 180, 318, 242]}
+{"timestamp": "2026-06-11T08:01:38.539Z", "frame": 6, "person_found": true, "confidence": 0.9567, "confidence_percent": 95.67, "bbox": [127, 4, 469, 355]}
+{"timestamp": "2026-06-11T08:01:39.791Z", "frame": 11, "person_found": true, "confidence": 0.5274, "confidence_percent": 52.74, "bbox": [313, 176, 344, 251]}
+{"timestamp": "2026-06-11T08:01:40.832Z", "frame": 15, "person_found": true, "confidence": 0.9094, "confidence_percent": 90.94, "bbox": [221, 246, 268, 359]}
+{"timestamp": "2026-06-11T08:01:42.007Z", "frame": 20, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:01:43.036Z", "frame": 21, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:01:44.310Z", "frame": 25, "person_found": true, "confidence": 0.9506, "confidence_percent": 95.06, "bbox": [160, 25, 459, 355]}
+{"timestamp": "2026-06-11T08:01:45.800Z", "frame": 28, "person_found": true, "confidence": 0.8648, "confidence_percent": 86.48, "bbox": [312, 215, 337, 290]}
+{"timestamp": "2026-06-11T08:01:47.267Z", "frame": 31, "person_found": true, "confidence": 0.793, "confidence_percent": 79.3, "bbox": [326, 210, 344, 282]}
+{"timestamp": "2026-06-11T08:01:48.333Z", "frame": 33, "person_found": true, "confidence": 0.9041, "confidence_percent": 90.41, "bbox": [69, 103, 415, 356]}
+{"timestamp": "2026-06-11T08:01:49.486Z", "frame": 35, "person_found": true, "confidence": 0.8485, "confidence_percent": 84.85, "bbox": [282, 214, 314, 305]}
+{"timestamp": "2026-06-11T08:01:50.617Z", "frame": 37, "person_found": true, "confidence": 0.8395, "confidence_percent": 83.95, "bbox": [320, 197, 345, 273]}
+{"timestamp": "2026-06-11T08:01:51.789Z", "frame": 39, "person_found": true, "confidence": 0.769, "confidence_percent": 76.9, "bbox": [314, 215, 339, 294]}
+{"timestamp": "2026-06-11T08:01:52.847Z", "frame": 41, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:01:54.168Z", "frame": 43, "person_found": true, "confidence": 0.8433, "confidence_percent": 84.33, "bbox": [273, 165, 304, 254]}
+{"timestamp": "2026-06-11T08:01:55.588Z", "frame": 46, "person_found": true, "confidence": 0.9553, "confidence_percent": 95.53, "bbox": [156, 24, 415, 356]}
+{"timestamp": "2026-06-11T08:01:57.024Z", "frame": 49, "person_found": true, "confidence": 0.9538, "confidence_percent": 95.38, "bbox": [127, 22, 450, 356]}
+{"timestamp": "2026-06-11T08:01:58.439Z", "frame": 52, "person_found": true, "confidence": 0.8254, "confidence_percent": 82.54, "bbox": [310, 159, 343, 253]}
+{"timestamp": "2026-06-11T08:01:59.774Z", "frame": 54, "person_found": true, "confidence": 0.9286, "confidence_percent": 92.86, "bbox": [71, 84, 439, 355]}
+{"timestamp": "2026-06-11T08:02:01.320Z", "frame": 55, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:02.638Z", "frame": 56, "person_found": true, "confidence": 0.848, "confidence_percent": 84.8, "bbox": [325, 205, 354, 296]}
+{"timestamp": "2026-06-11T08:02:03.884Z", "frame": 57, "person_found": true, "confidence": 0.8248, "confidence_percent": 82.48, "bbox": [309, 203, 340, 298]}
+{"timestamp": "2026-06-11T08:02:05.366Z", "frame": 59, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:06.604Z", "frame": 61, "person_found": true, "confidence": 0.9545, "confidence_percent": 95.45, "bbox": [210, 22, 425, 356]}
+{"timestamp": "2026-06-11T08:02:07.731Z", "frame": 63, "person_found": true, "confidence": 0.948, "confidence_percent": 94.8, "bbox": [167, 25, 451, 355]}
+{"timestamp": "2026-06-11T08:02:08.917Z", "frame": 65, "person_found": true, "confidence": 0.7978, "confidence_percent": 79.78, "bbox": [317, 216, 341, 295]}
+{"timestamp": "2026-06-11T08:02:10.033Z", "frame": 67, "person_found": true, "confidence": 0.8541, "confidence_percent": 85.41, "bbox": [298, 223, 322, 308]}
+{"timestamp": "2026-06-11T08:02:11.097Z", "frame": 69, "person_found": true, "confidence": 0.5746, "confidence_percent": 57.46, "bbox": [331, 211, 347, 249]}
+{"timestamp": "2026-06-11T08:02:12.551Z", "frame": 72, "person_found": true, "confidence": 0.8189, "confidence_percent": 81.89, "bbox": [285, 183, 313, 262]}
+{"timestamp": "2026-06-11T08:02:13.998Z", "frame": 75, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:15.393Z", "frame": 78, "person_found": true, "confidence": 0.9454, "confidence_percent": 94.54, "bbox": [220, 14, 547, 356]}
+{"timestamp": "2026-06-11T08:02:16.506Z", "frame": 80, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:17.835Z", "frame": 83, "person_found": true, "confidence": 0.9548, "confidence_percent": 95.48, "bbox": [216, 22, 471, 356]}
+{"timestamp": "2026-06-11T08:02:19.292Z", "frame": 86, "person_found": true, "confidence": 0.9497, "confidence_percent": 94.97, "bbox": [143, 21, 502, 355]}
+{"timestamp": "2026-06-11T08:02:20.375Z", "frame": 88, "person_found": true, "confidence": 0.9608, "confidence_percent": 96.08, "bbox": [72, 45, 378, 355]}
+{"timestamp": "2026-06-11T08:02:21.840Z", "frame": 90, "person_found": true, "confidence": 0.7509, "confidence_percent": 75.09, "bbox": [319, 164, 346, 253]}
+{"timestamp": "2026-06-11T08:02:23.402Z", "frame": 92, "person_found": true, "confidence": 0.8139, "confidence_percent": 81.39, "bbox": [299, 192, 323, 269]}
+{"timestamp": "2026-06-11T08:02:24.635Z", "frame": 94, "person_found": true, "confidence": 0.8817, "confidence_percent": 88.17, "bbox": [294, 202, 326, 289]}
+{"timestamp": "2026-06-11T08:02:25.822Z", "frame": 96, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:27.747Z", "frame": 99, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:28.796Z", "frame": 101, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:29.870Z", "frame": 103, "person_found": true, "confidence": 0.9372, "confidence_percent": 93.72, "bbox": [87, 8, 551, 354]}
+{"timestamp": "2026-06-11T08:02:30.929Z", "frame": 105, "person_found": true, "confidence": 0.8109, "confidence_percent": 81.09, "bbox": [309, 217, 329, 297]}
+{"timestamp": "2026-06-11T08:02:32.093Z", "frame": 107, "person_found": true, "confidence": 0.8043, "confidence_percent": 80.43, "bbox": [301, 176, 322, 235]}
+{"timestamp": "2026-06-11T08:02:33.229Z", "frame": 109, "person_found": true, "confidence": 0.8427, "confidence_percent": 84.27, "bbox": [284, 159, 315, 244]}
+{"timestamp": "2026-06-11T08:02:34.467Z", "frame": 111, "person_found": true, "confidence": 0.8054, "confidence_percent": 80.54, "bbox": [284, 183, 311, 264]}
+{"timestamp": "2026-06-11T08:02:35.562Z", "frame": 113, "person_found": true, "confidence": 0.8345, "confidence_percent": 83.45, "bbox": [293, 204, 326, 289]}
+{"timestamp": "2026-06-11T08:02:36.814Z", "frame": 114, "person_found": true, "confidence": 0.8435, "confidence_percent": 84.35, "bbox": [301, 201, 328, 298]}
+{"timestamp": "2026-06-11T08:02:38.203Z", "frame": 116, "person_found": true, "confidence": 0.9427, "confidence_percent": 94.27, "bbox": [217, 15, 547, 356]}
+{"timestamp": "2026-06-11T08:02:39.407Z", "frame": 118, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:40.438Z", "frame": 120, "person_found": true, "confidence": 0.8629, "confidence_percent": 86.29, "bbox": [238, 28, 425, 356]}
+{"timestamp": "2026-06-11T08:02:41.458Z", "frame": 122, "person_found": true, "confidence": 0.9458, "confidence_percent": 94.58, "bbox": [191, 27, 476, 355]}
+{"timestamp": "2026-06-11T08:02:42.541Z", "frame": 124, "person_found": true, "confidence": 0.8248, "confidence_percent": 82.48, "bbox": [310, 220, 334, 302]}
+{"timestamp": "2026-06-11T08:02:43.662Z", "frame": 126, "person_found": true, "confidence": 0.9006, "confidence_percent": 90.06, "bbox": [328, 169, 390, 285]}
+{"timestamp": "2026-06-11T08:02:45.013Z", "frame": 128, "person_found": true, "confidence": 0.849, "confidence_percent": 84.9, "bbox": [277, 176, 312, 269]}
+{"timestamp": "2026-06-11T08:02:46.478Z", "frame": 130, "person_found": true, "confidence": 0.8543, "confidence_percent": 85.43, "bbox": [287, 205, 315, 295]}
+{"timestamp": "2026-06-11T08:02:47.750Z", "frame": 132, "person_found": true, "confidence": 0.87, "confidence_percent": 87.0, "bbox": [320, 204, 350, 298]}
+{"timestamp": "2026-06-11T08:02:49.083Z", "frame": 134, "person_found": true, "confidence": 0.8066, "confidence_percent": 80.66, "bbox": [316, 211, 339, 285]}
+{"timestamp": "2026-06-11T08:02:50.782Z", "frame": 137, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:02:51.876Z", "frame": 139, "person_found": true, "confidence": 0.9465, "confidence_percent": 94.65, "bbox": [182, 23, 418, 356]}
+{"timestamp": "2026-06-11T08:02:52.984Z", "frame": 141, "person_found": true, "confidence": 0.9554, "confidence_percent": 95.54, "bbox": [207, 23, 437, 355]}
+{"timestamp": "2026-06-11T08:02:54.124Z", "frame": 143, "person_found": true, "confidence": 0.8414, "confidence_percent": 84.14, "bbox": [312, 218, 336, 299]}
+{"timestamp": "2026-06-11T08:02:55.307Z", "frame": 145, "person_found": true, "confidence": 0.7768, "confidence_percent": 77.68, "bbox": [303, 179, 325, 240]}
+{"timestamp": "2026-06-11T08:02:56.425Z", "frame": 147, "person_found": true, "confidence": 0.806, "confidence_percent": 80.6, "bbox": [323, 174, 350, 255]}
+{"timestamp": "2026-06-11T08:02:57.726Z", "frame": 149, "person_found": true, "confidence": 0.7348, "confidence_percent": 73.48, "bbox": [295, 197, 315, 259]}
+{"timestamp": "2026-06-11T08:02:59.064Z", "frame": 151, "person_found": true, "confidence": 0.8564, "confidence_percent": 85.64, "bbox": [301, 201, 330, 282]}
+{"timestamp": "2026-06-11T08:03:00.159Z", "frame": 153, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:01.201Z", "frame": 155, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:02.760Z", "frame": 157, "person_found": true, "confidence": 0.7737, "confidence_percent": 77.37, "bbox": [277, 167, 311, 253]}
+{"timestamp": "2026-06-11T08:03:03.988Z", "frame": 159, "person_found": true, "confidence": 0.9517, "confidence_percent": 95.17, "bbox": [111, 30, 445, 355]}
+{"timestamp": "2026-06-11T08:03:05.058Z", "frame": 161, "person_found": true, "confidence": 0.8456, "confidence_percent": 84.56, "bbox": [319, 214, 346, 297]}
+{"timestamp": "2026-06-11T08:03:06.093Z", "frame": 163, "person_found": true, "confidence": 0.8123, "confidence_percent": 81.23, "bbox": [285, 216, 311, 306]}
+{"timestamp": "2026-06-11T08:03:07.141Z", "frame": 165, "person_found": true, "confidence": 0.783, "confidence_percent": 78.3, "bbox": [330, 207, 350, 269]}
+{"timestamp": "2026-06-11T08:03:08.196Z", "frame": 167, "person_found": true, "confidence": 0.9104, "confidence_percent": 91.04, "bbox": [71, 110, 397, 356]}
+{"timestamp": "2026-06-11T08:03:09.205Z", "frame": 169, "person_found": true, "confidence": 0.8788, "confidence_percent": 87.88, "bbox": [289, 210, 322, 303]}
+{"timestamp": "2026-06-11T08:03:10.212Z", "frame": 171, "person_found": true, "confidence": 0.823, "confidence_percent": 82.3, "bbox": [335, 200, 362, 278]}
+{"timestamp": "2026-06-11T08:03:11.214Z", "frame": 173, "person_found": true, "confidence": 0.9564, "confidence_percent": 95.64, "bbox": [216, 17, 548, 356]}
+{"timestamp": "2026-06-11T08:03:12.442Z", "frame": 175, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:13.844Z", "frame": 178, "person_found": true, "confidence": 0.9526, "confidence_percent": 95.26, "bbox": [222, 23, 475, 356]}
+{"timestamp": "2026-06-11T08:03:14.875Z", "frame": 180, "person_found": true, "confidence": 0.8301, "confidence_percent": 83.01, "bbox": [318, 209, 342, 293]}
+{"timestamp": "2026-06-11T08:03:15.903Z", "frame": 182, "person_found": true, "confidence": 0.8393, "confidence_percent": 83.93, "bbox": [320, 220, 344, 297]}
+{"timestamp": "2026-06-11T08:03:16.960Z", "frame": 184, "person_found": true, "confidence": 0.824, "confidence_percent": 82.4, "bbox": [318, 203, 340, 263]}
+{"timestamp": "2026-06-11T08:03:18.093Z", "frame": 186, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:19.236Z", "frame": 188, "person_found": true, "confidence": 0.8619, "confidence_percent": 86.19, "bbox": [298, 207, 330, 306]}
+{"timestamp": "2026-06-11T08:03:20.400Z", "frame": 190, "person_found": true, "confidence": 0.8336, "confidence_percent": 83.36, "bbox": [316, 197, 340, 276]}
+{"timestamp": "2026-06-11T08:03:21.559Z", "frame": 192, "person_found": true, "confidence": 0.8154, "confidence_percent": 81.54, "bbox": [308, 219, 336, 299]}
+{"timestamp": "2026-06-11T08:03:22.759Z", "frame": 193, "person_found": true, "confidence": 0.9597, "confidence_percent": 95.97, "bbox": [212, 1, 549, 355]}
+{"timestamp": "2026-06-11T08:03:24.410Z", "frame": 195, "person_found": true, "confidence": 0.7193, "confidence_percent": 71.93, "bbox": [277, 168, 307, 253]}
+{"timestamp": "2026-06-11T08:03:25.974Z", "frame": 197, "person_found": true, "confidence": 0.9048, "confidence_percent": 90.48, "bbox": [130, 12, 558, 357]}
+{"timestamp": "2026-06-11T08:03:27.700Z", "frame": 199, "person_found": true, "confidence": 0.8133, "confidence_percent": 81.33, "bbox": [322, 213, 347, 297]}
+{"timestamp": "2026-06-11T08:03:29.359Z", "frame": 201, "person_found": true, "confidence": 0.7791, "confidence_percent": 77.91, "bbox": [285, 216, 311, 305]}
+{"timestamp": "2026-06-11T08:03:31.161Z", "frame": 203, "person_found": true, "confidence": 0.8705, "confidence_percent": 87.05, "bbox": [281, 162, 315, 261]}
+{"timestamp": "2026-06-11T08:03:32.772Z", "frame": 205, "person_found": true, "confidence": 0.8442, "confidence_percent": 84.42, "bbox": [319, 188, 346, 268]}
+{"timestamp": "2026-06-11T08:03:34.351Z", "frame": 207, "person_found": true, "confidence": 0.8536, "confidence_percent": 85.36, "bbox": [237, 225, 275, 331]}
+{"timestamp": "2026-06-11T08:03:35.909Z", "frame": 209, "person_found": true, "confidence": 0.8454, "confidence_percent": 84.54, "bbox": [272, 202, 301, 283]}
+{"timestamp": "2026-06-11T08:03:37.344Z", "frame": 211, "person_found": true, "confidence": 0.9208, "confidence_percent": 92.08, "bbox": [193, 12, 548, 356]}
+{"timestamp": "2026-06-11T08:03:38.816Z", "frame": 213, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:40.334Z", "frame": 215, "person_found": true, "confidence": 0.9338, "confidence_percent": 93.38, "bbox": [206, 28, 425, 356]}
+{"timestamp": "2026-06-11T08:03:41.744Z", "frame": 217, "person_found": true, "confidence": 0.9456, "confidence_percent": 94.56, "bbox": [82, 8, 535, 354]}
+{"timestamp": "2026-06-11T08:03:43.685Z", "frame": 220, "person_found": true, "confidence": 0.8436, "confidence_percent": 84.36, "bbox": [298, 201, 323, 286]}
+{"timestamp": "2026-06-11T08:03:45.217Z", "frame": 221, "person_found": true, "confidence": 0.8698, "confidence_percent": 86.98, "bbox": [323, 185, 366, 302]}
+{"timestamp": "2026-06-11T08:03:46.879Z", "frame": 223, "person_found": true, "confidence": 0.9494, "confidence_percent": 94.94, "bbox": [80, 100, 458, 356]}
+{"timestamp": "2026-06-11T08:03:49.433Z", "frame": 225, "person_found": true, "confidence": 0.8449, "confidence_percent": 84.49, "bbox": [280, 215, 310, 307]}
+{"timestamp": "2026-06-11T08:03:50.484Z", "frame": 226, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:51.869Z", "frame": 228, "person_found": true, "confidence": 0.9613, "confidence_percent": 96.13, "bbox": [219, 16, 542, 356]}
+{"timestamp": "2026-06-11T08:03:53.100Z", "frame": 230, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:03:54.162Z", "frame": 232, "person_found": true, "confidence": 0.9492, "confidence_percent": 94.92, "bbox": [229, 23, 418, 356]}
+{"timestamp": "2026-06-11T08:03:55.497Z", "frame": 234, "person_found": true, "confidence": 0.9557, "confidence_percent": 95.57, "bbox": [219, 26, 491, 355]}
+{"timestamp": "2026-06-11T08:03:56.524Z", "frame": 235, "person_found": true, "confidence": 0.7965, "confidence_percent": 79.65, "bbox": [324, 217, 344, 292]}
+{"timestamp": "2026-06-11T08:03:57.710Z", "frame": 236, "person_found": true, "confidence": 0.8625, "confidence_percent": 86.25, "bbox": [311, 218, 335, 296]}
+{"timestamp": "2026-06-11T08:03:58.992Z", "frame": 238, "person_found": true, "confidence": 0.764, "confidence_percent": 76.4, "bbox": [333, 221, 361, 299]}
+{"timestamp": "2026-06-11T08:04:00.322Z", "frame": 240, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:01.718Z", "frame": 242, "person_found": true, "confidence": 0.8301, "confidence_percent": 83.01, "bbox": [283, 214, 313, 306]}
+{"timestamp": "2026-06-11T08:04:02.898Z", "frame": 244, "person_found": true, "confidence": 0.8469, "confidence_percent": 84.69, "bbox": [342, 197, 368, 279]}
+{"timestamp": "2026-06-11T08:04:04.300Z", "frame": 246, "person_found": true, "confidence": 0.9623, "confidence_percent": 96.23, "bbox": [217, 17, 540, 356]}
+{"timestamp": "2026-06-11T08:04:05.741Z", "frame": 248, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:07.136Z", "frame": 250, "person_found": true, "confidence": 0.9393, "confidence_percent": 93.93, "bbox": [251, 23, 433, 356]}
+{"timestamp": "2026-06-11T08:04:08.174Z", "frame": 252, "person_found": true, "confidence": 0.952, "confidence_percent": 95.2, "bbox": [164, 24, 493, 355]}
+{"timestamp": "2026-06-11T08:04:09.305Z", "frame": 254, "person_found": true, "confidence": 0.8166, "confidence_percent": 81.66, "bbox": [302, 220, 330, 308]}
+{"timestamp": "2026-06-11T08:04:10.464Z", "frame": 256, "person_found": true, "confidence": 0.9114, "confidence_percent": 91.14, "bbox": [323, 174, 384, 289]}
+{"timestamp": "2026-06-11T08:04:11.674Z", "frame": 258, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:12.774Z", "frame": 260, "person_found": true, "confidence": 0.8581, "confidence_percent": 85.81, "bbox": [287, 203, 316, 292]}
+{"timestamp": "2026-06-11T08:04:13.833Z", "frame": 262, "person_found": true, "confidence": 0.8535, "confidence_percent": 85.35, "bbox": [311, 200, 338, 288]}
+{"timestamp": "2026-06-11T08:04:15.127Z", "frame": 264, "person_found": true, "confidence": 0.8351, "confidence_percent": 83.51, "bbox": [314, 210, 340, 299]}
+{"timestamp": "2026-06-11T08:04:16.798Z", "frame": 267, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:18.335Z", "frame": 270, "person_found": true, "confidence": 0.8601, "confidence_percent": 86.01, "bbox": [131, 12, 519, 357]}
+{"timestamp": "2026-06-11T08:04:19.413Z", "frame": 272, "person_found": true, "confidence": 0.8263, "confidence_percent": 82.63, "bbox": [323, 209, 345, 282]}
+{"timestamp": "2026-06-11T08:04:20.516Z", "frame": 274, "person_found": true, "confidence": 0.807, "confidence_percent": 80.7, "bbox": [328, 229, 357, 313]}
+{"timestamp": "2026-06-11T08:04:21.617Z", "frame": 276, "person_found": true, "confidence": 0.8192, "confidence_percent": 81.92, "bbox": [337, 228, 363, 301]}
+{"timestamp": "2026-06-11T08:04:22.665Z", "frame": 278, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:23.678Z", "frame": 280, "person_found": true, "confidence": 0.844, "confidence_percent": 84.4, "bbox": [281, 208, 308, 302]}
+{"timestamp": "2026-06-11T08:04:24.701Z", "frame": 282, "person_found": true, "confidence": 0.8061, "confidence_percent": 80.61, "bbox": [325, 201, 352, 282]}
+{"timestamp": "2026-06-11T08:04:25.716Z", "frame": 284, "person_found": true, "confidence": 0.9348, "confidence_percent": 93.48, "bbox": [196, 4, 560, 356]}
+{"timestamp": "2026-06-11T08:04:27.036Z", "frame": 286, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:28.436Z", "frame": 289, "person_found": true, "confidence": 0.9548, "confidence_percent": 95.48, "bbox": [202, 22, 475, 355]}
+{"timestamp": "2026-06-11T08:04:29.449Z", "frame": 291, "person_found": true, "confidence": 0.8386, "confidence_percent": 83.86, "bbox": [314, 211, 339, 288]}
+{"timestamp": "2026-06-11T08:04:30.556Z", "frame": 293, "person_found": true, "confidence": 0.8384, "confidence_percent": 83.84, "bbox": [312, 217, 335, 291]}
+{"timestamp": "2026-06-11T08:04:31.595Z", "frame": 295, "person_found": true, "confidence": 0.808, "confidence_percent": 80.8, "bbox": [302, 207, 327, 269]}
+{"timestamp": "2026-06-11T08:04:32.698Z", "frame": 297, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:34.186Z", "frame": 300, "person_found": true, "confidence": 0.8384, "confidence_percent": 83.84, "bbox": [301, 201, 329, 287]}
+{"timestamp": "2026-06-11T08:04:35.639Z", "frame": 303, "person_found": true, "confidence": 0.8361, "confidence_percent": 83.61, "bbox": [309, 209, 332, 288]}
+{"timestamp": "2026-06-11T08:04:37.202Z", "frame": 306, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:38.210Z", "frame": 308, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:39.678Z", "frame": 311, "person_found": true, "confidence": 0.8366, "confidence_percent": 83.66, "bbox": [319, 215, 344, 304]}
+{"timestamp": "2026-06-11T08:04:41.181Z", "frame": 314, "person_found": true, "confidence": 0.8591, "confidence_percent": 85.91, "bbox": [309, 193, 334, 260]}
+{"timestamp": "2026-06-11T08:04:42.251Z", "frame": 316, "person_found": true, "confidence": 0.8272, "confidence_percent": 82.72, "bbox": [285, 190, 316, 280]}
+{"timestamp": "2026-06-11T08:04:43.335Z", "frame": 318, "person_found": true, "confidence": 0.8484, "confidence_percent": 84.84, "bbox": [324, 186, 351, 265]}
+{"timestamp": "2026-06-11T08:04:44.405Z", "frame": 320, "person_found": true, "confidence": 0.8904, "confidence_percent": 89.04, "bbox": [159, 209, 197, 329]}
+{"timestamp": "2026-06-11T08:04:45.900Z", "frame": 323, "person_found": true, "confidence": 0.8601, "confidence_percent": 86.01, "bbox": [321, 210, 345, 287]}
+{"timestamp": "2026-06-11T08:04:47.413Z", "frame": 326, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:48.847Z", "frame": 329, "person_found": true, "confidence": 0.8956, "confidence_percent": 89.56, "bbox": [135, 9, 519, 357]}
+{"timestamp": "2026-06-11T08:04:49.863Z", "frame": 331, "person_found": true, "confidence": 0.8413, "confidence_percent": 84.13, "bbox": [319, 214, 344, 300]}
+{"timestamp": "2026-06-11T08:04:50.919Z", "frame": 333, "person_found": true, "confidence": 0.8319, "confidence_percent": 83.19, "bbox": [322, 219, 349, 294]}
+{"timestamp": "2026-06-11T08:04:51.968Z", "frame": 335, "person_found": true, "confidence": 0.8091, "confidence_percent": 80.91, "bbox": [287, 222, 315, 296]}
+{"timestamp": "2026-06-11T08:04:52.983Z", "frame": 337, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:54.486Z", "frame": 340, "person_found": true, "confidence": 0.852, "confidence_percent": 85.2, "bbox": [308, 213, 338, 300]}
+{"timestamp": "2026-06-11T08:04:55.570Z", "frame": 342, "person_found": true, "confidence": 0.8373, "confidence_percent": 83.73, "bbox": [286, 193, 313, 270]}
+{"timestamp": "2026-06-11T08:04:56.872Z", "frame": 345, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:58.095Z", "frame": 347, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:04:59.534Z", "frame": 350, "person_found": true, "confidence": 0.956, "confidence_percent": 95.6, "bbox": [155, 3, 538, 355]}
+{"timestamp": "2026-06-11T08:05:01.059Z", "frame": 353, "person_found": true, "confidence": 0.8201, "confidence_percent": 82.01, "bbox": [303, 216, 327, 289]}
+{"timestamp": "2026-06-11T08:05:02.078Z", "frame": 355, "person_found": true, "confidence": 0.7418, "confidence_percent": 74.18, "bbox": [279, 218, 305, 283]}
+{"timestamp": "2026-06-11T08:05:03.131Z", "frame": 357, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:04.230Z", "frame": 359, "person_found": true, "confidence": 0.8748, "confidence_percent": 87.48, "bbox": [298, 207, 328, 296]}
+{"timestamp": "2026-06-11T08:05:05.239Z", "frame": 361, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:06.269Z", "frame": 363, "person_found": true, "confidence": 0.8145, "confidence_percent": 81.45, "bbox": [313, 222, 339, 307]}
+{"timestamp": "2026-06-11T08:05:07.722Z", "frame": 366, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:09.170Z", "frame": 369, "person_found": true, "confidence": 0.8609, "confidence_percent": 86.09, "bbox": [133, 11, 530, 357]}
+{"timestamp": "2026-06-11T08:05:10.224Z", "frame": 371, "person_found": true, "confidence": 0.8658, "confidence_percent": 86.58, "bbox": [314, 212, 344, 295]}
+{"timestamp": "2026-06-11T08:05:11.250Z", "frame": 373, "person_found": true, "confidence": 0.8046, "confidence_percent": 80.46, "bbox": [308, 217, 331, 292]}
+{"timestamp": "2026-06-11T08:05:12.290Z", "frame": 375, "person_found": true, "confidence": 0.8562, "confidence_percent": 85.62, "bbox": [322, 219, 350, 295]}
+{"timestamp": "2026-06-11T08:05:13.322Z", "frame": 377, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:14.349Z", "frame": 379, "person_found": true, "confidence": 0.8629, "confidence_percent": 86.29, "bbox": [292, 214, 325, 310]}
+{"timestamp": "2026-06-11T08:05:15.843Z", "frame": 382, "person_found": true, "confidence": 0.7816, "confidence_percent": 78.16, "bbox": [287, 190, 313, 271]}
+{"timestamp": "2026-06-11T08:05:17.135Z", "frame": 385, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:18.409Z", "frame": 387, "person_found": true, "confidence": 0.852, "confidence_percent": 85.2, "bbox": [273, 162, 306, 249]}
+{"timestamp": "2026-06-11T08:05:19.412Z", "frame": 389, "person_found": true, "confidence": 0.9526, "confidence_percent": 95.26, "bbox": [222, 23, 475, 355]}
+{"timestamp": "2026-06-11T08:05:20.937Z", "frame": 392, "person_found": true, "confidence": 0.846, "confidence_percent": 84.6, "bbox": [314, 220, 342, 297]}
+{"timestamp": "2026-06-11T08:05:21.990Z", "frame": 394, "person_found": true, "confidence": 0.7945, "confidence_percent": 79.45, "bbox": [298, 179, 320, 241]}
+{"timestamp": "2026-06-11T08:05:23.019Z", "frame": 396, "person_found": true, "confidence": 0.7899, "confidence_percent": 78.99, "bbox": [305, 167, 337, 248]}
+{"timestamp": "2026-06-11T08:05:24.470Z", "frame": 399, "person_found": true, "confidence": 0.8621, "confidence_percent": 86.21, "bbox": [309, 202, 339, 291]}
+{"timestamp": "2026-06-11T08:05:25.910Z", "frame": 402, "person_found": true, "confidence": 0.8615, "confidence_percent": 86.15, "bbox": [272, 201, 301, 284]}
+{"timestamp": "2026-06-11T08:05:27.233Z", "frame": 405, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:28.417Z", "frame": 407, "person_found": true, "confidence": 0.8255, "confidence_percent": 82.55, "bbox": [354, 203, 382, 291]}
+{"timestamp": "2026-06-11T08:05:29.863Z", "frame": 410, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [174, 24, 437, 355]}
+{"timestamp": "2026-06-11T08:05:30.925Z", "frame": 412, "person_found": true, "confidence": 0.945, "confidence_percent": 94.5, "bbox": [127, 44, 454, 355]}
+{"timestamp": "2026-06-11T08:05:32.083Z", "frame": 414, "person_found": true, "confidence": 0.9509, "confidence_percent": 95.09, "bbox": [80, 41, 381, 355]}
+{"timestamp": "2026-06-11T08:05:33.224Z", "frame": 416, "person_found": true, "confidence": 0.8751, "confidence_percent": 87.51, "bbox": [311, 181, 339, 272]}
+{"timestamp": "2026-06-11T08:05:34.350Z", "frame": 418, "person_found": true, "confidence": 0.8192, "confidence_percent": 81.92, "bbox": [287, 185, 313, 265]}
+{"timestamp": "2026-06-11T08:05:35.421Z", "frame": 420, "person_found": true, "confidence": 0.7683, "confidence_percent": 76.83, "bbox": [311, 217, 337, 298]}
+{"timestamp": "2026-06-11T08:05:36.533Z", "frame": 422, "person_found": true, "confidence": 0.8404, "confidence_percent": 84.04, "bbox": [288, 192, 315, 274]}
+{"timestamp": "2026-06-11T08:05:37.860Z", "frame": 425, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:39.114Z", "frame": 427, "person_found": true, "confidence": 0.8659, "confidence_percent": 86.59, "bbox": [279, 167, 306, 259]}
+{"timestamp": "2026-06-11T08:05:40.609Z", "frame": 430, "person_found": true, "confidence": 0.9527, "confidence_percent": 95.27, "bbox": [102, 7, 525, 355]}
+{"timestamp": "2026-06-11T08:05:41.688Z", "frame": 432, "person_found": true, "confidence": 0.8549, "confidence_percent": 85.49, "bbox": [315, 216, 339, 292]}
+{"timestamp": "2026-06-11T08:05:42.860Z", "frame": 434, "person_found": true, "confidence": 0.8204, "confidence_percent": 82.04, "bbox": [292, 181, 312, 245]}
+{"timestamp": "2026-06-11T08:05:44.011Z", "frame": 436, "person_found": true, "confidence": 0.8275, "confidence_percent": 82.75, "bbox": [319, 170, 347, 255]}
+{"timestamp": "2026-06-11T08:05:45.146Z", "frame": 438, "person_found": true, "confidence": 0.845, "confidence_percent": 84.5, "bbox": [283, 188, 310, 273]}
+{"timestamp": "2026-06-11T08:05:46.172Z", "frame": 440, "person_found": true, "confidence": 0.8575, "confidence_percent": 85.75, "bbox": [306, 209, 335, 298]}
+{"timestamp": "2026-06-11T08:05:47.229Z", "frame": 442, "person_found": true, "confidence": 0.8427, "confidence_percent": 84.27, "bbox": [285, 189, 313, 271]}
+{"timestamp": "2026-06-11T08:05:48.573Z", "frame": 445, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:49.920Z", "frame": 447, "person_found": true, "confidence": 0.6489, "confidence_percent": 64.89, "bbox": [280, 165, 305, 254]}
+{"timestamp": "2026-06-11T08:05:50.978Z", "frame": 449, "person_found": true, "confidence": 0.853, "confidence_percent": 85.3, "bbox": [134, 11, 528, 357]}
+{"timestamp": "2026-06-11T08:05:52.136Z", "frame": 451, "person_found": true, "confidence": 0.8129, "confidence_percent": 81.29, "bbox": [321, 212, 343, 299]}
+{"timestamp": "2026-06-11T08:05:53.224Z", "frame": 453, "person_found": true, "confidence": 0.8544, "confidence_percent": 85.44, "bbox": [323, 220, 350, 299]}
+{"timestamp": "2026-06-11T08:05:54.382Z", "frame": 455, "person_found": true, "confidence": 0.7903, "confidence_percent": 79.03, "bbox": [333, 223, 366, 301]}
+{"timestamp": "2026-06-11T08:05:55.553Z", "frame": 457, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:05:56.692Z", "frame": 459, "person_found": true, "confidence": 0.8804, "confidence_percent": 88.04, "bbox": [285, 203, 316, 295]}
+{"timestamp": "2026-06-11T08:05:57.717Z", "frame": 461, "person_found": true, "confidence": 0.8384, "confidence_percent": 83.84, "bbox": [326, 198, 354, 283]}
+{"timestamp": "2026-06-11T08:05:59.083Z", "frame": 464, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:00.346Z", "frame": 466, "person_found": true, "confidence": 0.8546, "confidence_percent": 85.46, "bbox": [276, 166, 309, 256]}
+{"timestamp": "2026-06-11T08:06:01.786Z", "frame": 469, "person_found": true, "confidence": 0.9524, "confidence_percent": 95.24, "bbox": [123, 7, 516, 355]}
+{"timestamp": "2026-06-11T08:06:02.830Z", "frame": 471, "person_found": true, "confidence": 0.8457, "confidence_percent": 84.57, "bbox": [311, 217, 340, 293]}
+{"timestamp": "2026-06-11T08:06:03.911Z", "frame": 473, "person_found": true, "confidence": 0.8184, "confidence_percent": 81.84, "bbox": [315, 202, 335, 262]}
+{"timestamp": "2026-06-11T08:06:04.971Z", "frame": 475, "person_found": true, "confidence": 0.8134, "confidence_percent": 81.34, "bbox": [282, 178, 313, 268]}
+{"timestamp": "2026-06-11T08:06:06.031Z", "frame": 477, "person_found": true, "confidence": 0.847, "confidence_percent": 84.7, "bbox": [285, 191, 315, 274]}
+{"timestamp": "2026-06-11T08:06:07.171Z", "frame": 479, "person_found": true, "confidence": 0.8588, "confidence_percent": 85.88, "bbox": [308, 202, 336, 286]}
+{"timestamp": "2026-06-11T08:06:08.324Z", "frame": 481, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:10.318Z", "frame": 484, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:11.530Z", "frame": 486, "person_found": true, "confidence": 0.9593, "confidence_percent": 95.93, "bbox": [194, 27, 426, 355]}
+{"timestamp": "2026-06-11T08:06:12.777Z", "frame": 488, "person_found": true, "confidence": 0.9505, "confidence_percent": 95.05, "bbox": [209, 23, 453, 355]}
+{"timestamp": "2026-06-11T08:06:14.000Z", "frame": 490, "person_found": true, "confidence": 0.7787, "confidence_percent": 77.87, "bbox": [314, 220, 339, 297]}
+{"timestamp": "2026-06-11T08:06:15.093Z", "frame": 492, "person_found": true, "confidence": 0.9405, "confidence_percent": 94.05, "bbox": [86, 62, 390, 356]}
+{"timestamp": "2026-06-11T08:06:16.180Z", "frame": 494, "person_found": true, "confidence": 0.8632, "confidence_percent": 86.32, "bbox": [280, 173, 312, 257]}
+{"timestamp": "2026-06-11T08:06:17.256Z", "frame": 496, "person_found": true, "confidence": 0.928, "confidence_percent": 92.8, "bbox": [70, 88, 443, 355]}
+{"timestamp": "2026-06-11T08:06:18.383Z", "frame": 498, "person_found": true, "confidence": 0.8464, "confidence_percent": 84.64, "bbox": [294, 210, 324, 295]}
+{"timestamp": "2026-06-11T08:06:19.404Z", "frame": 500, "person_found": true, "confidence": 0.8261, "confidence_percent": 82.61, "bbox": [342, 198, 371, 277]}
+{"timestamp": "2026-06-11T08:06:20.882Z", "frame": 502, "person_found": true, "confidence": 0.9568, "confidence_percent": 95.68, "bbox": [216, 16, 548, 356]}
+{"timestamp": "2026-06-11T08:06:22.167Z", "frame": 504, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:23.436Z", "frame": 506, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:24.789Z", "frame": 508, "person_found": true, "confidence": 0.9522, "confidence_percent": 95.22, "bbox": [174, 24, 437, 355]}
+{"timestamp": "2026-06-11T08:06:26.122Z", "frame": 510, "person_found": true, "confidence": 0.8253, "confidence_percent": 82.53, "bbox": [316, 217, 341, 295]}
+{"timestamp": "2026-06-11T08:06:27.616Z", "frame": 512, "person_found": true, "confidence": 0.8532, "confidence_percent": 85.32, "bbox": [309, 190, 333, 256]}
+{"timestamp": "2026-06-11T08:06:29.166Z", "frame": 514, "person_found": true, "confidence": 0.8331, "confidence_percent": 83.31, "bbox": [324, 169, 352, 255]}
+{"timestamp": "2026-06-11T08:06:30.629Z", "frame": 516, "person_found": true, "confidence": 0.8228, "confidence_percent": 82.28, "bbox": [279, 185, 305, 263]}
+{"timestamp": "2026-06-11T08:06:31.700Z", "frame": 518, "person_found": true, "confidence": 0.8596, "confidence_percent": 85.96, "bbox": [310, 208, 340, 297]}
+{"timestamp": "2026-06-11T08:06:33.178Z", "frame": 521, "person_found": true, "confidence": 0.838, "confidence_percent": 83.8, "bbox": [314, 209, 341, 296]}
+{"timestamp": "2026-06-11T08:06:34.790Z", "frame": 524, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:36.129Z", "frame": 527, "person_found": true, "confidence": 0.9509, "confidence_percent": 95.09, "bbox": [206, 23, 430, 356]}
+{"timestamp": "2026-06-11T08:06:37.622Z", "frame": 530, "person_found": true, "confidence": 0.7765, "confidence_percent": 77.65, "bbox": [314, 220, 342, 295]}
+{"timestamp": "2026-06-11T08:06:38.659Z", "frame": 532, "person_found": true, "confidence": 0.8165, "confidence_percent": 81.65, "bbox": [305, 209, 328, 286]}
+{"timestamp": "2026-06-11T08:06:40.159Z", "frame": 535, "person_found": true, "confidence": 0.8266, "confidence_percent": 82.66, "bbox": [278, 154, 305, 248]}
+{"timestamp": "2026-06-11T08:06:41.160Z", "frame": 537, "person_found": true, "confidence": 0.8187, "confidence_percent": 81.87, "bbox": [283, 185, 311, 268]}
+{"timestamp": "2026-06-11T08:06:42.629Z", "frame": 540, "person_found": true, "confidence": 0.8529, "confidence_percent": 85.29, "bbox": [309, 201, 336, 294]}
+{"timestamp": "2026-06-11T08:06:43.711Z", "frame": 542, "person_found": true, "confidence": 0.7724, "confidence_percent": 77.24, "bbox": [294, 208, 325, 303]}
+{"timestamp": "2026-06-11T08:06:45.641Z", "frame": 545, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:46.775Z", "frame": 547, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:47.981Z", "frame": 549, "person_found": true, "confidence": 0.9537, "confidence_percent": 95.37, "bbox": [161, 24, 410, 356]}
+{"timestamp": "2026-06-11T08:06:49.206Z", "frame": 551, "person_found": true, "confidence": 0.956, "confidence_percent": 95.6, "bbox": [139, 21, 448, 355]}
+{"timestamp": "2026-06-11T08:06:50.423Z", "frame": 553, "person_found": true, "confidence": 0.8166, "confidence_percent": 81.66, "bbox": [310, 192, 332, 257]}
+{"timestamp": "2026-06-11T08:06:51.609Z", "frame": 555, "person_found": true, "confidence": 0.7552, "confidence_percent": 75.52, "bbox": [274, 164, 303, 251]}
+{"timestamp": "2026-06-11T08:06:52.829Z", "frame": 557, "person_found": true, "confidence": 0.9089, "confidence_percent": 90.89, "bbox": [28, 100, 408, 356]}
+{"timestamp": "2026-06-11T08:06:53.890Z", "frame": 559, "person_found": true, "confidence": 0.8512, "confidence_percent": 85.12, "bbox": [280, 199, 302, 280]}
+{"timestamp": "2026-06-11T08:06:54.951Z", "frame": 561, "person_found": true, "confidence": 0.8263, "confidence_percent": 82.63, "bbox": [314, 194, 339, 274]}
+{"timestamp": "2026-06-11T08:06:56.033Z", "frame": 563, "person_found": true, "confidence": 0.9546, "confidence_percent": 95.46, "bbox": [179, 11, 549, 356]}
+{"timestamp": "2026-06-11T08:06:57.188Z", "frame": 565, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:06:58.676Z", "frame": 568, "person_found": true, "confidence": 0.881, "confidence_percent": 88.1, "bbox": [140, 6, 487, 358]}
+{"timestamp": "2026-06-11T08:06:59.728Z", "frame": 570, "person_found": true, "confidence": 0.8312, "confidence_percent": 83.12, "bbox": [314, 216, 345, 296]}
+{"timestamp": "2026-06-11T08:07:00.792Z", "frame": 572, "person_found": true, "confidence": 0.9242, "confidence_percent": 92.42, "bbox": [103, 79, 380, 355]}
+{"timestamp": "2026-06-11T08:07:01.918Z", "frame": 574, "person_found": true, "confidence": 0.8012, "confidence_percent": 80.12, "bbox": [324, 166, 348, 240]}
+{"timestamp": "2026-06-11T08:07:03.021Z", "frame": 576, "person_found": true, "confidence": 0.9208, "confidence_percent": 92.08, "bbox": [74, 86, 438, 355]}
+{"timestamp": "2026-06-11T08:07:04.089Z", "frame": 578, "person_found": true, "confidence": 0.8231, "confidence_percent": 82.31, "bbox": [298, 204, 325, 302]}
+{"timestamp": "2026-06-11T08:07:05.117Z", "frame": 580, "person_found": true, "confidence": 0.8427, "confidence_percent": 84.27, "bbox": [321, 194, 346, 273]}
+{"timestamp": "2026-06-11T08:07:06.283Z", "frame": 582, "person_found": true, "confidence": 0.9429, "confidence_percent": 94.29, "bbox": [198, 11, 556, 356]}
+{"timestamp": "2026-06-11T08:07:07.713Z", "frame": 584, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:08.798Z", "frame": 586, "person_found": true, "confidence": 0.9467, "confidence_percent": 94.67, "bbox": [182, 23, 418, 356]}
+{"timestamp": "2026-06-11T08:07:09.852Z", "frame": 588, "person_found": true, "confidence": 0.9477, "confidence_percent": 94.77, "bbox": [97, 6, 533, 354]}
+{"timestamp": "2026-06-11T08:07:10.884Z", "frame": 590, "person_found": true, "confidence": 0.8427, "confidence_percent": 84.27, "bbox": [312, 218, 338, 297]}
+{"timestamp": "2026-06-11T08:07:11.949Z", "frame": 592, "person_found": true, "confidence": 0.8416, "confidence_percent": 84.16, "bbox": [317, 192, 337, 254]}
+{"timestamp": "2026-06-11T08:07:13.007Z", "frame": 594, "person_found": true, "confidence": 0.8187, "confidence_percent": 81.87, "bbox": [274, 177, 306, 264]}
+{"timestamp": "2026-06-11T08:07:14.136Z", "frame": 596, "person_found": true, "confidence": 0.8253, "confidence_percent": 82.53, "bbox": [287, 190, 314, 272]}
+{"timestamp": "2026-06-11T08:07:15.305Z", "frame": 598, "person_found": true, "confidence": 0.8719, "confidence_percent": 87.19, "bbox": [324, 217, 354, 312]}
+{"timestamp": "2026-06-11T08:07:16.565Z", "frame": 600, "person_found": true, "confidence": 0.8235, "confidence_percent": 82.35, "bbox": [289, 210, 314, 296]}
+{"timestamp": "2026-06-11T08:07:18.359Z", "frame": 603, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:19.703Z", "frame": 606, "person_found": true, "confidence": 0.9495, "confidence_percent": 94.95, "bbox": [226, 25, 428, 356]}
+{"timestamp": "2026-06-11T08:07:20.851Z", "frame": 608, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [222, 29, 476, 356]}
+{"timestamp": "2026-06-11T08:07:21.953Z", "frame": 610, "person_found": true, "confidence": 0.8394, "confidence_percent": 83.94, "bbox": [304, 210, 329, 292]}
+{"timestamp": "2026-06-11T08:07:23.103Z", "frame": 612, "person_found": true, "confidence": 0.921, "confidence_percent": 92.1, "bbox": [311, 168, 387, 274]}
+{"timestamp": "2026-06-11T08:07:24.258Z", "frame": 614, "person_found": true, "confidence": 0.793, "confidence_percent": 79.3, "bbox": [263, 174, 300, 258]}
+{"timestamp": "2026-06-11T08:07:25.406Z", "frame": 616, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:26.857Z", "frame": 619, "person_found": true, "confidence": 0.8807, "confidence_percent": 88.07, "bbox": [323, 201, 355, 292]}
+{"timestamp": "2026-06-11T08:07:27.920Z", "frame": 621, "person_found": true, "confidence": 0.8316, "confidence_percent": 83.16, "bbox": [306, 201, 336, 277]}
+{"timestamp": "2026-06-11T08:07:29.629Z", "frame": 624, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:31.115Z", "frame": 627, "person_found": true, "confidence": 0.9425, "confidence_percent": 94.25, "bbox": [219, 23, 463, 356]}
+{"timestamp": "2026-06-11T08:07:32.147Z", "frame": 629, "person_found": true, "confidence": 0.9496, "confidence_percent": 94.96, "bbox": [190, 30, 542, 356]}
+{"timestamp": "2026-06-11T08:07:33.366Z", "frame": 631, "person_found": true, "confidence": 0.8129, "confidence_percent": 81.29, "bbox": [306, 216, 336, 285]}
+{"timestamp": "2026-06-11T08:07:34.525Z", "frame": 633, "person_found": true, "confidence": 0.778, "confidence_percent": 77.8, "bbox": [304, 182, 383, 323]}
+{"timestamp": "2026-06-11T08:07:35.699Z", "frame": 635, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:36.905Z", "frame": 637, "person_found": true, "confidence": 0.8522, "confidence_percent": 85.22, "bbox": [311, 205, 339, 289]}
+{"timestamp": "2026-06-11T08:07:38.007Z", "frame": 639, "person_found": true, "confidence": 0.8431, "confidence_percent": 84.31, "bbox": [325, 202, 358, 296]}
+{"timestamp": "2026-06-11T08:07:39.126Z", "frame": 641, "person_found": true, "confidence": 0.8098, "confidence_percent": 80.98, "bbox": [313, 217, 339, 307]}
+{"timestamp": "2026-06-11T08:07:40.716Z", "frame": 644, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:41.755Z", "frame": 646, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:42.781Z", "frame": 648, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [202, 23, 435, 355]}
+{"timestamp": "2026-06-11T08:07:43.825Z", "frame": 650, "person_found": true, "confidence": 0.8425, "confidence_percent": 84.25, "bbox": [312, 217, 339, 296]}
+{"timestamp": "2026-06-11T08:07:44.881Z", "frame": 652, "person_found": true, "confidence": 0.8142, "confidence_percent": 81.42, "bbox": [311, 191, 332, 260]}
+{"timestamp": "2026-06-11T08:07:45.947Z", "frame": 654, "person_found": true, "confidence": 0.8543, "confidence_percent": 85.43, "bbox": [275, 159, 310, 250]}
+{"timestamp": "2026-06-11T08:07:47.425Z", "frame": 657, "person_found": true, "confidence": 0.8353, "confidence_percent": 83.53, "bbox": [293, 193, 320, 274]}
+{"timestamp": "2026-06-11T08:07:48.883Z", "frame": 660, "person_found": true, "confidence": 0.8523, "confidence_percent": 85.23, "bbox": [325, 196, 352, 274]}
+{"timestamp": "2026-06-11T08:07:49.964Z", "frame": 662, "person_found": true, "confidence": 0.7987, "confidence_percent": 79.87, "bbox": [312, 218, 337, 298]}
+{"timestamp": "2026-06-11T08:07:51.460Z", "frame": 665, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:52.883Z", "frame": 668, "person_found": true, "confidence": 0.9601, "confidence_percent": 96.01, "bbox": [207, 21, 473, 356]}
+{"timestamp": "2026-06-11T08:07:54.344Z", "frame": 671, "person_found": true, "confidence": 0.9541, "confidence_percent": 95.41, "bbox": [130, 17, 436, 355]}
+{"timestamp": "2026-06-11T08:07:55.352Z", "frame": 673, "person_found": true, "confidence": 0.8036, "confidence_percent": 80.36, "bbox": [299, 219, 318, 304]}
+{"timestamp": "2026-06-11T08:07:56.368Z", "frame": 675, "person_found": true, "confidence": 0.8032, "confidence_percent": 80.32, "bbox": [448, 204, 467, 263]}
+{"timestamp": "2026-06-11T08:07:57.477Z", "frame": 677, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:07:58.620Z", "frame": 679, "person_found": true, "confidence": 0.8245, "confidence_percent": 82.45, "bbox": [283, 205, 312, 301]}
+{"timestamp": "2026-06-11T08:07:59.819Z", "frame": 681, "person_found": true, "confidence": 0.8656, "confidence_percent": 86.56, "bbox": [287, 207, 319, 311]}
+{"timestamp": "2026-06-11T08:08:01.031Z", "frame": 683, "person_found": true, "confidence": 0.8191, "confidence_percent": 81.91, "bbox": [311, 217, 337, 295]}
+{"timestamp": "2026-06-11T08:08:02.528Z", "frame": 686, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:04.027Z", "frame": 689, "person_found": true, "confidence": 0.9486, "confidence_percent": 94.86, "bbox": [218, 24, 438, 356]}
+{"timestamp": "2026-06-11T08:08:05.289Z", "frame": 691, "person_found": true, "confidence": 0.8381, "confidence_percent": 83.81, "bbox": [319, 212, 345, 301]}
+{"timestamp": "2026-06-11T08:08:06.499Z", "frame": 693, "person_found": true, "confidence": 0.9563, "confidence_percent": 95.63, "bbox": [113, 7, 434, 355]}
+{"timestamp": "2026-06-11T08:08:07.714Z", "frame": 695, "person_found": true, "confidence": 0.8743, "confidence_percent": 87.43, "bbox": [291, 152, 398, 308]}
+{"timestamp": "2026-06-11T08:08:09.126Z", "frame": 697, "person_found": true, "confidence": 0.9505, "confidence_percent": 95.05, "bbox": [72, 54, 448, 355]}
+{"timestamp": "2026-06-11T08:08:10.365Z", "frame": 699, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:11.514Z", "frame": 701, "person_found": true, "confidence": 0.8618, "confidence_percent": 86.18, "bbox": [314, 201, 342, 288]}
+{"timestamp": "2026-06-11T08:08:12.781Z", "frame": 703, "person_found": true, "confidence": 0.8074, "confidence_percent": 80.74, "bbox": [308, 203, 335, 292]}
+{"timestamp": "2026-06-11T08:08:13.963Z", "frame": 705, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:15.584Z", "frame": 707, "person_found": true, "confidence": 0.8533, "confidence_percent": 85.33, "bbox": [277, 170, 307, 257]}
+{"timestamp": "2026-06-11T08:08:16.887Z", "frame": 709, "person_found": true, "confidence": 0.9562, "confidence_percent": 95.62, "bbox": [199, 24, 482, 355]}
+{"timestamp": "2026-06-11T08:08:18.144Z", "frame": 711, "person_found": true, "confidence": 0.8565, "confidence_percent": 85.65, "bbox": [318, 209, 343, 298]}
+{"timestamp": "2026-06-11T08:08:19.443Z", "frame": 713, "person_found": true, "confidence": 0.9539, "confidence_percent": 95.39, "bbox": [122, 2, 508, 355]}
+{"timestamp": "2026-06-11T08:08:20.546Z", "frame": 715, "person_found": true, "confidence": 0.9001, "confidence_percent": 90.01, "bbox": [302, 165, 392, 330]}
+{"timestamp": "2026-06-11T08:08:21.568Z", "frame": 717, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:22.708Z", "frame": 719, "person_found": true, "confidence": 0.8356, "confidence_percent": 83.56, "bbox": [289, 190, 318, 270]}
+{"timestamp": "2026-06-11T08:08:24.195Z", "frame": 722, "person_found": true, "confidence": 0.8646, "confidence_percent": 86.46, "bbox": [291, 214, 324, 306]}
+{"timestamp": "2026-06-11T08:08:25.650Z", "frame": 725, "person_found": true, "confidence": 0.9544, "confidence_percent": 95.44, "bbox": [215, 10, 544, 356]}
+{"timestamp": "2026-06-11T08:08:26.832Z", "frame": 727, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:27.972Z", "frame": 729, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:29.004Z", "frame": 731, "person_found": true, "confidence": 0.9512, "confidence_percent": 95.12, "bbox": [176, 25, 433, 355]}
+{"timestamp": "2026-06-11T08:08:30.131Z", "frame": 733, "person_found": true, "confidence": 0.9542, "confidence_percent": 95.42, "bbox": [144, 6, 486, 355]}
+{"timestamp": "2026-06-11T08:08:31.402Z", "frame": 735, "person_found": true, "confidence": 0.8591, "confidence_percent": 85.91, "bbox": [309, 193, 334, 260]}
+{"timestamp": "2026-06-11T08:08:32.590Z", "frame": 737, "person_found": true, "confidence": 0.825, "confidence_percent": 82.5, "bbox": [302, 180, 333, 266]}
+{"timestamp": "2026-06-11T08:08:33.647Z", "frame": 739, "person_found": true, "confidence": 0.6609, "confidence_percent": 66.09, "bbox": [13, 31, 423, 355]}
+{"timestamp": "2026-06-11T08:08:34.715Z", "frame": 741, "person_found": true, "confidence": 0.8192, "confidence_percent": 81.92, "bbox": [300, 209, 326, 306]}
+{"timestamp": "2026-06-11T08:08:35.722Z", "frame": 743, "person_found": true, "confidence": 0.8261, "confidence_percent": 82.61, "bbox": [342, 198, 371, 277]}
+{"timestamp": "2026-06-11T08:08:37.059Z", "frame": 746, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:38.369Z", "frame": 748, "person_found": true, "confidence": 0.7869, "confidence_percent": 78.69, "bbox": [334, 172, 383, 258]}
+{"timestamp": "2026-06-11T08:08:39.910Z", "frame": 751, "person_found": true, "confidence": 0.9506, "confidence_percent": 95.06, "bbox": [160, 25, 459, 355]}
+{"timestamp": "2026-06-11T08:08:41.096Z", "frame": 753, "person_found": true, "confidence": 0.799, "confidence_percent": 79.9, "bbox": [322, 223, 339, 307]}
+{"timestamp": "2026-06-11T08:08:42.238Z", "frame": 755, "person_found": true, "confidence": 0.9453, "confidence_percent": 94.53, "bbox": [90, 55, 393, 356]}
+{"timestamp": "2026-06-11T08:08:43.435Z", "frame": 757, "person_found": true, "confidence": 0.8, "confidence_percent": 80.0, "bbox": [284, 166, 314, 252]}
+{"timestamp": "2026-06-11T08:08:44.726Z", "frame": 759, "person_found": true, "confidence": 0.8329, "confidence_percent": 83.29, "bbox": [318, 189, 345, 272]}
+{"timestamp": "2026-06-11T08:08:45.954Z", "frame": 761, "person_found": true, "confidence": 0.7929, "confidence_percent": 79.29, "bbox": [309, 210, 340, 292]}
+{"timestamp": "2026-06-11T08:08:47.348Z", "frame": 763, "person_found": true, "confidence": 0.7956, "confidence_percent": 79.56, "bbox": [287, 191, 315, 271]}
+{"timestamp": "2026-06-11T08:08:48.411Z", "frame": 765, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:49.882Z", "frame": 767, "person_found": true, "confidence": 0.8267, "confidence_percent": 82.67, "bbox": [284, 166, 314, 245]}
+{"timestamp": "2026-06-11T08:08:50.976Z", "frame": 769, "person_found": true, "confidence": 0.8364, "confidence_percent": 83.64, "bbox": [128, 10, 494, 355]}
+{"timestamp": "2026-06-11T08:08:52.159Z", "frame": 771, "person_found": true, "confidence": 0.83, "confidence_percent": 83.0, "bbox": [312, 208, 339, 288]}
+{"timestamp": "2026-06-11T08:08:53.391Z", "frame": 773, "person_found": true, "confidence": 0.8097, "confidence_percent": 80.97, "bbox": [320, 222, 346, 292]}
+{"timestamp": "2026-06-11T08:08:54.523Z", "frame": 775, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:55.671Z", "frame": 777, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:56.876Z", "frame": 779, "person_found": true, "confidence": 0.8638, "confidence_percent": 86.38, "bbox": [297, 209, 329, 306]}
+{"timestamp": "2026-06-11T08:08:58.053Z", "frame": 781, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:08:59.282Z", "frame": 783, "person_found": true, "confidence": 0.826, "confidence_percent": 82.6, "bbox": [312, 214, 338, 291]}
+{"timestamp": "2026-06-11T08:09:00.382Z", "frame": 785, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:01.770Z", "frame": 787, "person_found": true, "confidence": 0.8313, "confidence_percent": 83.13, "bbox": [354, 201, 382, 288]}
+{"timestamp": "2026-06-11T08:09:02.985Z", "frame": 789, "person_found": true, "confidence": 0.9533, "confidence_percent": 95.33, "bbox": [198, 23, 478, 355]}
+{"timestamp": "2026-06-11T08:09:04.722Z", "frame": 791, "person_found": true, "confidence": 0.7876, "confidence_percent": 78.76, "bbox": [323, 215, 341, 294]}
+{"timestamp": "2026-06-11T08:09:06.248Z", "frame": 793, "person_found": true, "confidence": 0.8636, "confidence_percent": 86.36, "bbox": [291, 224, 322, 317]}
+{"timestamp": "2026-06-11T08:09:07.575Z", "frame": 795, "person_found": true, "confidence": 0.7233, "confidence_percent": 72.33, "bbox": [317, 180, 343, 249]}
+{"timestamp": "2026-06-11T08:09:09.113Z", "frame": 797, "person_found": true, "confidence": 0.9391, "confidence_percent": 93.91, "bbox": [64, 101, 418, 356]}
+{"timestamp": "2026-06-11T08:09:10.562Z", "frame": 799, "person_found": true, "confidence": 0.9064, "confidence_percent": 90.64, "bbox": [125, 228, 175, 359]}
+{"timestamp": "2026-06-11T08:09:11.845Z", "frame": 801, "person_found": true, "confidence": 0.8554, "confidence_percent": 85.54, "bbox": [275, 200, 303, 283]}
+{"timestamp": "2026-06-11T08:09:13.182Z", "frame": 803, "person_found": true, "confidence": 0.952, "confidence_percent": 95.2, "bbox": [216, 8, 544, 356]}
+{"timestamp": "2026-06-11T08:09:14.301Z", "frame": 805, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:15.444Z", "frame": 807, "person_found": true, "confidence": 0.9489, "confidence_percent": 94.89, "bbox": [181, 22, 419, 356]}
+{"timestamp": "2026-06-11T08:09:16.744Z", "frame": 809, "person_found": true, "confidence": 0.9435, "confidence_percent": 94.35, "bbox": [141, 7, 523, 355]}
+{"timestamp": "2026-06-11T08:09:18.057Z", "frame": 811, "person_found": true, "confidence": 0.843, "confidence_percent": 84.3, "bbox": [309, 223, 333, 300]}
+{"timestamp": "2026-06-11T08:09:19.131Z", "frame": 813, "person_found": true, "confidence": 0.8205, "confidence_percent": 82.05, "bbox": [305, 178, 327, 244]}
+{"timestamp": "2026-06-11T08:09:20.257Z", "frame": 815, "person_found": true, "confidence": 0.8155, "confidence_percent": 81.55, "bbox": [335, 190, 364, 273]}
+{"timestamp": "2026-06-11T08:09:21.389Z", "frame": 817, "person_found": true, "confidence": 0.8132, "confidence_percent": 81.32, "bbox": [303, 191, 328, 268]}
+{"timestamp": "2026-06-11T08:09:22.561Z", "frame": 819, "person_found": true, "confidence": 0.9062, "confidence_percent": 90.62, "bbox": [238, 249, 278, 359]}
+{"timestamp": "2026-06-11T08:09:23.759Z", "frame": 821, "person_found": true, "confidence": 0.8236, "confidence_percent": 82.36, "bbox": [318, 196, 343, 273]}
+{"timestamp": "2026-06-11T08:09:24.910Z", "frame": 823, "person_found": true, "confidence": 0.959, "confidence_percent": 95.9, "bbox": [217, 16, 544, 356]}
+{"timestamp": "2026-06-11T08:09:26.141Z", "frame": 825, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:27.180Z", "frame": 827, "person_found": true, "confidence": 0.948, "confidence_percent": 94.8, "bbox": [166, 21, 462, 356]}
+{"timestamp": "2026-06-11T08:09:28.188Z", "frame": 829, "person_found": true, "confidence": 0.9552, "confidence_percent": 95.52, "bbox": [160, 29, 459, 355]}
+{"timestamp": "2026-06-11T08:09:29.268Z", "frame": 831, "person_found": true, "confidence": 0.6961, "confidence_percent": 69.61, "bbox": [323, 223, 342, 296]}
+{"timestamp": "2026-06-11T08:09:30.348Z", "frame": 833, "person_found": true, "confidence": 0.8062, "confidence_percent": 80.62, "bbox": [298, 220, 320, 304]}
+{"timestamp": "2026-06-11T08:09:31.447Z", "frame": 835, "person_found": true, "confidence": 0.5746, "confidence_percent": 57.46, "bbox": [331, 211, 347, 249]}
+{"timestamp": "2026-06-11T08:09:32.545Z", "frame": 837, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:33.588Z", "frame": 839, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:34.629Z", "frame": 841, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:35.647Z", "frame": 843, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:37.073Z", "frame": 846, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:38.230Z", "frame": 848, "person_found": true, "confidence": 0.8036, "confidence_percent": 80.36, "bbox": [354, 202, 381, 290]}
+{"timestamp": "2026-06-11T08:09:39.255Z", "frame": 850, "person_found": true, "confidence": 0.9491, "confidence_percent": 94.91, "bbox": [218, 21, 470, 356]}
+{"timestamp": "2026-06-11T08:09:40.306Z", "frame": 852, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:41.379Z", "frame": 854, "person_found": true, "confidence": 0.8669, "confidence_percent": 86.69, "bbox": [315, 215, 341, 295]}
+{"timestamp": "2026-06-11T08:09:42.425Z", "frame": 856, "person_found": true, "confidence": 0.8825, "confidence_percent": 88.25, "bbox": [319, 171, 371, 282]}
+{"timestamp": "2026-06-11T08:09:43.477Z", "frame": 858, "person_found": true, "confidence": 0.8171, "confidence_percent": 81.71, "bbox": [288, 154, 318, 243]}
+{"timestamp": "2026-06-11T08:09:44.561Z", "frame": 860, "person_found": true, "confidence": 0.8193, "confidence_percent": 81.93, "bbox": [300, 191, 326, 265]}
+{"timestamp": "2026-06-11T08:09:45.606Z", "frame": 862, "person_found": true, "confidence": 0.8866, "confidence_percent": 88.66, "bbox": [206, 229, 243, 340]}
+{"timestamp": "2026-06-11T08:09:46.640Z", "frame": 864, "person_found": true, "confidence": 0.839, "confidence_percent": 83.9, "bbox": [311, 192, 336, 271]}
+{"timestamp": "2026-06-11T08:09:47.687Z", "frame": 866, "person_found": true, "confidence": 0.951, "confidence_percent": 95.1, "bbox": [223, 16, 535, 355]}
+{"timestamp": "2026-06-11T08:09:49.137Z", "frame": 868, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:09:50.196Z", "frame": 870, "person_found": true, "confidence": 0.9613, "confidence_percent": 96.13, "bbox": [174, 28, 437, 356]}
+{"timestamp": "2026-06-11T08:09:51.199Z", "frame": 872, "person_found": true, "confidence": 0.9574, "confidence_percent": 95.74, "bbox": [158, 28, 441, 355]}
+{"timestamp": "2026-06-11T08:09:52.284Z", "frame": 874, "person_found": true, "confidence": 0.7911, "confidence_percent": 79.11, "bbox": [318, 220, 341, 294]}
+{"timestamp": "2026-06-11T08:09:53.548Z", "frame": 876, "person_found": true, "confidence": 0.786, "confidence_percent": 78.6, "bbox": [303, 206, 324, 285]}
+{"timestamp": "2026-06-11T08:09:54.827Z", "frame": 878, "person_found": true, "confidence": 0.7097, "confidence_percent": 70.97, "bbox": [334, 203, 351, 257]}
+{"timestamp": "2026-06-11T08:09:55.917Z", "frame": 880, "person_found": true, "confidence": 0.9315, "confidence_percent": 93.15, "bbox": [70, 99, 433, 355]}
+{"timestamp": "2026-06-11T08:09:57.071Z", "frame": 882, "person_found": true, "confidence": 0.8442, "confidence_percent": 84.42, "bbox": [279, 209, 312, 306]}
+{"timestamp": "2026-06-11T08:09:58.174Z", "frame": 884, "person_found": true, "confidence": 0.8605, "confidence_percent": 86.05, "bbox": [316, 201, 345, 280]}
+{"timestamp": "2026-06-11T08:09:59.419Z", "frame": 886, "person_found": true, "confidence": 0.8087, "confidence_percent": 80.87, "bbox": [311, 208, 335, 284]}
+{"timestamp": "2026-06-11T08:10:00.815Z", "frame": 888, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:10:01.980Z", "frame": 890, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:10:03.239Z", "frame": 892, "person_found": true, "confidence": 0.9335, "confidence_percent": 93.35, "bbox": [155, 5, 542, 356]}
+{"timestamp": "2026-06-11T08:10:04.733Z", "frame": 894, "person_found": true, "confidence": 0.8393, "confidence_percent": 83.93, "bbox": [312, 218, 342, 305]}
+{"timestamp": "2026-06-11T08:10:06.075Z", "frame": 896, "person_found": true, "confidence": 0.8167, "confidence_percent": 81.67, "bbox": [310, 183, 329, 250]}
+{"timestamp": "2026-06-11T08:10:07.282Z", "frame": 898, "person_found": true, "confidence": 0.8605, "confidence_percent": 86.05, "bbox": [321, 176, 348, 263]}
+{"timestamp": "2026-06-11T08:10:08.465Z", "frame": 900, "person_found": true, "confidence": 0.8515, "confidence_percent": 85.15, "bbox": [299, 192, 324, 268]}
+{"timestamp": "2026-06-11T08:10:09.681Z", "frame": 902, "person_found": true, "confidence": 0.9043, "confidence_percent": 90.43, "bbox": [209, 259, 267, 359]}
+{"timestamp": "2026-06-11T08:10:10.757Z", "frame": 904, "person_found": true, "confidence": 0.8535, "confidence_percent": 85.35, "bbox": [314, 194, 341, 271]}
+{"timestamp": "2026-06-11T08:10:11.766Z", "frame": 906, "person_found": true, "confidence": 0.9531, "confidence_percent": 95.31, "bbox": [220, 10, 539, 356]}
+{"timestamp": "2026-06-11T08:10:12.973Z", "frame": 908, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}
+{"timestamp": "2026-06-11T08:10:13.991Z", "frame": 910, "person_found": true, "confidence": 0.9492, "confidence_percent": 94.92, "bbox": [166, 21, 461, 356]}
+{"timestamp": "2026-06-11T08:10:15.042Z", "frame": 912, "person_found": true, "confidence": 0.954, "confidence_percent": 95.4, "bbox": [187, 21, 431, 356]}
+{"timestamp": "2026-06-11T08:10:16.255Z", "frame": 914, "person_found": true, "confidence": 0.8374, "confidence_percent": 83.74, "bbox": [309, 223, 337, 306]}
+{"timestamp": "2026-06-11T08:10:17.415Z", "frame": 916, "person_found": true, "confidence": 0.9439, "confidence_percent": 94.39, "bbox": [88, 63, 380, 356]}
+{"timestamp": "2026-06-11T08:10:18.567Z", "frame": 918, "person_found": true, "confidence": 0.8545, "confidence_percent": 85.45, "bbox": [273, 166, 306, 255]}
+{"timestamp": "2026-06-11T08:10:19.665Z", "frame": 920, "person_found": true, "confidence": 0.9421, "confidence_percent": 94.21, "bbox": [64, 88, 419, 356]}
+{"timestamp": "2026-06-11T08:10:20.814Z", "frame": 922, "person_found": true, "confidence": 0.8241, "confidence_percent": 82.41, "bbox": [283, 214, 312, 310]}
+{"timestamp": "2026-06-11T08:10:21.950Z", "frame": 924, "person_found": true, "confidence": 0.858, "confidence_percent": 85.8, "bbox": [294, 205, 324, 297]}
+{"timestamp": "2026-06-11T08:10:23.087Z", "frame": 926, "person_found": true, "confidence": 0.8083, "confidence_percent": 80.83, "bbox": [304, 214, 329, 289]}
+{"timestamp": "2026-06-11T08:10:24.649Z", "frame": 929, "person_found": false, "confidence": null, "confidence_percent": 0.0, "bbox": null}

@@ -1,0 +1,7 @@
+Creating new Ultralytics Settings v0.0.6 file  
+View Ultralytics Settings with 'yolo settings' or at 'C:\Users\Shir Belson\AppData\Roaming\Ultralytics\settings.json'
+Update Settings with 'yolo settings key=value', i.e. 'yolo settings runs_dir=path/to/dir'. For help see https://docs.ultralytics.com/quickstart/#ultralytics-settings.
+[http] serving on http://0.0.0.0:8000/  (open in your browser, F11 to fullscreen)
+[worker] loading YOLO from C:\cs_comp\Third_year\senester6\Hackathon\CSHACK-2026-LKP\figure_recognition\models\yolov8m.pt
+ * Serving Flask app 'detect_live'
+ * Debug mode: off
