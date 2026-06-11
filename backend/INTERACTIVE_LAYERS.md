@@ -55,22 +55,27 @@ P[water] = 0
 | steep slope (≥ threshold) | `cost_steep_slope` (8.0) |
 | water | `cost_water` (20.0) |
 
-**Transition weight** A → neighbor B:
+**Transition weight** A → neighbor B (L2 + topology blend):
 
 ```
 L2 = 1.0 (cardinal) or √2 (diagonal)
-weight = transition_weight_scale / (L2 × terrain_cost[B])
-if off-road A and road B:  weight ×= (1 + trail_magnetism_bonus)
+w = scale × (road_l2_weight/L2 + road_topology_weight/(L2 × terrain_cost[B]))
+if off-road A and road B:  w ×= (1 + trail_magnetism_bonus)
 ```
 
-Each tick, N diffusion steps normalize outflow so mass is conserved:
+Default blend: **28% pure L2** (Euclidean intent) + **72% cost-weighted** (terrain/road friction).
+
+Each tick, N diffusion steps (default **6**, ramped over `road_warmup_ticks`; **0 on tick 0**):
 
 ```
 P' ← cost_surface_diffusion(P, terrain_cost, is_road)
-P ← (1 − w) × P + w × P' × (1 + road_kde_bonus × road_proximity)
+P'[lkp] ← max(P'[lkp], anchor × boost[lkp])
+P ← (1 − w_roads) × P + w_roads × P' × (1 + road_kde_bonus × road_proximity)
 ```
 
-**Intuition:** Probability runs quickly down trails (low cost), bleeds softly into nearby forest (higher cost, still reachable), and avoids unrealistic hard boundaries. Steep ridges bleed less than parallel road segments.
+`w_roads` defaults to **0.68** — topography envelope remains, roads add clear trail channeling.
+
+**Intuition:** L2 keeps natural radial uncertainty; topology (cost map) channels mass toward trails and away from steep/water cells without hard walls.
 
 ---
 
@@ -136,7 +141,7 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 | Layer | Config keys |
 |-------|-------------|
 | Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
-| Roads | `cost_road`, `cost_offroad`, `cost_steep_slope`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` |
+| Roads | `road_l2_weight`, `road_topology_weight`, `cost_road`, `cost_offroad`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` (layer weight 0.68) |
 | Weather | `momentum_reference_dt_sec`, wind from env |
 | Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
 | Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |

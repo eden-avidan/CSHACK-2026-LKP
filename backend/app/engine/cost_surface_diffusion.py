@@ -56,11 +56,14 @@ def transition_weight_l2_cost(
     """
     Combined L2 + topology weight for A → neighbor B.
 
-    ``weight = scale / (L2_distance × terrain_cost[B])`` with soft trail magnetism
-    when an off-road cell transitions onto a road neighbor.
+    Blends a pure L2 (Euclidean) channel with cost-weighted topology:
+      w = scale × (l2_weight/L2 + topology_weight/(L2 × cost[B]))
+    Soft trail magnetism when off-road A transitions onto road B.
     """
     cost_b = np.maximum(terrain_cost_b, settings.cost_floor)
-    w = settings.transition_weight_scale / (l2_distance * cost_b)
+    l2_term = settings.road_l2_weight / l2_distance
+    topo_term = settings.road_topology_weight / (l2_distance * cost_b)
+    w = settings.transition_weight_scale * (l2_term + topo_term)
 
     trail_pull = (~road_a.astype(bool)) & road_b.astype(bool)
     w[trail_pull] *= 1.0 + settings.trail_magnetism_bonus
@@ -143,8 +146,22 @@ def cost_surface_diffusion(
     return p
 
 
-def diffusion_steps_for_tick(dt_sec: float, layer_weight: float) -> int:
-    """Scale diffusion iterations with simulated tick length and layer weight."""
+def diffusion_steps_for_tick(
+    dt_sec: float,
+    layer_weight: float,
+    *,
+    tick_count: int = 0,
+) -> int:
+    """Scale diffusion iterations with simulated tick length, layer weight, and warmup."""
+    if tick_count <= 0:
+        return max(0, settings.road_initial_diffusion_steps)
+
     ref = max(settings.momentum_reference_dt_sec, 1.0)
     scaled = settings.diffusion_steps * layer_weight * max(dt_sec, 1.0) / ref
-    return max(1, min(int(round(scaled)), settings.diffusion_steps_max))
+    steps = max(1, min(int(round(scaled)), settings.diffusion_steps_max))
+
+    warmup = max(1, settings.road_warmup_ticks)
+    if tick_count < warmup:
+        ramp = tick_count / warmup
+        steps = max(1, int(round(steps * ramp)))
+    return steps

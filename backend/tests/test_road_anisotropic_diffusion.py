@@ -108,13 +108,13 @@ def test_road_layer_cost_surface_integration():
         node_fields=fields,
         probabilities=matrix.probabilities,
         dt_sec=60.0,
-        tick_count=0,
+        tick_count=4,
         env=EnvForcing(),
         size=size,
         resolution_m=50.0,
     )
     out = RoadMagnetismLayer().apply_field(ctx, weight=1.0)
-    assert out[row, row + 4] > out[row - 3, row + 4]
+    assert out[row, row + 3] > out[row - 3, row + 3]
     assert out[row - 1, row + 2] > 0.0
 
 

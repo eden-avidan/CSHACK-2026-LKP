@@ -30,11 +30,17 @@ def pairwise_transition_weight(road_a: bool, road_b: bool) -> float:
     """Approximate relative conductance for legacy transition_weight hooks."""
     from app.core.config import settings
 
+    l2 = 1.0
+    l2_term = settings.road_l2_weight / l2
     if road_a and road_b:
-        return settings.transition_weight_scale / settings.cost_road
-    if road_a and not road_b:
-        return settings.transition_weight_scale / settings.cost_offroad
-    if not road_a and road_b:
-        base = settings.transition_weight_scale / settings.cost_road
-        return base * (1.0 + settings.trail_magnetism_bonus)
-    return settings.transition_weight_scale / settings.cost_offroad
+        topo_term = settings.road_topology_weight / (l2 * settings.cost_road)
+    elif road_a and not road_b:
+        topo_term = settings.road_topology_weight / (l2 * settings.cost_offroad)
+    elif not road_a and road_b:
+        base = settings.road_topology_weight / (l2 * settings.cost_road)
+        return settings.transition_weight_scale * (
+            l2_term + base
+        ) * (1.0 + settings.trail_magnetism_bonus)
+    else:
+        topo_term = settings.road_topology_weight / (l2 * settings.cost_offroad)
+    return settings.transition_weight_scale * (l2_term + topo_term)

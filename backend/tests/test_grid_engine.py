@@ -72,9 +72,10 @@ def test_roads_cost_surface_spreads_along_trail():
         matrix,
         LayerFlags(topography=False, roads=True),
         dt_sec=60.0,
+        tick_count=4,
         env=EnvForcing(),
     )
-    assert out[row, row + 3] > out[row - 3, row + 3]
+    assert out[row, row + 2] > out[row - 2, row + 2]
     assert out[row - 1, row + 2] > 0.0
 
 
@@ -127,7 +128,7 @@ def test_road_layer_apply_field_direct():
         node_fields=fields,
         probabilities=matrix.probabilities,
         dt_sec=60.0,
-        tick_count=0,
+        tick_count=4,
         env=EnvForcing(),
         size=size,
         resolution_m=50.0,
@@ -135,6 +136,31 @@ def test_road_layer_apply_field_direct():
     out = RoadMagnetismLayer().apply_field(ctx, weight=1.0)
     assert out[row, row + 2] > out[row - 2, row + 2]
     assert out[row, row] > 0.0
+
+
+def test_road_layer_tick_zero_keeps_lkp_centered():
+    size = 16
+    fields = NodeFields.zeros(size)
+    row = 8
+    fields.is_road[row, :] = True
+    fields.road_proximity[row, :] = 1.0
+    fields.is_land.fill(True)
+    matrix = GridMatrix.create(HAIFA, size=size, resolution_m=50.0, node_fields=fields)
+    from app.engine.transition_context import TransitionContext
+
+    ctx = TransitionContext(
+        matrix=matrix,
+        node_fields=fields,
+        probabilities=matrix.probabilities,
+        dt_sec=60.0,
+        tick_count=0,
+        env=EnvForcing(),
+        size=size,
+        resolution_m=50.0,
+    )
+    out = RoadMagnetismLayer().apply_field(ctx, weight=1.0)
+    peak = np.unravel_index(int(np.argmax(out)), out.shape)
+    assert peak == (row, row)
 
 
 def test_topography_layer_apply_field_direct():

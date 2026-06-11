@@ -25,7 +25,7 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 
     layer_id = "roads"
     default_enabled = False
-    default_weight = 1.0
+    default_weight = 0.68
 
     def apply_field(
         self,
@@ -37,14 +37,19 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 
         p_in = ctx.probabilities.astype(np.float64, copy=True)
         fields = ctx.node_fields
+        matrix = ctx.matrix
         is_road = fields.is_land & fields.is_road.astype(bool)
+        lkp_r, lkp_c = matrix.lkp_row, matrix.lkp_col
+        anchor = float(p_in[lkp_r, lkp_c])
 
         terrain_cost = build_terrain_cost_map(
             is_road,
             fields.slope,
             fields.is_land,
         )
-        steps = diffusion_steps_for_tick(ctx.dt_sec, weight)
+        steps = diffusion_steps_for_tick(
+            ctx.dt_sec, weight, tick_count=ctx.tick_count
+        )
         diffused = cost_surface_diffusion(
             p_in,
             terrain_cost,
@@ -55,6 +60,13 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
         prox = fields.road_proximity.astype(np.float64, copy=False)
         boost = 1.0 + weight * settings.road_kde_bonus * prox
         target = diffused * boost
+
+        # Keep the LKP cell anchored on the pin so the first frame stays centered.
+        target[lkp_r, lkp_c] = max(
+            float(target[lkp_r, lkp_c]),
+            anchor * float(boost[lkp_r, lkp_c]),
+        )
+
         return (1.0 - weight) * p_in + weight * target
 
     def transition_weights(

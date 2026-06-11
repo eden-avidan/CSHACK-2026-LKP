@@ -40,14 +40,24 @@ export function HeatmapCanvas({ map }: HeatmapCanvasProps) {
       const canvas = paintSync(grid, metadata.rows, metadata.cols)
       if (!canvas) return
 
+      const { corners } = metadata
       const coords: [[number, number], [number, number], [number, number], [number, number]] = [
-        [metadata.bounds.west, metadata.bounds.north],
-        [metadata.bounds.east, metadata.bounds.north],
-        [metadata.bounds.east, metadata.bounds.south],
-        [metadata.bounds.west, metadata.bounds.south],
+        [corners.nw.lon, corners.nw.lat],
+        [corners.ne.lon, corners.ne.lat],
+        [corners.se.lon, corners.se.lat],
+        [corners.sw.lon, corners.sw.lat],
       ]
 
-      const boundsKey = `${metadata.bounds.west},${metadata.bounds.south},${metadata.bounds.east},${metadata.bounds.north}`
+      const boundsKey = [
+        corners.nw.lat,
+        corners.nw.lon,
+        corners.ne.lat,
+        corners.ne.lon,
+        corners.se.lat,
+        corners.se.lon,
+        corners.sw.lat,
+        corners.sw.lon,
+      ].join(',')
       const dataUrl = canvas.toDataURL()
 
       if (!map.getSource(SOURCE_ID)) {
