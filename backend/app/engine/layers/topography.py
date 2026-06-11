@@ -4,54 +4,44 @@ import numpy as np
 
 from app.core.config import settings
 from app.engine.layers.base import BaseProbabilityLayer
-from app.engine.neighbors import NEIGHBOR_COUNT, NEIGHBOR_OFFSETS, SELF_INDEX, valid_neighbor_mask
 from app.engine.transition_context import TransitionContext
 
 
 class TopographyLayer(BaseProbabilityLayer):
     """
-    Blocks probability flow into water cells and biases transitions toward
-    cells with higher Tobler/Dijkstra reachability from the LKP.
+    Projects probability along the Tobler/Dijkstra reach field from the LKP.
+
+    Starting from an impulse at the pin, this spreads mass to land cells
+    proportional to ``reachability_score`` (1 at LKP, 0 beyond the horizon).
     """
 
     layer_id = "topography"
     default_enabled = True
-    default_weight = 0.65
+    default_weight = 1.0
 
-    def transition_weights(
+    def apply_field(
         self,
         ctx: TransitionContext,
-        row: int,
-        col: int,
         weight: float,
     ) -> np.ndarray:
         if weight <= 0:
-            return np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
+            return ctx.probabilities.astype(np.float64, copy=True)
 
-        adjustments = np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
         fields = ctx.node_fields
-        valid = valid_neighbor_mask(ctx.size, row, col)
+        matrix = ctx.matrix
+        p_in = ctx.probabilities.astype(np.float64, copy=True)
 
-        for i, (dr, dc) in enumerate(NEIGHBOR_OFFSETS):
-            if not valid[i]:
-                continue
-            nr, nc = row + dr, col + dc
-            if not fields.is_land[nr, nc]:
-                adjustments[i] -= 10.0 * weight
-                continue
-            reach = fields.reachability[nr, nc]
-            adjustments[i] += weight * reach * settings.terrain_beta
+        score = fields.reachability_score.astype(np.float64, copy=True)
+        score[~fields.is_land] = 0.0
 
-        # Penalize uphill transitions (row decreases = north = uphill in aspect_n)
-        slope = fields.slope[row, col]
-        if slope > 1e-6:
-            for i, (dr, dc) in enumerate(NEIGHBOR_OFFSETS):
-                if not valid[i] or (dr == 0 and dc == 0):
-                    continue
-                nr, nc = row + dr, col + dc
-                uphill = fields.elevation[nr, nc] - fields.elevation[row, col]
-                if uphill > 0:
-                    grade = uphill / ctx.resolution_m
-                    adjustments[i] -= weight * settings.uphill_factor * grade
+        slope_deg = np.degrees(fields.slope)
+        steep = slope_deg >= settings.topo_steep_threshold_deg
+        score[steep] *= settings.topo_steep_weight
 
-        return adjustments
+        anchor = float(p_in[matrix.lkp_row, matrix.lkp_col])
+        target = anchor * score
+        target[~fields.is_land] = 0.0
+
+        out = (1.0 - weight) * p_in + weight * target
+        out[~fields.is_land] = 0.0
+        return out

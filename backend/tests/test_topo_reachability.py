@@ -11,6 +11,7 @@ from app.services.topo_reachability import (
     compute_reachability,
     compute_reachability_score,
     least_travel_time_hours,
+    mission_max_hours,
     tobler_hiking_speed_kmh,
     travel_time_to_probability,
 )
@@ -65,3 +66,25 @@ def test_reachability_score_linear_at_lkp():
     assert score[center + 5, center] > score[center + 10, center]
     assert score[0, 0] == pytest.approx(0.0)
     assert score.sum() > 1.0  # not normalized to a probability measure
+
+
+def test_mission_max_hours_grows_every_tick():
+    h0 = mission_max_hours(tick_count=0, step_sec=60.0)
+    h1 = mission_max_hours(tick_count=1, step_sec=60.0)
+    h2 = mission_max_hours(tick_count=2, step_sec=60.0)
+    assert h0 == pytest.approx(60.0 / 3600.0)
+    assert h1 == pytest.approx(120.0 / 3600.0)
+    assert h0 < h1 < h2
+
+
+def test_reachability_score_expands_as_horizon_grows():
+    grid = create_empty_grid(HAIFA, 50.0, 128)
+    elevation = np.zeros((128, 128), dtype=np.float64)
+    center = 64
+    s0 = compute_reachability_score(
+        grid, elevation, center, center, mission_max_hours(tick_count=0, step_sec=60.0)
+    )
+    s1 = compute_reachability_score(
+        grid, elevation, center, center, mission_max_hours(tick_count=1, step_sec=60.0)
+    )
+    assert (s1 > 0.01).sum() > (s0 > 0.01).sum()

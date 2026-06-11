@@ -20,6 +20,7 @@ class TransitionContext:
     env: EnvForcing
     size: int
     resolution_m: float
+    sea_mode: bool = False
 
     def neighbor_indices(self, row: int, col: int, dr: int, dc: int) -> tuple[int, int] | None:
         nr, nc = row + dr, col + dc

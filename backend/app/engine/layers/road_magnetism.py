@@ -4,53 +4,27 @@ import numpy as np
 
 from app.core.config import settings
 from app.engine.layers.base import BaseProbabilityLayer
-from app.engine.neighbors import NEIGHBOR_COUNT, NEIGHBOR_OFFSETS, SELF_INDEX, valid_neighbor_mask
 from app.engine.transition_context import TransitionContext
 
 
 class RoadMagnetismLayer(BaseProbabilityLayer):
     """
-    Pulls probability mass along road tangents — probability "bleeds" preferentially
-    in the direction of nearby trails and highways.
+    Boosts cell values near OSM roads using the per-cell road proximity field.
     """
 
     layer_id = "roads"
     default_enabled = False
     default_weight = 1.0
 
-    def transition_weights(
+    def apply_field(
         self,
         ctx: TransitionContext,
-        row: int,
-        col: int,
         weight: float,
     ) -> np.ndarray:
         if weight <= 0:
-            return np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
+            return ctx.probabilities.astype(np.float64, copy=True)
 
-        fields = ctx.node_fields
-        prox = float(fields.road_proximity[row, col])
-        snap_threshold = np.exp(-settings.road_snap_radius_m / settings.road_proximity_decay_m)
-        if prox < snap_threshold:
-            return np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
-
-        te = float(fields.road_tangent_e[row, col])
-        tn = float(fields.road_tangent_n[row, col])
-        if abs(te) < 1e-9 and abs(tn) < 1e-9:
-            return np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
-
-        adjustments = np.zeros(NEIGHBOR_COUNT, dtype=np.float64)
-        valid = valid_neighbor_mask(ctx.size, row, col)
-        strength = settings.road_snap_strength * prox * weight
-
-        for i, (dr, dc) in enumerate(NEIGHBOR_OFFSETS):
-            if not valid[i] or (dr == 0 and dc == 0):
-                continue
-            # Grid: row↓ = south, col→ = east
-            neighbor_n = -float(dr)
-            neighbor_e = float(dc)
-            alignment = tn * neighbor_n + te * neighbor_e
-            if alignment > 0:
-                adjustments[i] += strength * alignment
-
-        return adjustments
+        p_in = ctx.probabilities.astype(np.float64, copy=True)
+        prox = ctx.node_fields.road_proximity.astype(np.float64, copy=False)
+        boost = 1.0 + weight * settings.road_kde_bonus * prox
+        return p_in * boost

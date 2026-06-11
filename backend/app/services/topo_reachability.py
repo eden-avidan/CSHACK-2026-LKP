@@ -279,10 +279,11 @@ def mission_max_hours(
     lkp_timestamp: datetime | None = None,
     now: datetime | None = None,
 ) -> float:
-    """Compute search horizon in hours from elapsed real + simulated time."""
+    """Walking-time horizon in hours from simulated ticks plus real elapsed time since LKP."""
     from datetime import timezone as tz
 
-    simulated_hours = (tick_count * step_sec) / 3600.0
+    # Include the current tick so horizon grows every live update (not stuck at a floor).
+    simulated_hours = ((tick_count + 1) * step_sec) / 3600.0
     elapsed_hours = 0.0
     if lkp_timestamp is not None and now is not None:
         lkp_ts = lkp_timestamp
@@ -292,4 +293,5 @@ def mission_max_hours(
         if now_ts.tzinfo is None:
             now_ts = now_ts.replace(tzinfo=tz.utc)
         elapsed_hours = max(0.0, (now_ts - lkp_ts).total_seconds() / 3600.0)
-    return max(0.25, simulated_hours + elapsed_hours)
+    min_hours = step_sec / 3600.0
+    return max(min_hours, simulated_hours + elapsed_hours)

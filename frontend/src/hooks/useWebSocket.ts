@@ -22,6 +22,8 @@ export function useWebSocket(missionId: string | null) {
   const applyHeatmapDelta = useMissionStore((s) => s.applyHeatmapDelta)
   const setEngineTick = useMissionStore((s) => s.setEngineTick)
 
+  const connectBurstUntilRef = useRef(0)
+
   const handleMessage = useCallback(
     (raw: string) => {
       let parsed: unknown
@@ -37,6 +39,12 @@ export function useWebSocket(missionId: string | null) {
       if (msg.type === 'heatmap_full') {
         const result = heatmapFullSchema.safeParse(msg)
         if (result.success) {
+          const now = Date.now()
+          const { grid } = useMissionStore.getState()
+          // Skip duplicate connect burst (REST prefetch + WS snapshot); keep 1 Hz tick updates.
+          if (grid && now < connectBurstUntilRef.current) {
+            return
+          }
           setHeatmapFull(result.data.metadata, result.data.probabilities)
         } else if (import.meta.env.DEV) {
           console.warn('Invalid heatmap_full:', result.error)
@@ -72,6 +80,7 @@ export function useWebSocket(missionId: string | null) {
 
     if (!missionId) {
       intentionalCloseRef.current = true
+      connectBurstUntilRef.current = 0
       if (reconnectTimer.current) {
         clearTimeout(reconnectTimer.current)
         reconnectTimer.current = null
@@ -85,6 +94,7 @@ export function useWebSocket(missionId: string | null) {
 
     intentionalCloseRef.current = false
     attemptRef.current = 0
+    connectBurstUntilRef.current = Date.now() + 400
 
     const connect = () => {
       if (activeMissionRef.current !== missionId) return

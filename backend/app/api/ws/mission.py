@@ -69,6 +69,7 @@ def start_tick_loop(mission_id: UUID) -> None:
                 break
             interval = state.update_interval_sec
             await asyncio.sleep(interval)
+
             state = mission_store.get(mission_id)
             if not state:
                 break
@@ -117,8 +118,8 @@ async def mission_ws(websocket: WebSocket, mission_id: UUID) -> None:
                 continue
             if data.get("event") == "update_layers" and isinstance(data.get("layers"), dict):
                 await mission_store.update_layers(mission_id, data["layers"])
-                # Apply new layers immediately so the user sees an effect
-                result = await mission_store.tick(mission_id)
+                engine_tick = mission_store.build_engine_tick(mission_id)
+                result = TickResult(deltas=[], engine_tick=engine_tick, full_refresh=True)
                 await broadcast_tick_result(mission_id, result)
     except WebSocketDisconnect:
         pass
