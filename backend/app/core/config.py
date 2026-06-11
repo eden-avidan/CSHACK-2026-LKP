@@ -18,8 +18,24 @@ class Settings(BaseSettings):
     uphill_factor: float = 0.25
     downhill_factor: float = 1.3
     terrain_beta: float = 0.15
-    road_kde_bonus: float = 1.2
+    road_kde_bonus: float = 0.9
     road_proximity_decay_m: float = 20.0
+
+    # Continuous cost-surface diffusion (RoadMagnetismLayer)
+    cost_road: float = 1.0
+    cost_offroad: float = 4.0
+    cost_steep_slope: float = 8.0
+    cost_water: float = 20.0
+    cost_floor: float = 0.5
+    trail_magnetism_bonus: float = 0.28
+    transition_weight_scale: float = 1.0
+    road_l2_weight: float = 0.28
+    road_topology_weight: float = 0.72
+    diffusion_self_weight: float = 0.11
+    diffusion_steps: int = 6
+    diffusion_steps_max: int = 18
+    road_initial_diffusion_steps: int = 0
+    road_warmup_ticks: int = 3
     boundary_reflect_damping: float = 0.7
     boundary_soft_margin_frac: float = 0.1
 

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from app.geospatial.grid import particle_cell_indices
+from app.geospatial.grid import grid_extent_m, particle_cell_indices
 from app.layers.base import LayerConfig, LayerContext, PredictState
 
 
@@ -19,7 +19,7 @@ def _apply_land_mask(particles, grid, terrain, eastings, northings, v_e, v_n):
         return eastings, northings, v_e, v_n
 
     res = grid.metadata.resolution_m
-    half = (grid.rows * res) / 2.0
+    west, _east, _south, north = grid_extent_m(grid.rows, res)
     origin_e = grid.crs.origin_e
     origin_n = grid.crs.origin_n
 
@@ -28,8 +28,8 @@ def _apply_land_mask(particles, grid, terrain, eastings, northings, v_e, v_n):
         dists = (land_rows - r) ** 2 + (land_cols - c) ** 2
         nearest = int(np.argmin(dists))
         lr, lc = int(land_rows[nearest]), int(land_cols[nearest])
-        target_e = origin_e - half + (lc + 0.5) * res
-        target_n = origin_n + half - (lr + 0.5) * res
+        target_e = origin_e - west + (lc + 0.5) * res
+        target_n = origin_n + north - (lr + 0.5) * res
         eastings[idx] = 0.85 * eastings[idx] + 0.15 * target_e
         northings[idx] = 0.85 * northings[idx] + 0.15 * target_n
         v_e[idx] *= 0.2
