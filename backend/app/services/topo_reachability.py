@@ -35,7 +35,11 @@ class TerrainClassification:
 
 def tobler_hiking_speed_kmh(signed_slope_grade: np.ndarray | float) -> np.ndarray | float:
     """Tobler hiking function: speed in km/h from signed slope grade (rise/run)."""
-    return 6.0 * np.exp(-3.5 * np.abs(np.asarray(signed_slope_grade) + 0.05))
+    grade_offset = 0.05
+    k = 3.5
+    flat_factor = np.exp(-k * grade_offset)
+    base_kmh = settings.tobler_flat_speed_kmh / flat_factor
+    return base_kmh * np.exp(-k * np.abs(np.asarray(signed_slope_grade) + grade_offset))
 
 
 def classify_terrain_from_elevation(
