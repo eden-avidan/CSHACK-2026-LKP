@@ -157,4 +157,5 @@ async def get_mission_node_fields(mission_id: UUID) -> TerrainInspectResponse:
     return build_inspect_response(
         state.grid_matrix.grid,
         state.initial_node_fields,
+        marine_current=state.marine_current,
     )

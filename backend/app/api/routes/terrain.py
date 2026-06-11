@@ -16,6 +16,7 @@ from app.engine.node_builder import build_node_fields
 from app.geospatial.grid import create_empty_grid
 from app.models.terrain import TerrainInspectRequest, TerrainInspectResponse
 from app.services.env_ingestion import build_terrain_context
+from app.services.marine_current import fetch_marine_current
 from app.services.terrain_serialize import build_inspect_response
 from app.services.topo_reachability import (
     compute_reachability,
@@ -63,5 +64,11 @@ async def inspect_terrain(body: TerrainInspectRequest) -> TerrainInspectResponse
 
     terrain.reachability = reachability
     terrain.reachability_score = reachability_score
-    node_fields = build_node_fields(terrain, size, weather_enabled=False)
-    return build_inspect_response(grid, node_fields)
+    marine_current = await fetch_marine_current(body.lkp.lat, body.lkp.lon)
+    node_fields = build_node_fields(
+        terrain,
+        size,
+        weather_enabled=False,
+        marine_current=marine_current,
+    )
+    return build_inspect_response(grid, node_fields, marine_current=marine_current)
