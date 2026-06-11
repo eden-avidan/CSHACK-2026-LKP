@@ -73,6 +73,15 @@ export const detectionEventSchema = z.object({
   }).nullable().optional(),
 })
 
+export const droneTrackSchema = z.object({
+  type: z.literal('drone_track'),
+  mission_id: z.string(),
+  asset_id: z.string().optional(),
+  timestamp: z.string(),
+  position: latLonSchema.nullable().optional(),
+  path: z.array(z.array(z.number())),
+})
+
 export const engineTickSchema = z.object({
   event: z.literal('engine_tick'),
   tick_count: z.number(),
@@ -86,6 +95,7 @@ export const wsMessageSchema = z.union([
   heatmapFullSchema,
   heatmapDeltaSchema,
   detectionEventSchema,
+  droneTrackSchema,
   engineTickSchema,
 ])
 
@@ -94,3 +104,4 @@ export type HeatmapFull = z.infer<typeof heatmapFullSchema>
 export type HeatmapDelta = z.infer<typeof heatmapDeltaSchema>
 export type EngineTick = z.infer<typeof engineTickSchema>
 export type DetectionEvent = z.infer<typeof detectionEventSchema>
+export type DroneTrack = z.infer<typeof droneTrackSchema>

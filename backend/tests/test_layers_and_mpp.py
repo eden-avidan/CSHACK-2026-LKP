@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, patch
 import numpy as np
 import pytest
 
+from app.core.config import settings
 from app.geospatial.grid import cell_centroid_utm, create_empty_grid
 from app.models.layers import LayerFlags
 from app.models.mission import LatLon
@@ -130,7 +131,7 @@ def test_compute_mpp_centroid():
 def test_update_layers():
     async def run() -> None:
         store = MissionStore()
-        size = 128
+        size = settings.grid_size
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
             mock.return_value = _terrain(size, size)
             state = await store.create(HAIFA)
@@ -145,7 +146,7 @@ def test_update_layers():
 def test_tick_emits_engine_tick():
     async def run() -> None:
         store = MissionStore()
-        size = 128
+        size = settings.grid_size
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
             mock.return_value = _terrain(size, size)
             state = await store.create(HAIFA)
@@ -166,7 +167,7 @@ def test_tick_emits_engine_tick():
 def test_create_applies_layers():
     async def run() -> None:
         store = MissionStore()
-        size = 128
+        size = settings.grid_size
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
             mock.return_value = _terrain(size, size)
             state = await store.create(HAIFA, layers={"weather": True, "roads": True})

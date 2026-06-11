@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { useMissionStore } from '../stores/missionStore'
 import {
   detectionEventSchema,
+  droneTrackSchema,
   engineTickSchema,
   heatmapDeltaSchema,
   heatmapFullSchema,
@@ -25,6 +26,7 @@ export function useWebSocket(missionId: string | null) {
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
   const applyHeatmapDelta = useMissionStore((s) => s.applyHeatmapDelta)
   const setEngineTick = useMissionStore((s) => s.setEngineTick)
+  const setDroneTrack = useMissionStore((s) => s.setDroneTrack)
   const setDetectionFlash = useMissionStore((s) => s.setDetectionFlash)
 
   const connectBurstUntilRef = useRef(0)
@@ -73,6 +75,14 @@ export function useWebSocket(missionId: string | null) {
         return
       }
 
+      if (msg.type === 'drone_track') {
+        const result = droneTrackSchema.safeParse(msg)
+        if (result.success) {
+          setDroneTrack(result.data.position ?? null, result.data.path)
+        }
+        return
+      }
+
       if (msg.type === 'detection_event') {
         const result = detectionEventSchema.safeParse(msg)
         if (!result.success) return
@@ -92,7 +102,7 @@ export function useWebSocket(missionId: string | null) {
         return
       }
     },
-    [setHeatmapFull, applyHeatmapDelta, setEngineTick, setDetectionFlash],
+    [setHeatmapFull, applyHeatmapDelta, setEngineTick, setDroneTrack, setDetectionFlash],
   )
 
   useEffect(() => {

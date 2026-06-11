@@ -62,6 +62,11 @@ async def broadcast_tick_result(mission_id: UUID, result: TickResult) -> None:
             mission_id, detection.model_dump(mode="json")
         )
 
+    if result.drone_track:
+        await mission_store.broadcast(
+            mission_id, result.drone_track.model_dump(mode="json")
+        )
+
 
 def start_tick_loop(mission_id: UUID) -> None:
     if mission_id in _tick_loops and not _tick_loops[mission_id].done():
@@ -107,6 +112,10 @@ async def mission_ws(websocket: WebSocket, mission_id: UUID) -> None:
     engine_tick = mission_store.build_engine_tick(mission_id)
     if engine_tick:
         await websocket.send_json(engine_tick.model_dump(mode="json"))
+
+    drone_track = mission_store.build_drone_track(mission_id)
+    if drone_track:
+        await websocket.send_json(drone_track.model_dump(mode="json"))
 
     async def sender() -> None:
         while True:

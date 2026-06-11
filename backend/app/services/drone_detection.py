@@ -11,6 +11,7 @@ import numpy as np
 from app.geospatial.grid import ProbabilityGrid, grid_extent_m
 
 DETECTION_JSONL_NAME = Path("figure_recognition") / "results" / "person_detection_output.jsonl"
+DRONE_TRACK_JSONL_NAME = Path("figure_recognition") / "results" / "synthetic_drone_track.jsonl"
 ALTITUDE_MATCH_THRESHOLD_M = 20.0
 
 
@@ -30,6 +31,12 @@ class DetectionRecord:
 def get_default_detection_jsonl_path() -> Path:
     root = Path(__file__).resolve().parents[3]
     return root / DETECTION_JSONL_NAME
+
+
+def get_default_drone_track_jsonl_path() -> Path:
+    """Synthetic 'drone searched here, found nobody' track (person_found=false)."""
+    root = Path(__file__).resolve().parents[3]
+    return root / DRONE_TRACK_JSONL_NAME
 
 
 def _parse_timestamp(value: Any) -> datetime | None:
@@ -58,8 +65,10 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
             except json.JSONDecodeError:
                 continue
 
-            if not raw.get("person_found", raw.get("person", False)):
-                continue
+            # Keep both outcomes: person-found rows drive detection events, while
+            # person-not-found rows (with a GPS fix) mark "clean" cells the drone
+            # overflew without spotting anyone.
+            person_found = bool(raw.get("person_found", raw.get("person", False)))
 
             ts = _parse_timestamp(raw.get("timestamp") or raw.get("ts"))
             if ts is None:
@@ -122,7 +131,7 @@ def load_detection_records(path: Path) -> list[DetectionRecord]:
                 latitude=lat,
                 longitude=lon,
                 altitude=alt,
-                person=True,
+                person=person_found,
                 confidence=confidence,
                 confidence_percent=max(0.0, min(100.0, confidence_percent)),
                 frame=frame,

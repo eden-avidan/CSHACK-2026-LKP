@@ -29,14 +29,15 @@ class NodeFields:
     longitude: np.ndarray  # cell-center longitude (degrees, WGS84)
     altitude: np.ndarray   # cell-center altitude (meters above sea level);
                            # alias of `elevation`, populated from the same DEM
-    drone_last_seen: np.ndarray  # binary per-node last-seen marker from drone detections
+    searched_clean: np.ndarray  # per-node "clean" score (0..1): drone overflew the
+                                # cell and found no person. 1.0 when freshly cleared,
+                                # decays each tick. Higher => lower person probability.
 
     @classmethod
     def zeros(cls, size: int) -> NodeFields:
         z = np.zeros((size, size), dtype=np.float64)
         land = np.ones((size, size), dtype=bool)
         reach = np.ones((size, size), dtype=np.float64)
-        seen = np.zeros((size, size), dtype=bool)
         return cls(
             elevation=z.copy(),
             slope=z.copy(),
@@ -54,7 +55,7 @@ class NodeFields:
             latitude=z.copy(),
             longitude=z.copy(),
             altitude=z.copy(),
-            drone_last_seen=seen,
+            searched_clean=z.copy(),
         )
 
 

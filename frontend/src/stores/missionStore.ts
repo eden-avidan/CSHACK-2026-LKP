@@ -84,6 +84,8 @@ interface MissionStore {
   grid: Float32Array | null
   gridVersion: number
   droneRoute: DroneRoute | null
+  dronePosition: LatLon | null
+  dronePath: number[][]
   detectionFlash: DetectionEvent | null
   pinnedLkp: LatLon | null
   draftLkp: LatLon | null
@@ -114,6 +116,7 @@ interface MissionStore {
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
   setDroneRoute: (route: DroneRoute | null) => void
+  setDroneTrack: (position: LatLon | null, path: number[][]) => void
   setDetectionFlash: (detection: DetectionEvent | null) => void
   setTickCount: (n: number) => void
   setTerrainData: (data: TerrainData | null) => void
@@ -139,6 +142,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   grid: null,
   gridVersion: 0,
   droneRoute: null,
+  dronePosition: null,
+  dronePath: [],
   detectionFlash: null,
   pinnedLkp: null,
   draftLkp: null,
@@ -187,6 +192,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       grid: state.grid,
       gridVersion: state.gridVersion,
       droneRoute: null,
+      dronePosition: null,
+      dronePath: [],
       detectionFlash: null,
     })),
 
@@ -210,6 +217,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       grid: null,
       gridVersion: 0,
       droneRoute: null,
+      dronePosition: null,
+      dronePath: [],
       detectionFlash: null,
       pinnedLkp: null,
       draftLkp: null,
@@ -282,6 +291,8 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   },
 
   setDroneRoute: (droneRoute) => set({ droneRoute }),
+
+  setDroneTrack: (dronePosition, dronePath) => set({ dronePosition, dronePath }),
 
   setDetectionFlash: (detectionFlash) => set({ detectionFlash }),
 

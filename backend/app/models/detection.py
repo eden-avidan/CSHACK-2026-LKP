@@ -18,3 +18,15 @@ class DetectionEventMessage(BaseModel):
     frame: int | None = None
     bbox: list[float] | None = None
     position: LatLon | None = None
+
+
+class DroneTrackMessage(BaseModel):
+    """Live drone position + the path it has flown so far this mission."""
+
+    type: Literal["drone_track"] = "drone_track"
+    mission_id: UUID
+    asset_id: str = "drone"
+    timestamp: datetime
+    position: LatLon | None = None
+    # [[lon, lat], ...] — GeoJSON order, ready to drop into a LineString.
+    path: list[list[float]] = Field(default_factory=list)

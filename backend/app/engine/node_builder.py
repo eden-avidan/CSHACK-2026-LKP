@@ -85,7 +85,7 @@ def copy_node_fields(fields: NodeFields) -> NodeFields:
         latitude=fields.latitude.copy(),
         longitude=fields.longitude.copy(),
         altitude=fields.altitude.copy(),
-        drone_last_seen=fields.drone_last_seen.copy(),
+        searched_clean=fields.searched_clean.copy(),
     )
 
 

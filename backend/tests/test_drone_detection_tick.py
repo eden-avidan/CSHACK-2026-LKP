@@ -11,6 +11,7 @@ from uuid import uuid4
 import numpy as np
 import pytest
 
+from app.core.config import settings
 from app.models.mission import LatLon, MissionMode
 from app.models.detection import DetectionEventMessage
 from app.api.ws.mission import broadcast_tick_result
@@ -41,13 +42,17 @@ def test_load_detection_records(tmp_path: Path):
     path = tmp_path / "detections.jsonl"
     path.write_text(
         "{\"ts\": \"2026-06-11T16:00:00.000Z\", \"person\": true, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}\n"
-        "{\"ts\": \"2026-06-11T16:00:01.000Z\", \"person\": false}\n"
+        "{\"ts\": \"2026-06-11T16:00:01.000Z\", \"person\": false, \"latitude\": 32.7950, \"longitude\": 34.9900, \"altitude\": 0.0}\n"
     )
 
     records = load_detection_records(path)
-    assert len(records) == 1
+    # Both outcomes are kept: found rows drive detections, not-found rows mark clean cells.
+    assert len(records) == 2
+    assert records[0].person is True
     assert records[0].latitude == pytest.approx(32.7940)
     assert records[0].longitude == pytest.approx(34.9896)
+    assert records[1].person is False
+    assert records[1].latitude == pytest.approx(32.7950)
 
 
 def test_load_person_found_detection_payload_without_gps(tmp_path: Path):
@@ -68,28 +73,61 @@ def test_load_person_found_detection_payload_without_gps(tmp_path: Path):
     assert records[0].latitude is None
 
 
-def test_tick_updates_drone_last_seen(tmp_path: Path):
+def test_tick_marks_searched_clean(tmp_path: Path):
     async def run() -> None:
         store = MissionStore()
         two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
         sample_ts = two_hours_ago + timedelta(seconds=5)
         path = tmp_path / "person_detection_output.jsonl"
+        # Drone overflew this spot and found no one -> the cell becomes "clean".
         path.write_text(
             f"{{\"ts\": \"{sample_ts.isoformat().replace('+00:00','Z')}\", "
-            "\"person\": true, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}\n"
+            "\"person\": false, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}\n"
         )
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
-            mock_tc.return_value = _terrain(128)
+            mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
                 HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
             )
             await store.tick(state.mission_id)
 
-            seen = state.grid_matrix.node_fields.drone_last_seen
-            assert seen.dtype == bool
-            assert seen.sum() >= 1
+            clean = state.grid_matrix.node_fields.searched_clean
+            assert clean.dtype == np.float64
+            assert clean.max() == pytest.approx(1.0)
+            assert clean.sum() >= 1.0
+
+    asyncio.run(run())
+
+
+def test_tick_clean_suppresses_probability(tmp_path: Path):
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        sample_ts = two_hours_ago + timedelta(seconds=5)
+        path = tmp_path / "person_detection_output.jsonl"
+        # A fully-clean (no person) cell with full suppression strength should be
+        # driven toward zero probability after the tick.
+        path.write_text(
+            f"{{\"ts\": \"{sample_ts.isoformat().replace('+00:00','Z')}\", "
+            "\"person\": false, \"latitude\": 32.7940, \"longitude\": 34.9896, \"altitude\": 0.0}\n"
+        )
+
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
+            await store.tick(state.mission_id)
+
+            probs = state.grid_matrix.probabilities
+            clean = state.grid_matrix.node_fields.searched_clean
+            cleared = clean >= 1.0 - 1e-9
+            assert cleared.any()
+            assert float(probs[cleared].max()) == pytest.approx(0.0, abs=1e-9)
+            assert probs.sum() == pytest.approx(1.0, abs=1e-6)
 
     asyncio.run(run())
 
@@ -109,7 +147,7 @@ def test_tick_returns_detection_event(tmp_path: Path):
 
         with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=path), \
              patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
-            mock_tc.return_value = _terrain(128)
+            mock_tc.return_value = _terrain(settings.grid_size)
             state = await store.create(
                 HAIFA, mode=MissionMode.LIVE, lkp_timestamp=start
             )
@@ -144,6 +182,83 @@ def test_tick_broadcasts_detection_event():
         payload = broadcast.await_args.args[1]
         assert payload["type"] == "detection_event"
         assert payload["confidence_percent"] == pytest.approx(87.0)
+
+    asyncio.run(run())
+
+
+def test_tick_emits_drone_track(tmp_path: Path):
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        # Synthetic track: person_found=false points near the LKP, with timestamps
+        # interpreted relative to mission start (base = first record).
+        base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        track_path = tmp_path / "synthetic_drone_track.jsonl"
+        empty_feed = tmp_path / "person_detection_output.jsonl"
+        empty_feed.write_text("")
+        lines = []
+        for i, off in enumerate((0, 8, 16)):
+            ts = (base + timedelta(seconds=off)).isoformat().replace("+00:00", "Z")
+            lat = HAIFA.lat + 0.0001 * i
+            lon = HAIFA.lon + 0.0001 * i
+            lines.append(
+                f'{{"timestamp": "{ts}", "person_found": false, '
+                f'"latitude": {lat}, "longitude": {lon}}}'
+            )
+        track_path.write_text("\n".join(lines) + "\n")
+
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
+             patch("app.services.mission_store.get_default_drone_track_jsonl_path", return_value=track_path), \
+             patch.object(settings, "drone_track_launch_delay_sec", 0.0), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
+            # step_sec defaults to 10s; tick 1 reveals offsets in [0, 10) -> 2 points.
+            result = await store.tick(state.mission_id)
+
+            assert result.drone_track is not None
+            assert result.drone_track.position is not None
+            assert len(result.drone_track.path) == 2
+            # Each path point is [lon, lat].
+            assert result.drone_track.path[0] == pytest.approx([HAIFA.lon, HAIFA.lat])
+            clean = state.grid_matrix.node_fields.searched_clean
+            assert clean.max() == pytest.approx(1.0)
+
+    asyncio.run(run())
+
+
+def test_drone_track_launch_delay(tmp_path: Path):
+    async def run() -> None:
+        store = MissionStore()
+        two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
+        base = datetime(2026, 1, 1, tzinfo=timezone.utc)
+        track_path = tmp_path / "synthetic_drone_track.jsonl"
+        empty_feed = tmp_path / "person_detection_output.jsonl"
+        empty_feed.write_text("")
+        ts = base.isoformat().replace("+00:00", "Z")
+        track_path.write_text(
+            f'{{"timestamp": "{ts}", "person_found": false, '
+            f'"latitude": {HAIFA.lat}, "longitude": {HAIFA.lon}}}\n'
+        )
+
+        # Delay of 15s with step_sec=10s: tick 1 (elapsed 10s) is still grounded,
+        # tick 2 (elapsed 20s) launches the drone.
+        with patch("app.services.mission_store.get_default_detection_jsonl_path", return_value=empty_feed), \
+             patch("app.services.mission_store.get_default_drone_track_jsonl_path", return_value=track_path), \
+             patch.object(settings, "drone_track_launch_delay_sec", 15.0), \
+             patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_tc:
+            mock_tc.return_value = _terrain(settings.grid_size)
+            state = await store.create(
+                HAIFA, mode=MissionMode.LIVE, lkp_timestamp=two_hours_ago
+            )
+            first = await store.tick(state.mission_id)
+            assert first.drone_track is None
+
+            second = await store.tick(state.mission_id)
+            assert second.drone_track is not None
+            assert second.drone_track.position is not None
 
     asyncio.run(run())
 

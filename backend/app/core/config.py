@@ -64,6 +64,18 @@ class Settings(BaseSettings):
     kde_bandwidth_factor: float = 1.1
     kde_radial_fade_end: float = 1.0
     heatmap_history_decay: float = 0.94
+
+    # Drone "clean" coverage: cells the drone overflew while detecting no person.
+    # A freshly-cleared cell scores 1.0 and decays by `drone_clean_decay` each tick
+    # (the bigger the score, the less likely the person is there). Each tick the
+    # probability is suppressed by (1 - drone_clean_suppression_strength * clean)
+    # and renormalized, so cleared areas lose mass and slowly recover as the clean
+    # score decays and probability re-diffuses.
+    drone_clean_decay: float = 0.95
+    drone_clean_suppression_strength: float = 1
+    # Delay (mission-time seconds) before the synthetic drone "launches" and starts
+    # sweeping, so it doesn't move the instant the mission begins.
+    drone_track_launch_delay_sec: float = 30.0
     topo_reachability_floor_frac: float = 0.12
     grid_base_outflow: float = 0.22
 

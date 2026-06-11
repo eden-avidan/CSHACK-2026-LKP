@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, patch
 import numpy as np
 import pytest
 
+from app.core.config import settings
 from app.geospatial.grid import create_empty_grid, grid_utm_bounds
 from app.models.layers import LayerFlags
 from app.models.mission import LatLon
@@ -65,7 +66,7 @@ def test_pause_skips_tick():
     async def run() -> None:
         store = MissionStore()
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock_terrain:
-            size = 128
+            size = settings.grid_size
             mock_terrain.return_value = TerrainContext(
                 elevation=np.zeros((size, size)),
                 slope=np.zeros((size, size)),

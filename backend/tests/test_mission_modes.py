@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, patch
 import numpy as np
 import pytest
 
+from app.core.config import settings
 from app.models.layers import LayerFlags
 from app.models.mission import BASE_STEP_SEC, LIVE_UPDATE_INTERVAL_SEC, LatLon, MissionMode
 from app.services.env_ingestion import TerrainContext
@@ -35,7 +36,7 @@ def test_live_mode_pace_derived_timing():
     async def run() -> None:
         store = MissionStore()
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
-            mock.return_value = _terrain(128)
+            mock.return_value = _terrain(settings.grid_size)
             state = await store.create(HAIFA, mode=MissionMode.LIVE, pace=2.0)
             assert state.mode == MissionMode.LIVE
             assert state.simulation_running is True
@@ -51,7 +52,7 @@ def test_offline_mode_batch_ticks():
         store = MissionStore()
         two_hours_ago = datetime.now(timezone.utc) - timedelta(hours=2)
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
-            mock.return_value = _terrain(128)
+            mock.return_value = _terrain(settings.grid_size)
             state = await store.create(
                 HAIFA,
                 mode=MissionMode.OFFLINE,
@@ -68,7 +69,7 @@ def test_update_layers_forces_topography_when_all_off():
     async def run() -> None:
         store = MissionStore()
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
-            mock.return_value = _terrain(128)
+            mock.return_value = _terrain(settings.grid_size)
             state = await store.create(HAIFA, layers={"topography": False, "roads": False})
             await store.update_layers(
                 state.mission_id,
@@ -88,7 +89,7 @@ def test_tick_preserves_probability_mass():
     async def run() -> None:
         store = MissionStore()
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
-            mock.return_value = _terrain(128)
+            mock.return_value = _terrain(settings.grid_size)
             state = await store.create(HAIFA)
             origin = state.grid.metadata.origin
             before = float(state.grid.probabilities.sum())
@@ -107,7 +108,7 @@ def test_tick_accumulates_history_near_lkp():
     async def run() -> None:
         store = MissionStore()
         with patch("app.services.mission_store.build_terrain_context", new_callable=AsyncMock) as mock:
-            mock.return_value = _terrain(128)
+            mock.return_value = _terrain(settings.grid_size)
             state = await store.create(HAIFA, layers={"topography": False, "roads": False, "weather": False})
             lkp_row = state.grid.rows // 2
             lkp_col = state.grid.cols // 2
