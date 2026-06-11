@@ -32,6 +32,12 @@ class Settings(BaseSettings):
     land_elevation_threshold_m: float = 1.0
     engine_tick_particle_limit: int = 200
 
+    # Sea drift: used automatically when the LKP falls on water. The object is
+    # assumed to drift at a constant velocity (surface current + leeway).
+    sea_drift_speed_mps: float = 0.4          # constant drift speed (m/s)
+    sea_drift_heading_deg: float = 90.0       # compass heading drift moves TOWARD (0=N, 90=E)
+    sea_drift_strength: float = 1.2           # directional bias multiplier vs. baseline diffusion
+
     kde_edge_fade_cells: int = 0
     kde_bandwidth_factor: float = 1.1
     kde_radial_fade_end: float = 1.0

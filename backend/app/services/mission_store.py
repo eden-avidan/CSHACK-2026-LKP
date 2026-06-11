@@ -39,6 +39,17 @@ def _pace_to_timing(pace: float) -> tuple[float, float]:
     return BASE_STEP_SEC * pace, LIVE_UPDATE_INTERVAL_SEC
 
 
+def _lkp_in_sea(terrain: Optional[TerrainContext], size: int) -> bool:
+    """True when the LKP cell (grid center) is water rather than land."""
+    if terrain is None:
+        return False
+    r = c = size // 2
+    try:
+        return not bool(terrain.is_land[r, c])
+    except (IndexError, TypeError):
+        return False
+
+
 @dataclass
 class TickResult:
     deltas: list[HeatmapCellDelta]
@@ -103,6 +114,18 @@ class MissionStore:
             filtered = ensure_min_one_dict(layers)
             layer_flags.apply_update(filtered)
         ensure_min_one_layer(layer_flags)
+
+        # If the LKP is on water, switch to a sea-drift-only model: the subject
+        # is adrift, so the land-based layers don't apply and the spread is
+        # governed solely by the constant drift current.
+        if _lkp_in_sea(terrain, size):
+            layer_flags = LayerFlags(
+                topography=False,
+                roads=False,
+                subject_injured=False,
+                weather=False,
+                sea_drift=True,
+            )
 
         if mode == MissionMode.LIVE:
             if step_sec is not None and update_interval_sec is not None:

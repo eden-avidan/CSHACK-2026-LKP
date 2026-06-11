@@ -14,6 +14,7 @@ class LayerFlags:
     roads: bool = False
     subject_injured: bool = False
     weather: bool = False
+    sea_drift: bool = False
 
     def apply_update(self, layers: dict[str, bool]) -> None:
         if "topography" in layers:
@@ -24,6 +25,8 @@ class LayerFlags:
             self.subject_injured = bool(layers["subject_injured"])
         if "weather" in layers:
             self.weather = bool(layers["weather"])
+        if "sea_drift" in layers:
+            self.sea_drift = bool(layers["sea_drift"])
         from app.engine.layers.registry import ensure_min_one_layer
 
         ensure_min_one_layer(self)
@@ -34,10 +37,17 @@ class LayerFlags:
             "roads": self.roads,
             "subject_injured": self.subject_injured,
             "weather": self.weather,
+            "sea_drift": self.sea_drift,
         }
 
     def any_enabled(self) -> bool:
-        return self.topography or self.roads or self.subject_injured or self.weather
+        return (
+            self.topography
+            or self.roads
+            or self.subject_injured
+            or self.weather
+            or self.sea_drift
+        )
 
 
 class UpdateLayersMessage(BaseModel):

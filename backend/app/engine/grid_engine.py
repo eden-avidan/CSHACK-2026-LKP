@@ -61,7 +61,7 @@ class GridEngine:
                     if 0 <= nr < size and 0 <= nc < size:
                         new_probs[nr, nc] += mass * outflow[i]
 
-        self._apply_land_mask(new_probs, matrix.node_fields)
+        self._apply_land_mask(new_probs, matrix.node_fields, sea_mode=layers.sea_drift)
         return self._normalize(new_probs)
 
     def _aggregate_transitions(
@@ -93,7 +93,17 @@ class GridEngine:
         return normalize_weights(combined)
 
     @staticmethod
-    def _apply_land_mask(probs: np.ndarray, fields: NodeFields) -> None:
+    def _apply_land_mask(
+        probs: np.ndarray, fields: NodeFields, sea_mode: bool = False
+    ) -> None:
+        # Land searches: probability cannot flow onto water -> zero water cells.
+        # Sea searches (sea_drift): the subject is adrift, so keep mass on water
+        # and absorb anything that reaches the coastline -> zero land cells.
+        if sea_mode:
+            land = fields.is_land
+            if np.any(land):
+                probs[land] = 0.0
+            return
         water = ~fields.is_land
         if np.any(water):
             probs[water] = 0.0

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from app.engine.layers.base import BaseProbabilityLayer
 from app.engine.layers.road_magnetism import RoadMagnetismLayer
+from app.engine.layers.sea_drift import SeaDriftLayer
 from app.engine.layers.subject_state import SubjectStateLayer
 from app.engine.layers.topography import TopographyLayer
 from app.engine.layers.weather import WeatherLayer
@@ -12,6 +13,7 @@ PROBABILITY_LAYER_REGISTRY: list[BaseProbabilityLayer] = [
     SubjectStateLayer(),
     WeatherLayer(),
     RoadMagnetismLayer(),
+    SeaDriftLayer(),
 ]
 
 _LAYER_BY_ID: dict[str, BaseProbabilityLayer] = {
