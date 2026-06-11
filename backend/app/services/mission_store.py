@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Optional
 from uuid import UUID, uuid4
 
@@ -23,6 +24,12 @@ from app.models.mission import (
     LatLon,
     MissionMode,
     MissionStatus,
+)
+from app.services.drone_detection import (
+    altitude_matches_node,
+    get_default_detection_jsonl_path,
+    load_detection_records,
+    map_detection_to_grid_cell,
 )
 from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.negative_search import apply_negative_search
@@ -215,6 +222,7 @@ class MissionStore:
         current_probs = self._finalize_probabilities(state, current_probs)
         blended = self._blend_history(prior_probs, current_probs)
         state.grid_matrix.probabilities = blended
+        self._update_drone_last_seen(state)
         state.grid_matrix.sync_to_grid()
         state.tick_count += 1
         state.mpp = compute_mpp(state.grid_matrix.grid, blended)
@@ -230,6 +238,30 @@ class MissionStore:
         if total > 0:
             blended /= total
         return blended
+
+    def _update_drone_last_seen(self, state: MissionState) -> None:
+        tick_start = (state.lkp_timestamp or state.created_at) + timedelta(
+            seconds=state.tick_count * state.step_sec
+        )
+        tick_end = tick_start + timedelta(seconds=state.step_sec)
+        records = load_detection_records(get_default_detection_jsonl_path())
+        node_last_seen = state.grid_matrix.node_fields.drone_last_seen
+        node_last_seen.fill(False)
+
+        for record in records:
+            if not (tick_start <= record.timestamp < tick_end):
+                continue
+            try:
+                row, col = map_detection_to_grid_cell(
+                    state.grid_matrix.grid,
+                    record.latitude,
+                    record.longitude,
+                )
+            except ValueError:
+                continue
+            if not altitude_matches_node(state.grid_matrix.node_fields, row, col, record.altitude):
+                continue
+            node_last_seen[row, col] = True
 
     def _update_reachability(self, state: MissionState) -> None:
         if not state.layers.topography or state.terrain is None:
