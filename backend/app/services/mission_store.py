@@ -37,6 +37,7 @@ from app.services.path_optimizer import DroneRoute, optimize_drone_route
 from app.services.topo_reachability import (
     apply_reachability_to_grid,
     compute_reachability,
+    compute_reachability_score,
     lkp_to_grid_cell,
     mission_max_hours,
 )
@@ -290,8 +291,17 @@ class MissionStore:
             start_col,
             max_h,
         )
+        score = compute_reachability_score(
+            state.terrain_grid,
+            state.terrain.elevation,
+            start_row,
+            start_col,
+            max_h,
+        )
         state.terrain.reachability = reach
+        state.terrain.reachability_score = score
         state.grid_matrix.node_fields.reachability = reach.astype(np.float64, copy=True)
+        state.grid_matrix.node_fields.reachability_score = score.astype(np.float64, copy=True)
 
     def _finalize_probabilities(
         self, state: MissionState, probs: np.ndarray

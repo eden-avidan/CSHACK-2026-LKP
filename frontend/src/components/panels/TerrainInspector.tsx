@@ -66,7 +66,7 @@ export function TerrainInspector() {
     if (!terrainData || !terrainField) return null
     const values = terrainData.fields[terrainField]
     if (!values) return null
-    return computeFieldRange(values)
+    return computeFieldRange(values, terrainField)
   }, [terrainData, terrainField])
 
   const selectedMeta = terrainData?.available.find((f) => f.id === terrainField)
@@ -80,7 +80,7 @@ export function TerrainInspector() {
       <h3>Terrain Inspector</h3>
       <p className="layer-idle-hint">
         Per-cell inputs the grid engine uses at mission start (roads, elevation, slope,
-        reachability, land, wind).
+        reachability, land, wind, sea current).
       </p>
 
       {missionId ? (

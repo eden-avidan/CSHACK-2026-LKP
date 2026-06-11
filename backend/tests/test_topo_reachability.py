@@ -9,6 +9,7 @@ from app.geospatial.grid import create_empty_grid
 from app.models.mission import LatLon
 from app.services.topo_reachability import (
     compute_reachability,
+    compute_reachability_score,
     least_travel_time_hours,
     tobler_hiking_speed_kmh,
     travel_time_to_probability,
@@ -53,3 +54,14 @@ def test_steep_terrain_reduces_reachability():
     east_flat = reach_flat[8, 12]
     east_steep = reach_steep[8, 12]
     assert east_steep <= east_flat
+
+
+def test_reachability_score_linear_at_lkp():
+    grid = create_empty_grid(HAIFA, 50.0, 32)
+    elevation = np.zeros((32, 32), dtype=np.float64)
+    center = 16
+    score = compute_reachability_score(grid, elevation, center, center, max_hours=0.1)
+    assert score[center, center] == pytest.approx(1.0)
+    assert score[center + 5, center] > score[center + 10, center]
+    assert score[0, 0] == pytest.approx(0.0)
+    assert score.sum() > 1.0  # not normalized to a probability measure
