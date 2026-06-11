@@ -1,0 +1,18 @@
+{
+  "total_json_records": 2878,
+  "selected_json_records": 306,
+  "total_csv_rows": 3461,
+  "not_found_csv_rows": 1196,
+  "matched_records": 306,
+  "unmatched_json_records": 2572,
+  "unmatched_selected_json_records": 0,
+  "unselected_json_records": 2572,
+  "unmatched_csv_rows": 3155,
+  "duplicate_json_timestamps": 0,
+  "duplicate_csv_timestamps": 0,
+  "malformed_json_timestamps": 0,
+  "malformed_csv_timestamps": 0,
+  "malformed_not_found_csv_timestamps": 0,
+  "selected_session_start": "2026-06-11T15:03:38.831000+00:00",
+  "clock_offset_seconds": 15155.331
+}
