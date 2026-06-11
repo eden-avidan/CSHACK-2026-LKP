@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     sigma_x: float = 3.0
     sigma_0_m: float = 200.0
     momentum_tau_sec: float = 600.0
+    # Reference tick length (seconds) for scaling road/weather diffusion steps:
+    # steps ∝ dt_sec / momentum_reference_dt_sec. Not the simulation clock itself
+    # (see BASE_STEP_SEC in mission.py, default 10 s).
     momentum_reference_dt_sec: float = 60.0
 
     uphill_factor: float = 0.25
@@ -63,11 +66,12 @@ class Settings(BaseSettings):
     kde_edge_fade_cells: int = 0
     kde_bandwidth_factor: float = 1.1
     kde_radial_fade_end: float = 1.0
-    heatmap_history_decay: float = 0.94
+    heatmap_history_decay: float = 0.4  # per-tick: P ← decay×prior + (1−decay)×current; lower = tighter
     topo_reachability_floor_frac: float = 0.12
     grid_base_outflow: float = 0.22
 
     # Tobler/Dijkstra topography (topo_layout parity)
+    tobler_flat_speed_kmh: float = 3.5  # hiking speed on flat ground (km/h)
     topo_probability_method: str = "linear"
     topo_steep_threshold_deg: float = 30.0
     topo_cliff_threshold_deg: float = 45.0

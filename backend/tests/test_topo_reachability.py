@@ -23,6 +23,7 @@ HAIFA = LatLon(lat=32.7940, lon=34.9896)
 def test_tobler_uphill_slower_than_flat():
     flat = float(tobler_hiking_speed_kmh(0.0))
     uphill = float(tobler_hiking_speed_kmh(0.3))
+    assert flat == pytest.approx(4.7, rel=0.01)
     assert uphill < flat
 
 
