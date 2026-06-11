@@ -89,7 +89,7 @@ Two separate clocks:
 | Clock | Source | Default | Effect |
 |-------|--------|---------|--------|
 | **Wall-clock refresh** | `LIVE_UPDATE_INTERVAL_SEC` in `app/models/mission.py` | **1 s** | How often live mode pushes `heatmap_full` over WebSocket |
-| **Simulated time per tick** | `step_sec = BASE_STEP_SEC × pace` | **60 s × pace** | How much time layers see as `ctx.dt_sec` |
+| **Simulated time per tick** | `step_sec = BASE_STEP_SEC × pace` | **10 s × pace** | How much time layers see as `ctx.dt_sec`; reachability horizon grows by this each tick |
 
 Pace comes from the UI / `POST /missions` / `PATCH /missions/{id}/pace` — **not** from `.env`.
 
@@ -99,7 +99,7 @@ Pace comes from the UI / `POST /missions` / `PATCH /missions/{id}/pace` — **no
 1. _update_reachability()     ← topography: refresh Dijkstra horizon
 2. GridEngine.tick()          ← all active layers → transition_weights()
 3. _finalize_probabilities()  ← topography: multiply by reachability prior
-4. _blend_history()           ← HEATMAP_HISTORY_DECAY (default 0.94)
+4. _blend_history()           ← heatmap_history_decay (default 0.86)
 5. broadcast heatmap_full + engine_tick
 ```
 
@@ -291,7 +291,7 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 | Transition | Block flow to water; bias toward high `reachability`; penalize uphill steps |
 | Post-tick | `apply_reachability_to_grid()` in `mission_store._finalize_probabilities` |
 | Reachability | `app/services/topo_reachability.py` — Tobler + Dijkstra from LKP |
-| Config | `terrain_beta`, `uphill_factor`, `topo_*` weights |
+| Config | `tobler_flat_speed_kmh` (default **4.7**), `topo_steep_weight`, `topo_steep_threshold_deg`, `terrain_beta` |
 
 ### Road magnetism (`roads`) — default **off**
 
@@ -300,7 +300,7 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 | File | `app/engine/layers/road_magnetism.py` |
 | Transition | Boost outflow to neighbors aligned with `road_tangent` |
 | Node data | `road_proximity`, `road_tangent_e`, `road_tangent_n` |
-| Config | `road_snap_radius_m`, `road_snap_strength`, `road_proximity_decay_m` |
+| Config | `diffusion_steps`, `momentum_reference_dt_sec`, `road_kde_bonus`, `road_l2_weight`, `road_topology_weight` |
 
 ### Subject state (`subject_injured`) — default **off**
 
@@ -317,7 +317,7 @@ class RoadMagnetismLayer(BaseProbabilityLayer):
 | File | `app/engine/layers/weather.py` |
 | Transition | Bias outflow downwind using `ctx.env` (mock 4 m/s N, 2.5 m/s E when on) |
 | Node data | `wind_u`, `wind_v` (filled in `node_builder`) |
-| Config | Uses `momentum_reference_dt_sec` for dt scaling |
+| Config | `momentum_reference_dt_sec` (default **60 s**) — scales advection/diffusion step count by `dt_sec / 60`; independent of `BASE_STEP_SEC` (10 s sim clock) |
 
 ---
 
@@ -343,12 +343,14 @@ Set in `backend/.env` (see `.env.example`) or defaults in `app/core/config.py`:
 | `GRID_SIZE` | 128 | Matrix A |
 | `GRID_RESOLUTION_M` | 50 | Cell size Y (m) |
 | `GRID_BASE_OUTFLOW` | 0.22 | Baseline spread per tick |
-| `HEATMAP_HISTORY_DECAY` | 0.94 | Trace memory |
+| `HEATMAP_HISTORY_DECAY` | 0.86 | Tick-to-tick memory; lower = tighter cloud |
+| `TOBLER_FLAT_SPEED_KMH` | 4.7 | Topography walking speed on flat ground |
+| `MOMENTUM_REFERENCE_DT_SEC` | 60 | Reference tick length for road/weather diffusion scaling (not the sim clock) |
 | `ROAD_SNAP_STRENGTH` | 0.85 | Roads |
 | `INJURED_VELOCITY_FACTOR` | 0.25 | Subject injured |
 | `TERRAIN_BETA` | 0.15 | Topography reachability bias |
 
-Hardcoded (not `.env`): `BASE_STEP_SEC = 60`, `LIVE_UPDATE_INTERVAL_SEC = 1` in `app/models/mission.py`.
+Hardcoded (not `.env`): `BASE_STEP_SEC = 10` in `app/models/mission.py`; live refresh interval from `filter_hz` (default 1 Hz).
 
 ---
 
@@ -356,7 +358,7 @@ Hardcoded (not `.env`): `BASE_STEP_SEC = 60`, `LIVE_UPDATE_INTERVAL_SEC = 1` in 
 
 - Unknown layer keys in API/WS payloads are **ignored**.
 - All layers off → **`topography` forced on** (`ensure_min_one_layer` / frontend `setLayers`).
-- Offline mode requires `lkp_timestamp`; runs batch ticks at create, no 1 s loop.
+- Offline mode requires `lkp_timestamp` and `simulation_start_timestamp`; batch-computes ticks to start time, then runs the live tick loop with pace control.
 
 ---
 

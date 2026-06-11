@@ -36,7 +36,9 @@ P[water] = 0
 
 **Intuition:** If `P` is the initial impulse, the result is the **reachable walking envelope** from the pin — high near LKP, fading with travel time, zero on water and reduced on steep terrain.
 
-**Reachability refresh:** `reachability_score` is recomputed each tick as simulated time grows (`mission_store._update_reachability`). Horizon advances by one `step_sec` per tick (default 60 s simulated time per 1 s wall clock at pace 1×).
+**Reachability refresh:** `reachability_score` is recomputed each tick as simulated time grows (`mission_store._update_reachability`). Horizon advances by one `step_sec` per tick (**default 10 s** simulated time per tick at pace 1×; see `BASE_STEP_SEC` in `app/models/mission.py`).
+
+**Walking speed:** Tobler function on the elevation grid; flat-ground speed **`tobler_flat_speed_kmh` (default 4.7 km/h)** in `config.py`.
 
 ---
 
@@ -143,11 +145,24 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 
 | Layer | Config keys |
 |-------|-------------|
-| Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
-| Roads | `road_l2_weight`, `road_topology_weight`, `cost_road`, `cost_offroad`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` (layer weight 0.68) |
+| Topography | `tobler_flat_speed_kmh`, `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via `step_sec` × tick count |
+| Roads | `road_l2_weight`, `road_topology_weight`, `cost_road`, `cost_offroad`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus`, `momentum_reference_dt_sec` (diffusion dt scale) |
 | Weather | `momentum_reference_dt_sec`, wind from env |
 | Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
 | Sea drift | `marine_api_timeout_sec`, `marine_current_fallback_u/v_mps`, `marine_drift_advection_strength`, `marine_drift_steps` |
+| **Engine (all ticks)** | `heatmap_history_decay` (default **0.86** — lower = less cumulative spread), `BASE_STEP_SEC` (**10 s**), `momentum_reference_dt_sec` (**60 s** reference for road/weather step scaling) |
+
+### `momentum_reference_dt_sec` (default 60)
+
+Not the simulation clock. It scales **how many road/weather diffusion steps** run per tick:
+
+`diffusion_steps_effective ≈ diffusion_steps × layer_weight × (dt_sec / momentum_reference_dt_sec)`
+
+With `BASE_STEP_SEC = 10` and reference 60, each tick runs ~⅙ of the “design” diffusion vs a 60 s tick. **`dt_sec`** comes from pace (`BASE_STEP_SEC × pace`).
+
+### `heatmap_history_decay` (default 0.86)
+
+Each tick after layers: `P ← decay × P_prior + (1 − decay) × P_current`. Lower decay = replace more of the old cloud each tick = **tighter** heatmap over long runs.
 
 ## Adding a layer
 

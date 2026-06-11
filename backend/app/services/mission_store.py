@@ -81,6 +81,7 @@ class MissionState:
     lkp_timestamp: Optional[datetime]
     grid_matrix: GridMatrix
     terrain_grid: ProbabilityGrid
+    simulation_start_timestamp: Optional[datetime] = None
     tick_count: int = 0
     pace: float = 1.0
     step_sec: float = BASE_STEP_SEC
@@ -115,6 +116,7 @@ class MissionStore:
         sigma_0_m: Optional[float] = None,
         mode: MissionMode = MissionMode.LIVE,
         lkp_timestamp: Optional[datetime] = None,
+        simulation_start_timestamp: Optional[datetime] = None,
         pace: float = 1.0,
         step_sec: Optional[float] = None,
         update_interval_sec: Optional[float] = None,
@@ -159,8 +161,16 @@ class MissionStore:
                 resolved_step, resolved_interval = _pace_to_timing(pace)
             simulation_running = True
         else:
-            resolved_step, resolved_interval = _pace_to_timing(1.0)
-            simulation_running = False
+<<<<<<< HEAD
+            resolved_step, resolved_interval = _pace_to_timing(pace)
+=======
+            if step_sec is not None and update_interval_sec is not None:
+                resolved_step = step_sec
+                resolved_interval = update_interval_sec
+            else:
+                resolved_step, resolved_interval = _pace_to_timing(pace)
+>>>>>>> aa09434efe97109963e421604575ed50f6a0ff6b
+            simulation_running = True
 
         node_fields = build_node_fields(
             terrain,
@@ -192,6 +202,16 @@ class MissionStore:
         lkp_ts = lkp_timestamp
         if lkp_ts is not None and lkp_ts.tzinfo is None:
             lkp_ts = lkp_ts.replace(tzinfo=timezone.utc)
+        sim_start_ts = simulation_start_timestamp
+        if sim_start_ts is not None and sim_start_ts.tzinfo is None:
+            sim_start_ts = sim_start_ts.replace(tzinfo=timezone.utc)
+        if (
+            mode == MissionMode.OFFLINE
+            and lkp_ts is not None
+            and sim_start_ts is not None
+            and sim_start_ts < lkp_ts
+        ):
+            raise ValueError("simulation_start_timestamp must be on or after lkp_timestamp")
 
         state = MissionState(
             mission_id=mission_id,
@@ -200,9 +220,10 @@ class MissionStore:
             mode=mode,
             created_at=datetime.now(timezone.utc),
             lkp_timestamp=lkp_ts,
+            simulation_start_timestamp=sim_start_ts,
             grid_matrix=grid_matrix,
             terrain_grid=terrain_grid,
-            pace=pace if mode == MissionMode.LIVE else 1.0,
+            pace=pace,
             step_sec=resolved_step,
             update_interval_sec=resolved_interval,
             simulation_running=simulation_running,
@@ -215,17 +236,29 @@ class MissionStore:
         )
         self._missions[mission_id] = state
 
-        if mode == MissionMode.OFFLINE and lkp_ts is not None:
+        if mode == MissionMode.OFFLINE and lkp_ts is not None and sim_start_ts is not None:
             await self._run_offline_batch(state)
 
         return state
 
-    async def _run_offline_batch(self, state: MissionState) -> None:
+    @staticmethod
+    def simulated_datetime(state: MissionState) -> datetime | None:
+        """Wall-clock time in the scenario: LKP time + simulated ticks."""
         if state.lkp_timestamp is None:
+            return None
+        base = state.lkp_timestamp
+        if base.tzinfo is None:
+            base = base.replace(tzinfo=timezone.utc)
+        return base + timedelta(seconds=state.tick_count * state.step_sec)
+
+    async def _run_offline_batch(self, state: MissionState) -> None:
+        if state.lkp_timestamp is None or state.simulation_start_timestamp is None:
             return
-        now = datetime.now(timezone.utc)
-        elapsed_sec = max(0.0, (now - state.lkp_timestamp).total_seconds())
-        n_ticks = max(1, int(elapsed_sec / state.step_sec))
+        elapsed_sec = max(
+            0.0,
+            (state.simulation_start_timestamp - state.lkp_timestamp).total_seconds(),
+        )
+        n_ticks = int(elapsed_sec / state.step_sec)
         async with state._lock:
             for _ in range(n_ticks):
                 await self._tick_unlocked(state)
@@ -421,14 +454,20 @@ class MissionStore:
     def _update_reachability(self, state: MissionState) -> None:
         if not state.layers.topography or state.terrain is None:
             return
-        now = datetime.now(timezone.utc)
-        lkp_ts = state.lkp_timestamp or state.created_at
-        max_h = mission_max_hours(
-            tick_count=state.tick_count,
-            step_sec=state.step_sec,
-            lkp_timestamp=lkp_ts,
-            now=now,
-        )
+        if state.mode == MissionMode.OFFLINE:
+            max_h = max(
+                state.step_sec / 3600.0,
+                ((state.tick_count + 1) * state.step_sec) / 3600.0,
+            )
+        else:
+            now = datetime.now(timezone.utc)
+            lkp_ts = state.lkp_timestamp or state.created_at
+            max_h = mission_max_hours(
+                tick_count=state.tick_count,
+                step_sec=state.step_sec,
+                lkp_timestamp=lkp_ts,
+                now=now,
+            )
         start_row, start_col = lkp_to_grid_cell(
             state.terrain_grid,
             state.terrain_grid.crs.origin_e,
@@ -455,7 +494,7 @@ class MissionStore:
 
     async def tick(self, mission_id: UUID) -> TickResult:
         state = self._require(mission_id)
-        if not state.simulation_running and state.mode == MissionMode.LIVE:
+        if not state.simulation_running:
             return TickResult(deltas=[], engine_tick=None)
         async with state._lock:
             detection_events, drone_track = await self._tick_unlocked(state)
@@ -498,8 +537,7 @@ class MissionStore:
     async def resume(self, mission_id: UUID) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode == MissionMode.LIVE:
-                state.simulation_running = True
+            state.simulation_running = True
         return state
 
     async def delete(self, mission_id: UUID) -> None:
@@ -538,8 +576,6 @@ class MissionStore:
     ) -> MissionState:
         state = self._require(mission_id)
         async with state._lock:
-            if state.mode != MissionMode.LIVE:
-                return state
             if pace is not None:
                 state.pace = pace
                 state.step_sec, state.update_interval_sec = _pace_to_timing(pace)

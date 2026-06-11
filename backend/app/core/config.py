@@ -80,6 +80,7 @@ class Settings(BaseSettings):
     grid_base_outflow: float = 0.22
 
     # Tobler/Dijkstra topography (topo_layout parity)
+    tobler_flat_speed_kmh: float = 3.5  # hiking speed on flat ground (km/h)
     topo_probability_method: str = "linear"
     topo_steep_threshold_deg: float = 30.0
     topo_cliff_threshold_deg: float = 45.0

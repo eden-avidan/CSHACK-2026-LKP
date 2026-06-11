@@ -66,11 +66,39 @@ def test_load_person_found_detection_payload_without_gps(tmp_path: Path):
 
     records = load_detection_records(path)
     assert len(records) == 1
+    assert records[0].latitude == pytest.approx(32.7940)
+    assert records[0].longitude == pytest.approx(34.9896)
+
+
+def test_load_person_found_detection_payload_without_gps(tmp_path: Path):
+    path = tmp_path / "detections.jsonl"
+    path.write_text(
+        "{\"timestamp\": \"2026-06-11T16:00:00.000Z\", \"frame\": 42, "
+        "\"person_found\": true, \"confidence\": 0.9386, "
+        "\"confidence_percent\": 93.86, \"bbox\": [1, 2, 3, 4], "
+        "\"latitude\": null, \"longitude\": null}\n"
+    )
+
+    records = load_detection_records(path)
+    assert len(records) == 1
     assert records[0].confidence == pytest.approx(0.9386)
     assert records[0].confidence_percent == pytest.approx(93.86)
     assert records[0].frame == 42
     assert records[0].bbox == [1, 2, 3, 4]
     assert records[0].latitude is None
+
+
+def test_load_detection_records_from_json_array(tmp_path: Path):
+    path = tmp_path / "detections.JSON"
+    path.write_text(
+        '[{"timestamp":"2026-06-11T16:00:00Z","person_found":true,'
+        '"confidence":0.8,"confidence_percent":80.0,"latitude":32.7,"longitude":35.0}]'
+    )
+
+    records = load_detection_records(path)
+
+    assert len(records) == 1
+    assert records[0].confidence_percent == pytest.approx(80.0)
 
 
 def test_tick_marks_searched_clean(tmp_path: Path):

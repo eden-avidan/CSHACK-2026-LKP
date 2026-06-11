@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Optional
 from uuid import UUID
@@ -43,8 +43,12 @@ class CreateMissionRequest(BaseModel):
     mode: MissionMode = MissionMode.LIVE
     lkp_timestamp: Optional[datetime] = None
     timestamp: Optional[datetime] = None  # deprecated alias for lkp_timestamp
+    simulation_start_timestamp: Optional[datetime] = Field(
+        default=None,
+        description="Offline: simulated 'now' when batch ends and live playback begins",
+    )
     sigma_0_m: Optional[float] = Field(default=None, gt=0)
-    pace: float = Field(default=1.0, ge=0.1, le=120.0, description="Live simulation speed multiplier")
+    pace: float = Field(default=1.0, ge=0.1, le=120.0, description="Simulation speed multiplier")
     step_sec: Optional[float] = Field(default=None, ge=0.1, le=3600, deprecated=True)
     update_interval_sec: Optional[float] = Field(
         default=None, ge=0.1, le=3600, deprecated=True
@@ -58,6 +62,17 @@ class CreateMissionRequest(BaseModel):
             self.lkp_timestamp = self.timestamp
         if self.mode == MissionMode.OFFLINE and self.lkp_timestamp is None:
             raise ValueError("lkp_timestamp is required for offline mode")
+        if self.mode == MissionMode.OFFLINE:
+            if self.simulation_start_timestamp is None:
+                self.simulation_start_timestamp = datetime.now(timezone.utc)
+            lkp_ts = self.lkp_timestamp
+            sim_start = self.simulation_start_timestamp
+            if lkp_ts.tzinfo is None:
+                lkp_ts = lkp_ts.replace(tzinfo=timezone.utc)
+            if sim_start.tzinfo is None:
+                sim_start = sim_start.replace(tzinfo=timezone.utc)
+            if sim_start < lkp_ts:
+                raise ValueError("simulation_start_timestamp must be on or after lkp_timestamp")
         layers = self.layers or {}
         if layers.get("personality") and self.personality is None:
             self.personality = PersonalityProfile()
@@ -81,6 +96,7 @@ class MissionResponse(BaseModel):
     mode: MissionMode
     lkp: LatLon
     lkp_timestamp: Optional[datetime] = None
+    simulation_start_timestamp: Optional[datetime] = None
     created_at: datetime
     tick_count: int
     pace: float
