@@ -42,15 +42,35 @@ P[water] = 0
 
 ### 2. Roads (`roads`) — **implemented**
 
-**Fields used:** `road_proximity`
+**Fields used:** `is_road`, `is_land`, `slope`, `road_proximity`
 
-**Rule:** Multiplicative boost on cells close to OSM roads.
+**Rule:** Continuous **cost-surface diffusion** — blends L2 (Euclidean) neighbor distance with terrain friction. No hard walls; roads form fast "fingers" with soft forest bleed.
+
+**Traversal cost map** (per cell):
+
+| Terrain | Cost (default) |
+|---------|----------------|
+| road | `cost_road` (1.0) |
+| off-road / light brush | `cost_offroad` (4.0) |
+| steep slope (≥ threshold) | `cost_steep_slope` (8.0) |
+| water | `cost_water` (20.0) |
+
+**Transition weight** A → neighbor B:
 
 ```
-P[r,c] ← P[r,c] × (1 + w × road_kde_bonus × road_proximity[r,c])
+L2 = 1.0 (cardinal) or √2 (diagonal)
+weight = transition_weight_scale / (L2 × terrain_cost[B])
+if off-road A and road B:  weight ×= (1 + trail_magnetism_bonus)
 ```
 
-**Intuition:** Road-adjacent cells gain probability mass; the effect is local and proportional to OSM proximity (0..1). No re-normalization.
+Each tick, N diffusion steps normalize outflow so mass is conserved:
+
+```
+P' ← cost_surface_diffusion(P, terrain_cost, is_road)
+P ← (1 − w) × P + w × P' × (1 + road_kde_bonus × road_proximity)
+```
+
+**Intuition:** Probability runs quickly down trails (low cost), bleeds softly into nearby forest (higher cost, still reachable), and avoids unrealistic hard boundaries. Steep ridges bleed less than parallel road segments.
 
 ---
 
@@ -116,7 +136,7 @@ Auto-enabled when LKP is on water (`mission_store.create`).
 | Layer | Config keys |
 |-------|-------------|
 | Topography | `topo_steep_threshold_deg`, `topo_steep_weight`, reachability horizon via tick timing |
-| Roads | `road_kde_bonus` |
+| Roads | `cost_road`, `cost_offroad`, `cost_steep_slope`, `trail_magnetism_bonus`, `diffusion_steps`, `road_kde_bonus` |
 | Weather | `momentum_reference_dt_sec`, wind from env |
 | Personality | `age`, `fitness` (1–5), `injured` — see heuristic above |
 | Sea drift | `sea_drift_speed_mps`, `sea_drift_heading_deg`, `sea_drift_strength` |
