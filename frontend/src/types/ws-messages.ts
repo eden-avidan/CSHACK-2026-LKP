@@ -38,7 +38,7 @@ const cellDeltaSchema = z.object({
 const layerStateSchema = z.object({
   topography: z.boolean(),
   roads: z.boolean(),
-  subject_injured: z.boolean(),
+  personality: z.boolean(),
   weather: z.boolean(),
 })
 

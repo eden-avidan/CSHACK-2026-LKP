@@ -103,14 +103,14 @@ def test_road_snap_within_50m():
     assert np.mean(out.v_e) > np.mean(particles.v_e)
 
 
-def test_injured_reduces_variance():
+def test_personality_reduces_variance():
     grid = create_empty_grid(HAIFA, 50.0, 32)
     particles = initialize_particles(grid.crs.origin_e, grid.crs.origin_n, 200, 50.0)
     base = predict_step(
-        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(subject_injured=False)
+        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(personality=False)
     )
     injured = predict_step(
-        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(subject_injured=True)
+        particles, zero_env(), dt=5.0, grid=grid, layers=LayerFlags(personality=True)
     )
     base_spread = np.std(base.eastings - particles.eastings)
     injured_spread = np.std(injured.eastings - particles.eastings)

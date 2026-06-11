@@ -16,6 +16,7 @@ interface HeatmapSidebarProps {
 export function HeatmapSidebar(_props: HeatmapSidebarProps) {
   const mode = useMissionStore((s) => s.mode)
   const layers = useMissionStore((s) => s.layers)
+  const personality = useMissionStore((s) => s.personality)
   const draftLkp = useMissionStore((s) => s.draftLkp)
   const pinnedLkp = useMissionStore((s) => s.pinnedLkp)
   const lkpTimestamp = useMissionStore((s) => s.lkpTimestamp)
@@ -118,6 +119,9 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
         pace,
         layers,
       }
+      if (layers.personality) {
+        body.personality = personality
+      }
       if (mode === 'offline' && lkpTimestamp) {
         body.lkp_timestamp = new Date(lkpTimestamp).toISOString()
       }
@@ -179,7 +183,7 @@ export function HeatmapSidebar(_props: HeatmapSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
+  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, personality, setMission, setHeatmapFull, setTerrainData, setSimulationRunning])
 
   const simulatedElapsedSec = tickCount * stepSec
 

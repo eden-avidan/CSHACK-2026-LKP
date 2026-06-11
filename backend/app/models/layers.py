@@ -12,7 +12,7 @@ from app.models.mission import LatLon
 class LayerFlags:
     topography: bool = True
     roads: bool = False
-    subject_injured: bool = False
+    personality: bool = False
     weather: bool = False
     sea_drift: bool = False
 
@@ -21,8 +21,8 @@ class LayerFlags:
             self.topography = bool(layers["topography"])
         if "roads" in layers:
             self.roads = bool(layers["roads"])
-        if "subject_injured" in layers:
-            self.subject_injured = bool(layers["subject_injured"])
+        if "personality" in layers:
+            self.personality = bool(layers["personality"])
         if "weather" in layers:
             self.weather = bool(layers["weather"])
         if "sea_drift" in layers:
@@ -35,7 +35,7 @@ class LayerFlags:
         return {
             "topography": self.topography,
             "roads": self.roads,
-            "subject_injured": self.subject_injured,
+            "personality": self.personality,
             "weather": self.weather,
             "sea_drift": self.sea_drift,
         }
@@ -44,7 +44,7 @@ class LayerFlags:
         return (
             self.topography
             or self.roads
-            or self.subject_injured
+            or self.personality
             or self.weather
             or self.sea_drift
         )

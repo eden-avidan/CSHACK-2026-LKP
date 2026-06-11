@@ -5,6 +5,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.models.personality import PersonalityProfile
+
 
 class MissionStatus(str, Enum):
     SEARCHING = "searching"
@@ -48,6 +50,7 @@ class CreateMissionRequest(BaseModel):
         default=None, ge=0.1, le=3600, deprecated=True
     )
     layers: Optional[dict[str, bool]] = None
+    personality: Optional[PersonalityProfile] = None
 
     @model_validator(mode="after")
     def validate_mode_fields(self) -> "CreateMissionRequest":
@@ -55,6 +58,9 @@ class CreateMissionRequest(BaseModel):
             self.lkp_timestamp = self.timestamp
         if self.mode == MissionMode.OFFLINE and self.lkp_timestamp is None:
             raise ValueError("lkp_timestamp is required for offline mode")
+        layers = self.layers or {}
+        if layers.get("personality") and self.personality is None:
+            self.personality = PersonalityProfile()
         return self
 
 

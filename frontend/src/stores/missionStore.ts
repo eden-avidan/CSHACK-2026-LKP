@@ -28,14 +28,26 @@ export interface TerrainData {
 export interface LayerState {
   topography: boolean
   roads: boolean
-  subject_injured: boolean
+  personality: boolean
   weather: boolean
+}
+
+export interface PersonalityProfile {
+  age: number
+  fitness: number
+  injured: boolean
+}
+
+export const DEFAULT_PERSONALITY: PersonalityProfile = {
+  age: 35,
+  fitness: 3,
+  injured: false,
 }
 
 export const DEFAULT_LAYERS: LayerState = {
   topography: true,
   roads: false,
-  subject_injured: false,
+  personality: false,
   weather: false,
 }
 
@@ -57,6 +69,7 @@ interface MissionStore {
   wsStatus: WsStatus
   simulationRunning: boolean
   layers: LayerState
+  personality: PersonalityProfile
   metadata: GridMetadata | null
   grid: Float32Array | null
   gridVersion: number
@@ -85,6 +98,7 @@ interface MissionStore {
   setWsStatus: (status: WsStatus) => void
   setWsSend: (fn: ((payload: unknown) => void) | null) => void
   setLayers: (layers: Partial<LayerState>) => void
+  setPersonality: (profile: Partial<PersonalityProfile>) => void
   setEngineTick: (mpp: LatLon, tickCount: number, layers?: Partial<LayerState>) => void
   setHeatmapFull: (metadata: GridMetadata, probabilities: number[]) => void
   applyHeatmapDelta: (cells: { row: number; col: number; probability: number }[]) => void
@@ -108,6 +122,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
   wsStatus: 'idle',
   simulationRunning: true,
   layers: { ...DEFAULT_LAYERS },
+  personality: { ...DEFAULT_PERSONALITY },
   metadata: null,
   grid: null,
   gridVersion: 0,
@@ -176,6 +191,7 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
       wsStatus: 'idle',
       simulationRunning: true,
       layers: { ...DEFAULT_LAYERS },
+      personality: { ...DEFAULT_PERSONALITY },
       metadata: null,
       grid: null,
       gridVersion: 0,
@@ -203,6 +219,11 @@ export const useMissionStore = create<MissionStore>((set, get) => ({
     }
     set({ layers: next })
   },
+
+  setPersonality: (profile) =>
+    set((state) => ({
+      personality: { ...state.personality, ...profile },
+    })),
 
   setEngineTick: (mpp, tickCount, layers) =>
     set((state) => {

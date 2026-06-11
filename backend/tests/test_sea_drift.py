@@ -116,7 +116,7 @@ def test_sea_drift_zero_when_weight_zero():
 
 def _sea_flags() -> LayerFlags:
     return LayerFlags(
-        topography=False, roads=False, subject_injured=False,
+        topography=False, roads=False, personality=False,
         weather=False, sea_drift=True,
     )
 

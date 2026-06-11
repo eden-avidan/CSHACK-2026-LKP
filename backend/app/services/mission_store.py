@@ -18,6 +18,7 @@ from app.engine.node_builder import build_node_fields, copy_node_fields, env_for
 from app.geospatial.grid import ProbabilityGrid, create_empty_grid
 from app.models.heatmap import HeatmapCellDelta
 from app.models.layers import EngineTickMessage, LayerFlags
+from app.models.personality import PersonalityProfile
 from app.models.mission import (
     BASE_STEP_SEC,
     LatLon,
@@ -82,6 +83,7 @@ class MissionState:
     terrain: Optional[TerrainContext] = None
     initial_node_fields: Optional[NodeFields] = None
     layers: LayerFlags = field(default_factory=LayerFlags)
+    personality: PersonalityProfile | None = None
     mpp: Optional[LatLon] = None
     tick_task: Optional[asyncio.Task] = field(default=None, repr=False)
     subscribers: list[asyncio.Queue] = field(default_factory=list, repr=False)
@@ -110,6 +112,7 @@ class MissionStore:
         step_sec: Optional[float] = None,
         update_interval_sec: Optional[float] = None,
         layers: Optional[dict[str, bool]] = None,
+        personality: PersonalityProfile | None = None,
     ) -> MissionState:
         del sigma_0_m  # grid engine uses t=0 impulse at LKP center
         mission_id = uuid4()
@@ -130,10 +133,14 @@ class MissionStore:
             layer_flags = LayerFlags(
                 topography=False,
                 roads=False,
-                subject_injured=False,
+                personality=False,
                 weather=False,
                 sea_drift=True,
             )
+
+        resolved_personality: PersonalityProfile | None = None
+        if layer_flags.personality:
+            resolved_personality = personality or PersonalityProfile()
 
         if mode == MissionMode.LIVE:
             if step_sec is not None and update_interval_sec is not None:
@@ -162,6 +169,7 @@ class MissionStore:
             terrain_grid=terrain_grid,
             terrain=terrain,
             layers=layer_flags,
+            personality=resolved_personality,
         )
         self._update_reachability(temp_state)
         initial_node_fields = copy_node_fields(grid_matrix.node_fields)
@@ -190,6 +198,7 @@ class MissionStore:
             initial_node_fields=initial_node_fields,
             layers=layer_flags,
             mpp=mpp,
+            personality=resolved_personality,
         )
         self._missions[mission_id] = state
 
@@ -218,6 +227,7 @@ class MissionStore:
             dt_sec=state.step_sec,
             tick_count=state.tick_count,
             env=env,
+            personality=state.personality if state.layers.personality else None,
         )
 
     async def _tick_unlocked(self, state: MissionState) -> None:

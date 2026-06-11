@@ -7,9 +7,11 @@ from app.layers.base import LayerConfig, LayerContext, PredictState
 
 
 @dataclass
-class SubjectInjuredLayer:
+class PersonalityParticleLayer:
+    """Legacy particle pipeline hook when personality layer is enabled."""
+
     config: LayerConfig = field(
-        default_factory=lambda: LayerConfig(id="subject_injured", default_enabled=False, default_weight=1.0)
+        default_factory=lambda: LayerConfig(id="personality", default_enabled=False, default_weight=1.0)
     )
 
     def adjust_sigmas(self, sigma_v: float, sigma_x: float, weight: float) -> tuple[float, float]:
@@ -36,4 +38,4 @@ class SubjectInjuredLayer:
         return 1.0
 
 
-subject_injured_layer = SubjectInjuredLayer()
+personality_layer = PersonalityParticleLayer()

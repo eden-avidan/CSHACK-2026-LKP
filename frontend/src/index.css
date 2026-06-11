@@ -189,6 +189,23 @@ body {
   color: #718096;
 }
 
+.personality-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin: 0.35rem 0 0.5rem 1.5rem;
+  padding: 0.5rem;
+  border-left: 2px solid #2a3544;
+}
+
+.personality-fields .field input[type='number'] {
+  width: 100%;
+}
+
+.personality-fields .layer-toggle {
+  margin-top: 0.15rem;
+}
+
 button {
   width: 100%;
   padding: 0.6rem 1rem;
