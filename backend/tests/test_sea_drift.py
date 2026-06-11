@@ -38,10 +38,23 @@ def _centroid(probs: np.ndarray) -> tuple[float, float]:
     return float((probs * rows).sum() / total), float((probs * cols).sum() / total)
 
 
-def _water_matrix(size: int = 32, res: float = 50.0) -> GridMatrix:
+def _water_matrix(size: int = 32, res: float = 50.0, *, u: float | None = None, v: float | None = None) -> GridMatrix:
     """A grid whose cells are ALL water (is_land = False everywhere)."""
     fields = NodeFields.zeros(size)
     fields.is_land = np.zeros((size, size), dtype=bool)
+    if u is not None and v is not None:
+        fields.current_u[:] = u
+        fields.current_v[:] = v
+    else:
+        from app.services.marine_current import MarineCurrent
+
+        _populate_sea_current(fields, MarineCurrent(
+            u_east_mps=settings.sea_drift_speed_mps,
+            v_north_mps=0.0,
+            speed_mps=settings.sea_drift_speed_mps,
+            direction_deg=90.0,
+            source="test",
+        ))
     matrix = GridMatrix.create(OPEN_SEA, size=size, resolution_m=res, node_fields=fields)
     return matrix
 
@@ -49,8 +62,15 @@ def _water_matrix(size: int = 32, res: float = 50.0) -> GridMatrix:
 def test_sea_current_populated_on_water_cells(monkeypatch):
     if _populate_sea_current is None:
         pytest.skip("node_builder unavailable")
-    monkeypatch.setattr(settings, "sea_drift_speed_mps", 0.5)
-    monkeypatch.setattr(settings, "sea_drift_heading_deg", 90.0)  # due east
+    from app.services.marine_current import MarineCurrent
+
+    marine = MarineCurrent(
+        u_east_mps=0.5,
+        v_north_mps=0.0,
+        speed_mps=0.5,
+        direction_deg=90.0,
+        source="test",
+    )
     fields = NodeFields.zeros(4)
     fields.is_land = np.array(
         [
@@ -61,7 +81,7 @@ def test_sea_current_populated_on_water_cells(monkeypatch):
         ],
         dtype=bool,
     )
-    _populate_sea_current(fields)
+    _populate_sea_current(fields, marine)
     assert fields.current_u[2, 2] == pytest.approx(0.5)
     assert fields.current_v[2, 2] == pytest.approx(0.0)
     assert fields.current_u[0, 0] == pytest.approx(0.0)
@@ -72,9 +92,8 @@ def test_sea_current_populated_on_water_cells(monkeypatch):
 
 
 def test_sea_drift_biases_toward_heading(monkeypatch):
-    monkeypatch.setattr(settings, "sea_drift_heading_deg", 90.0)  # due east
     size = 16
-    matrix = _water_matrix(size=size)
+    matrix = _water_matrix(size=size, u=0.5, v=0.0)
     ctx = TransitionContext(
         matrix=matrix,
         node_fields=matrix.node_fields,
@@ -121,11 +140,10 @@ def _sea_flags() -> LayerFlags:
     )
 
 
-@pytest.mark.skip(reason="Sea drift apply_field not yet implemented in interactive pipeline")
 def test_engine_drifts_cloud_in_heading_direction(monkeypatch):
-    monkeypatch.setattr(settings, "sea_drift_heading_deg", 90.0)  # east
+    monkeypatch.setattr(settings, "marine_drift_steps", 2)
     size = 41
-    matrix = _water_matrix(size=size)
+    matrix = _water_matrix(size=size, u=0.5, v=0.0)
     engine = GridEngine()
 
     before = _centroid(matrix.probabilities)
@@ -138,14 +156,13 @@ def test_engine_drifts_cloud_in_heading_direction(monkeypatch):
     # East = columns increasing, rows roughly unchanged.
     assert after[1] > before[1] + 1.0, "cloud should drift east (cols increase)"
     assert abs(after[0] - before[0]) < 1.0, "no significant north/south drift for due-east heading"
-    assert probs.sum() == 1.0
+    assert probs.sum() == pytest.approx(1.0)
 
 
-@pytest.mark.skip(reason="Sea drift apply_field not yet implemented in interactive pipeline")
 def test_engine_drift_heading_north(monkeypatch):
-    monkeypatch.setattr(settings, "sea_drift_heading_deg", 0.0)  # north
+    monkeypatch.setattr(settings, "marine_drift_steps", 2)
     size = 41
-    matrix = _water_matrix(size=size)
+    matrix = _water_matrix(size=size, u=0.0, v=0.5)
     engine = GridEngine()
 
     before = _centroid(matrix.probabilities)
@@ -158,7 +175,7 @@ def test_engine_drift_heading_north(monkeypatch):
     # North = rows decreasing.
     assert after[0] < before[0] - 1.0, "cloud should drift north (rows decrease)"
     assert abs(after[1] - before[1]) < 1.0
-    assert probs.sum() == 1.0
+    assert probs.sum() == pytest.approx(1.0)
 
 
 def test_sea_mode_keeps_mass_on_water_zeros_land():
@@ -180,7 +197,6 @@ def test_sea_mode_keeps_mass_on_water_zeros_land():
     assert out.sum() == pytest.approx(1.0)
 
 
-@pytest.mark.skip(reason="Sea drift apply_field not yet implemented in interactive pipeline")
 def test_mass_conserved_on_open_sea_over_many_ticks():
     size = 41
     matrix = _water_matrix(size=size)

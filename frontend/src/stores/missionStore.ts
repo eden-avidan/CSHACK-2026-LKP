@@ -5,7 +5,15 @@ import { BASE_STEP_SEC } from '../utils/formatTime'
 
 export type WsStatus = 'idle' | 'connecting' | 'open' | 'closed' | 'error'
 export type MissionMode = 'live' | 'offline'
-export type TerrainFieldKind = 'scalar' | 'mask'
+export type TerrainFieldKind = 'scalar' | 'mask' | 'vector'
+
+export interface MarineCurrentInfo {
+  u_east_mps: number
+  v_north_mps: number
+  speed_mps: number
+  direction_deg: number
+  source: string
+}
 
 export interface TerrainFieldMeta {
   id: string
@@ -23,6 +31,7 @@ export interface TerrainData {
   field_stats?: Record<string, { min: number; max: number; nonzero_frac: number }>
   warnings?: string[]
   available: TerrainFieldMeta[]
+  marine_current?: MarineCurrentInfo | null
 }
 
 export interface LayerState {

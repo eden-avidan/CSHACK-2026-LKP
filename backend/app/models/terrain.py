@@ -19,9 +19,19 @@ class TerrainInspectRequest(BaseModel):
 class TerrainFieldMeta(BaseModel):
     id: str
     label: str
-    kind: str  # "scalar" | "mask"
+    kind: str  # "scalar" | "mask" | "vector"
     unit: Optional[str] = None
     description: Optional[str] = None
+
+
+class MarineCurrentInfo(BaseModel):
+    """Live Open-Meteo surface current fetched once at LKP (mission init)."""
+
+    u_east_mps: float
+    v_north_mps: float
+    speed_mps: float
+    direction_deg: float
+    source: str  # "open_meteo" | "fallback"
 
 
 class TerrainInspectResponse(BaseModel):
@@ -32,3 +42,4 @@ class TerrainInspectResponse(BaseModel):
     field_stats: Dict[str, Dict[str, float]] = Field(default_factory=dict)
     warnings: List[str] = Field(default_factory=list)
     available: List[TerrainFieldMeta]
+    marine_current: Optional[MarineCurrentInfo] = None

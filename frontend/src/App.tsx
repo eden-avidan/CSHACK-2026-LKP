@@ -3,6 +3,7 @@ import type { Map } from 'mapbox-gl'
 import { MapContainer } from './components/map/MapContainer'
 import { HeatmapCanvas } from './components/map/HeatmapCanvas'
 import { TerrainOverlay } from './components/map/TerrainOverlay'
+import { CurrentVectorOverlay } from './components/map/CurrentVectorOverlay'
 import { TrackingOverlay } from './components/map/TrackingOverlay'
 import { HeatmapSidebar } from './components/panels/HeatmapSidebar'
 import { LayerControls } from './components/panels/LayerControls'
@@ -28,6 +29,7 @@ export default function App() {
         <main className="map-area">
           <MapContainer onMapReady={onMapReady} />
           <TerrainOverlay map={map} />
+          <CurrentVectorOverlay map={map} />
           <HeatmapCanvas map={map} />
           <TrackingOverlay map={map} />
         </main>

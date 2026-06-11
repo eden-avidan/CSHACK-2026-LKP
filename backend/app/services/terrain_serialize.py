@@ -6,7 +6,8 @@ import numpy as np
 
 from app.engine.grid_matrix import NodeFields
 from app.geospatial.grid import ProbabilityGrid
-from app.models.terrain import TerrainFieldMeta, TerrainInspectResponse
+from app.models.terrain import MarineCurrentInfo, TerrainFieldMeta, TerrainInspectResponse
+from app.services.marine_current import MarineCurrent
 
 
 AVAILABLE_FIELDS = [
@@ -90,7 +91,26 @@ AVAILABLE_FIELDS = [
         unit="°",
         description="Compass direction the current flows toward (0=N, 90=E).",
     ),
+    TerrainFieldMeta(
+        id="current_vectors",
+        label="Current vectors (map)",
+        kind="vector",
+        unit="m/s",
+        description="Arrow overlay: flow direction and speed on water cells (Open-Meteo at LKP).",
+    ),
 ]
+
+
+def _marine_info(marine: MarineCurrent | None) -> MarineCurrentInfo | None:
+    if marine is None:
+        return None
+    return MarineCurrentInfo(
+        u_east_mps=marine.u_east_mps,
+        v_north_mps=marine.v_north_mps,
+        speed_mps=marine.speed_mps,
+        direction_deg=marine.direction_deg,
+        source=marine.source,
+    )
 
 
 def build_inspect_response(
@@ -98,6 +118,7 @@ def build_inspect_response(
     node_fields: NodeFields,
     *,
     warnings: list[str] | None = None,
+    marine_current: MarineCurrent | None = None,
 ) -> TerrainInspectResponse:
     """Build inspect payload from the exact NodeFields the grid engine uses."""
     size = grid.rows
@@ -156,4 +177,5 @@ def build_inspect_response(
         field_stats=field_stats,
         warnings=out_warnings,
         available=AVAILABLE_FIELDS,
+        marine_current=_marine_info(marine_current),
     )

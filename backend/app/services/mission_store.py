@@ -34,6 +34,7 @@ from app.services.drone_detection import (
 )
 from app.services.env_ingestion import TerrainContext, build_terrain_context
 from app.services.negative_search import apply_negative_search
+from app.services.marine_current import MarineCurrent, fetch_marine_current
 from app.services.path_optimizer import DroneRoute, optimize_drone_route
 from app.services.topo_reachability import (
     compute_reachability,
@@ -82,6 +83,7 @@ class MissionState:
     simulation_running: bool = True
     terrain: Optional[TerrainContext] = None
     initial_node_fields: Optional[NodeFields] = None
+    marine_current: Optional[MarineCurrent] = None
     layers: LayerFlags = field(default_factory=LayerFlags)
     personality: PersonalityProfile | None = None
     mpp: Optional[LatLon] = None
@@ -138,6 +140,8 @@ class MissionStore:
                 sea_drift=True,
             )
 
+        marine_current = await fetch_marine_current(lkp.lat, lkp.lon)
+
         resolved_personality: PersonalityProfile | None = None
         if layer_flags.personality:
             resolved_personality = personality or PersonalityProfile()
@@ -154,7 +158,10 @@ class MissionStore:
             simulation_running = False
 
         node_fields = build_node_fields(
-            terrain, size, weather_enabled=layer_flags.weather
+            terrain,
+            size,
+            weather_enabled=layer_flags.weather,
+            marine_current=marine_current,
         )
         grid_matrix = GridMatrix.create(lkp, size, resolution, node_fields)
 
@@ -196,6 +203,7 @@ class MissionStore:
             simulation_running=simulation_running,
             terrain=terrain,
             initial_node_fields=initial_node_fields,
+            marine_current=marine_current,
             layers=layer_flags,
             mpp=mpp,
             personality=resolved_personality,
