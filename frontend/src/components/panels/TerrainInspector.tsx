@@ -6,6 +6,7 @@ import { computeFieldRange } from '../../utils/fieldScale'
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
 
 export function TerrainInspector() {
+  const missionId = useMissionStore((s) => s.missionId)
   const pinnedLkp = useMissionStore((s) => s.pinnedLkp)
   const draftLkp = useMissionStore((s) => s.draftLkp)
   const terrainData = useMissionStore((s) => s.terrainData)
@@ -21,6 +22,7 @@ export function TerrainInspector() {
   const [error, setError] = useState<string | null>(null)
 
   const target = pinnedLkp ?? draftLkp
+  const missionLoaded = Boolean(missionId && terrainData)
 
   const inspect = useCallback(async () => {
     if (!target) {
@@ -55,9 +57,10 @@ export function TerrainInspector() {
   }, [target, setTerrainData])
 
   const clear = useCallback(() => {
+    if (missionId) return
     setTerrainData(null)
     setError(null)
-  }, [setTerrainData])
+  }, [missionId, setTerrainData])
 
   const selectedRange = useMemo(() => {
     if (!terrainData || !terrainField) return null
@@ -68,18 +71,39 @@ export function TerrainInspector() {
 
   const selectedMeta = terrainData?.available.find((f) => f.id === terrainField)
 
+  const gridHint = terrainData
+    ? `${terrainData.rows}×${terrainData.cols} cells · ${terrainData.metadata.resolution_m.toFixed(0)} m/cell`
+    : null
+
   return (
     <div className="terrain-inspector" aria-label="Terrain data inspector">
       <h3>Terrain Inspector</h3>
       <p className="layer-idle-hint">
-        Project the raw terrain &amp; road data the engine receives, before designing the
-        update function.
+        Per-cell inputs the grid engine uses at mission start (roads, elevation, slope,
+        reachability, land, wind).
       </p>
 
-      <button type="button" className="pin-btn" onClick={inspect} disabled={loading || !target}>
-        {loading ? 'Fetching terrain…' : 'Inspect at pin'}
-      </button>
-      {!target && <p className="layer-idle-hint">Click the map to choose a point.</p>}
+      {missionId ? (
+        <p className="layer-idle-hint">
+          {missionLoaded
+            ? `Loaded with Run Heatmap — engine grid (${gridHint}). Values are fixed at pin time.`
+            : 'Run Heatmap to load init cell data for this mission.'}
+        </p>
+      ) : (
+        <>
+          <button type="button" className="pin-btn" onClick={inspect} disabled={loading || !target}>
+            {loading ? 'Fetching terrain…' : 'Preview at pin (debug grid)'}
+          </button>
+          {!target && <p className="layer-idle-hint">Click the map to choose a point.</p>}
+          {terrainData && !missionId && (
+            <p className="layer-idle-hint">
+              Debug preview ({gridHint}) — finer than the mission grid. Run Heatmap to use exact
+              engine values.
+            </p>
+          )}
+        </>
+      )}
+
       {error && <p className="error">{error}</p>}
 
       {terrainData && (
@@ -171,9 +195,11 @@ export function TerrainInspector() {
             </div>
           )}
 
-          <button type="button" className="secondary" onClick={clear}>
-            Clear terrain data
-          </button>
+          {!missionId && (
+            <button type="button" className="secondary" onClick={clear}>
+              Clear terrain data
+            </button>
+          )}
         </>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Map } from 'mapbox-gl'
 import { useMissionStore } from '../../stores/missionStore'
+import type { TerrainData } from '../../stores/missionStore'
 import { useWebSocket } from '../../hooks/useWebSocket'
 import { HAIFA_MAP_VIEW } from '../../types/geo'
 import type { GridMetadata } from '../../types/geo'
@@ -26,6 +27,7 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
   const setPace = useMissionStore((s) => s.setPace)
   const setMission = useMissionStore((s) => s.setMission)
   const setHeatmapFull = useMissionStore((s) => s.setHeatmapFull)
+  const setTerrainData = useMissionStore((s) => s.setTerrainData)
   const resetMission = useMissionStore((s) => s.resetMission)
 
   const [loading, setLoading] = useState(false)
@@ -112,7 +114,18 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
       if (!res.ok) throw new Error(await res.text())
       const data = (await res.json()) as { mission_id: string }
 
-      const heatmapRes = await fetch(`${BACKEND_URL}/missions/${data.mission_id}/heatmap`)
+      const [heatmapRes, nodeFieldsRes] = await Promise.all([
+        fetch(`${BACKEND_URL}/missions/${data.mission_id}/heatmap`),
+        fetch(`${BACKEND_URL}/missions/${data.mission_id}/node-fields`),
+      ])
+
+      if (nodeFieldsRes.ok) {
+        const terrain = (await nodeFieldsRes.json()) as TerrainData
+        setTerrainData(terrain)
+      } else {
+        setTerrainData(null)
+      }
+
       if (heatmapRes.ok) {
         const heat = (await heatmapRes.json()) as {
           metadata: GridMetadata
@@ -134,7 +147,7 @@ export function HeatmapSidebar({ map }: HeatmapSidebarProps) {
     } finally {
       setLoading(false)
     }
-  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, setMission, setHeatmapFull])
+  }, [pinnedLkp, mode, lkpTimestamp, pace, layers, setMission, setHeatmapFull, setTerrainData])
 
   const stopAndNew = useCallback(async () => {
     if (!missionId) return

@@ -41,5 +41,21 @@ def build_node_fields(
     return fields
 
 
+def copy_node_fields(fields: NodeFields) -> NodeFields:
+    """Deep copy of per-cell static inputs (snapshot at mission create)."""
+    return NodeFields(
+        elevation=fields.elevation.copy(),
+        slope=fields.slope.copy(),
+        is_land=fields.is_land.copy(),
+        is_road=fields.is_road.copy(),
+        road_proximity=fields.road_proximity.copy(),
+        road_tangent_e=fields.road_tangent_e.copy(),
+        road_tangent_n=fields.road_tangent_n.copy(),
+        wind_u=fields.wind_u.copy(),
+        wind_v=fields.wind_v.copy(),
+        reachability=fields.reachability.copy(),
+    )
+
+
 def env_for_layers(weather_enabled: bool) -> EnvForcing:
     return get_mock_env() if weather_enabled else zero_env()
