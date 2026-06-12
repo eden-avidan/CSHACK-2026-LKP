@@ -2,9 +2,16 @@ import { useCallback, useMemo, useState } from 'react'
 import { useMissionStore } from '../../stores/missionStore'
 import type { TerrainData } from '../../stores/missionStore'
 import { computeFieldRange } from '../../utils/fieldScale'
-import { formatMarineCurrentSummary } from '../../utils/currentVectors'
+import { formatMarineCurrentSummary } from '../../utils/vectorFields'
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://localhost:8000'
+
+const VECTOR_HINTS: Record<string, string> = {
+  wind_vectors:
+    'Lime arrows on every grid cell. Yellow arrow at LKP shows local wind. Field twists W (bottom-left) → N (top-right).',
+  current_vectors:
+    'Cyan arrows on water cells. Orange arrow at LKP is the Open-Meteo reference current.',
+}
 
 export function TerrainInspector() {
   const missionId = useMissionStore((s) => s.missionId)
@@ -194,8 +201,7 @@ export function TerrainInspector() {
 
           {selectedMeta?.kind === 'vector' && (
             <div className="terrain-range">
-              <p>Arrow map on water cells. Orange = LKP reference vector from Open-Meteo.</p>
-              <p>Cyan arrows scale with local speed (subsampled grid).</p>
+              <p>{VECTOR_HINTS[selectedMeta.id] ?? 'Arrow overlay on the map.'}</p>
             </div>
           )}
 

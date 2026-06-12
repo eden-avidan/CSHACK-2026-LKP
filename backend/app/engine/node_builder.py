@@ -9,6 +9,7 @@ from app.services.particle_filter import get_mock_env, zero_env
 from app.services.particle_types import EnvForcing
 
 
+from app.engine.wind_field import fill_spatial_mock_wind
 from app.services.marine_current import MarineCurrent
 
 
@@ -59,9 +60,7 @@ def build_node_fields(
     if terrain.reachability_score is not None:
         fields.reachability_score = terrain.reachability_score.astype(np.float64, copy=True)
 
-    env = get_mock_env() if weather_enabled else zero_env()
-    fields.wind_u.fill(env.u_w)
-    fields.wind_v.fill(env.v_w)
+    fill_spatial_mock_wind(fields.wind_u, fields.wind_v)
     _populate_sea_current(fields, marine_current)
     return fields
 

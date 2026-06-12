@@ -62,6 +62,18 @@ class Settings(BaseSettings):
     marine_drift_steps: int = 2          # advection steps added per simulated tick
     marine_drift_max_steps: int = 96     # cap on cumulative drift steps (≈ grid half-width)
 
+    # Cone advection for wind / marine current (downstream plume, not radial bleed).
+    flow_cone_half_angle_deg: float = 38.0
+    flow_cone_strength: float = 2.8
+    flow_cone_sharpness: float = 2.0
+    flow_cone_max_emit_frac: float = 0.72
+    weather_advection_steps: int = 2
+    # Mock wind field: bottom-left → W, top-right → N (m/s east / north).
+    mock_wind_u_w_mps: float = -4.0
+    mock_wind_v_w_mps: float = 0.0
+    mock_wind_u_n_mps: float = 0.0
+    mock_wind_v_n_mps: float = 4.0
+
     kde_edge_fade_cells: int = 0
     kde_bandwidth_factor: float = 1.1
     kde_radial_fade_end: float = 1.0

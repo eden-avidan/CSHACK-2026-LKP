@@ -6,8 +6,8 @@ const DARK_RED: [number, number, number] = [58, 4, 8]
 
 const EPS = 1e-8
 
-/** Steepens normalized value so band changes stay sharp. */
-const COLOR_GAMMA = 0.55
+/** Gentle stretch — smooth ramp, not banded steps. */
+const COLOR_GAMMA = 0.72
 
 /** Blue tail stays light; dark-red peak is fully opaque. */
 const ALPHA_MIN = 0.14
@@ -34,34 +34,28 @@ function lerpColor(c1: [number, number, number], c2: [number, number, number], t
   ]
 }
 
-/** Five-band ramp with short blends between flat color steps. */
+/** Smooth five-stop ramp with eased transitions between hues. */
 function fiveStopRamp(t: number): [number, number, number] {
   const x = Math.max(0, Math.min(1, t))
 
   for (let i = 0; i < COLOR_STOPS.length - 1; i++) {
     const a = COLOR_STOPS[i]
     const b = COLOR_STOPS[i + 1]
-    const span = b.t - a.t
-    const mid = a.t + span * 0.72
-
-    if (x <= mid) {
-      return a.rgb
-    }
-    if (x < b.t) {
-      const local = Math.pow((x - mid) / (b.t - mid), 1.8)
-      return lerpColor(a.rgb, b.rgb, local)
+    if (x <= b.t) {
+      const span = b.t - a.t
+      const local = span <= EPS ? 1 : (x - a.t) / span
+      const eased = local * local * (3 - 2 * local)
+      return lerpColor(a.rgb, b.rgb, eased)
     }
   }
 
   return DARK_RED
 }
 
-/** Less transparency toward the red / dark-red end. */
-function alphaForValue(linear: number, colorT: number): number {
-  const warm = Math.max(0, (colorT - 0.35) / 0.65)
-  const base = ALPHA_MIN + Math.pow(linear, 1.1) * 0.1
-  const warmBoost = Math.pow(warm, 0.6) * (ALPHA_MAX - ALPHA_MIN - 0.1)
-  return Math.min(ALPHA_MAX, base + warmBoost)
+/** Opacity rises smoothly toward the warm end. */
+function alphaForValue(colorT: number): number {
+  const warm = Math.max(0, colorT)
+  return Math.min(ALPHA_MAX, ALPHA_MIN + Math.pow(warm, 1.15) * (ALPHA_MAX - ALPHA_MIN))
 }
 
 export interface ColorRange {
@@ -97,7 +91,7 @@ export function probabilityToRGBA(p: number, range: ColorRange): [number, number
 
   const t = Math.pow(linear, COLOR_GAMMA)
   const rgb = fiveStopRamp(t)
-  const alpha = alphaForValue(linear, t)
+  const alpha = alphaForValue(t)
 
   return [rgb[0], rgb[1], rgb[2], Math.round(alpha * 255)]
 }

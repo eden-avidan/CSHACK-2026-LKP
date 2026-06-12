@@ -498,16 +498,13 @@ button.secondary {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(
     to right,
-    #2166ac 0%,
-    #2166ac 18%,
-    #fde725 22%,
-    #fde725 38%,
-    #c2550a 42%,
-    #c2550a 58%,
-    #9e0a0e 62%,
-    #9e0a0e 78%,
-    #3a0408 82%,
-    #3a0408 100%
+    #2166ac,
+    #4a9fd4,
+    #fde725,
+    #e09020,
+    #c2550a,
+    #9e0a0e,
+    #3a0408
   );
 }
 

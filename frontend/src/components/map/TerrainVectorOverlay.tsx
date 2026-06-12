@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import type { GeoJSONSource, Map } from 'mapbox-gl'
 import { useMissionStore } from '../../stores/missionStore'
-import { buildCurrentVectorGeoJson } from '../../utils/currentVectors'
+import { buildVectorFieldGeoJson } from '../../utils/vectorFields'
 
-const SOURCE_ID = 'current-vector-source'
-const SHAFT_LAYER = 'current-vector-shaft'
-const HEAD_LAYER = 'current-vector-head'
-const LKP_LAYER = 'current-vector-lkp'
+const SOURCE_ID = 'terrain-vector-source'
+const SHAFT_LAYER = 'terrain-vector-shaft'
+const HEAD_LAYER = 'terrain-vector-head'
+const LKP_LAYER = 'terrain-vector-lkp'
+
+const VECTOR_FIELDS = new Set(['wind_vectors', 'current_vectors'])
 
 function removeVectorLayers(map: Map) {
   for (const id of [LKP_LAYER, HEAD_LAYER, SHAFT_LAYER]) {
@@ -27,7 +29,7 @@ function ensureLayers(map: Map) {
       source: SOURCE_ID,
       filter: ['==', ['get', 'kind'], 'shaft'],
       paint: {
-        'line-color': '#22d3ee',
+        'line-color': ['get', 'color'],
         'line-width': ['interpolate', ['linear'], ['get', 'speed'], 0, 1.5, 2, 3.5],
         'line-opacity': 0.85,
       },
@@ -38,7 +40,7 @@ function ensureLayers(map: Map) {
       source: SOURCE_ID,
       filter: ['==', ['get', 'kind'], 'head'],
       paint: {
-        'line-color': '#22d3ee',
+        'line-color': ['get', 'color'],
         'line-width': 2.5,
         'line-opacity': 0.9,
       },
@@ -49,7 +51,7 @@ function ensureLayers(map: Map) {
       source: SOURCE_ID,
       filter: ['==', ['get', 'kind'], 'lkp'],
       paint: {
-        'line-color': '#fb923c',
+        'line-color': ['get', 'color'],
         'line-width': 5,
         'line-opacity': 1,
       },
@@ -60,11 +62,11 @@ function ensureLayers(map: Map) {
   }
 }
 
-interface CurrentVectorOverlayProps {
+interface TerrainVectorOverlayProps {
   map: Map | null
 }
 
-export function CurrentVectorOverlay({ map }: CurrentVectorOverlayProps) {
+export function TerrainVectorOverlay({ map }: TerrainVectorOverlayProps) {
   const terrainData = useMissionStore((s) => s.terrainData)
   const terrainField = useMissionStore((s) => s.terrainField)
   const terrainVersion = useMissionStore((s) => s.terrainVersion)
@@ -72,7 +74,8 @@ export function CurrentVectorOverlay({ map }: CurrentVectorOverlayProps) {
   useEffect(() => {
     if (!map) return
 
-    const active = terrainData && terrainField === 'current_vectors'
+    const active =
+      terrainData && terrainField && VECTOR_FIELDS.has(terrainField)
     if (!active) {
       removeVectorLayers(map)
       return
@@ -80,7 +83,7 @@ export function CurrentVectorOverlay({ map }: CurrentVectorOverlayProps) {
 
     const sync = () => {
       ensureLayers(map)
-      const geojson = buildCurrentVectorGeoJson(terrainData)
+      const geojson = buildVectorFieldGeoJson(terrainData, terrainField)
       const src = map.getSource(SOURCE_ID) as GeoJSONSource | undefined
       src?.setData(geojson)
       map.triggerRepaint()

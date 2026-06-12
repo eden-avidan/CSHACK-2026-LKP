@@ -51,6 +51,7 @@ class SeaDriftLayer(BaseProbabilityLayer):
             is_water,
             dt_sec=ctx.dt_sec,
             strength=weight,
+            resolution_m=ctx.resolution_m,
             steps=steps,
         )
         return (1.0 - weight) * p_in + weight * advected
