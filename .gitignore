@@ -6,6 +6,7 @@ figure_recognition/models/
 # Dependencies and local env
 node_modules/
 .venv/
+.env
 !.env.example
 dist/
 tsconfig.tsbuildinfo
