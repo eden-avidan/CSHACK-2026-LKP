@@ -1,22 +1,58 @@
 # ADAR (CSHACK-2026-LKP)
 
-**Dynamic Search & Rescue (SAR) Intelligence System**
+**Predictive Search & Rescue End-to-End Platform for Missing Persons**
 
-ADAR turns a stale Last Known Position (LKP) into live, evolving search guidance. It combines environmental physics, probability heatmaps, Bayesian negative-search updates, multi-drone path optimization, and edge drone person detection.
+> A stale last known point becomes **live search intelligence**.
+>
+> One pin and a timestamp become a live probability map — then drones sweep the hot zones. Each pass feeds back: searched ground cools, a sighting drops a pin, the search converges.
 
 ---
 
-## Why
+## Why Every Minute Counts
 
-In SAR, an LKP starts decaying the moment it's reported. Wind, terrain, subject mobility, and water currents displace the search area. Static grids waste time and personnel. ADAR replaces them with a probability surface that updates as the world changes — and as the search proceeds.
+The search area grows with the square of elapsed time. Survival falls sharply with every hour lost — cutting search time is the difference between a rescue and a recovery. ADAR spends the first minutes narrowing where to look.
 
-## What it does
+| Stat | Source |
+|---|---|
+| **4,500** SAR incidents a year | U.S. National Parks alone |
+| **50–100K** personnel-hours a year | spent searching |
+| **up to 16%** of drowning victims | never recovered (in some studies) |
 
-1. **Predictive probability heatmap** — Monte Carlo particle filter seeded at the LKP, advanced through time. Toggle environmental layers (topography, roads, weather, personality, sea drift) to shape the diffusion.
-2. **Bayesian negative search** — Sectors cleared by ground teams or drones drop in probability; the rest of the grid renormalizes.
-3. **Multi-drone route optimizer** — Plans search routes across a fleet that maximize expected Probability of Detection (POD), respecting per-drone launch delays.
-4. **Live map command center** — Mapbox map with a canvas heatmap overlay, mission controls, layer toggles, fleet visualization, all updated over WebSocket.
-5. **Edge person detection** — YOLO26 on aerial drone video (webcam, file, or RTSP), with optional MediaMTX server for ingesting DJI RTMP pushes.
+---
+
+## How It Works
+
+From a single pin to a confirmed sighting:
+
+| # | Stage | What happens |
+|---|---|---|
+| 01 | **Last known point** | Operator drops the LKP radius + time. Seeds an impulse at the grid center. |
+| 02 | **Environment model** | Features of land and sea combine with subject information to produce the probability map. |
+| 03 | **Probability heatmap** | Cost-surface diffusion + layer physics, refreshed each tick. |
+| 04 | **Mission routes** | Rank unscanned cells by probability; route drones / teams over the hot sectors. |
+| 05 | **Live detection** | Automated drone sweep with CV (or any applied mechanism) feeds back live evidence. |
+| 06 | **Found** | Detections re-weight the map (Bayes); the loop sharpens until the subject is located. |
+
+---
+
+## The Models — Modular Environment Framework
+
+One layer = one physics. Combine freely per mission.
+
+| Layer | Module | Physics |
+|---|---|---|
+| **Probability field & diffusion** | `grid_engine` | Tick keeps mass on-cell, leaks a baseline share to its 8 neighbours, adds per-layer terms |
+| **Topography** | `topography` | Tobler's hiking function turns slope into walking speed; Dijkstra gives travel time from the LKP, projected onto the reachable land |
+| **Roads** | `roads` | L2 diffusion over a friction map — roads fast, off-road / water slow. Probability forms road "fingers" with a trail-magnetism bonus |
+| **Sea drift** | `sea_drift` | Mass advects along a drift vector (current + leeway); diffusion grows the widening downstream search cone |
+| **Weather** | `weather` | Wind shifts probability downwind, scaled by wind speed and the simulated time step |
+| **Subject mobility** | `personality` | A mobility scalar from age, fitness and injury widens or contracts the field around the LKP |
+
+### The loop — re-weight & search again
+
+**Negative-search feedback (Bayesian update).** After a sweep, a sector's probability drops by its Probability of Detection (POD) and the grid renormalizes — cleared ground cools, freed mass flows elsewhere. A hit collapses the field onto the sighting. Every sweep sharpens the map.
+
+**Automated drone detection.** Autonomous drones sweep the highest-probability sectors and locate people by whatever sensing fits the scene — RGB, thermal, motion, or RF. Each geotagged hit feeds back to the grid as evidence. The demo runs **Ultralytics YOLO26**, but the detector is pluggable — not the core of the system.
 
 ---
 
@@ -195,19 +231,6 @@ In DJI Fly: **Profile → Live Stream → Custom RTMP → `rtmp://<your-mac-ip>:
 
 ---
 
-## Demo Script (Judge Walkthrough)
-
-**3-5 minutes, two terminals (backend + frontend) plus optional drone CV.**
-
-1. **Seed mission** — Frontend → click map to place LKP → **Pin LKP** → adjust pace/layers/sortie delays → **Run Heatmap**. Backend builds the initial probability grid.
-2. **Layer toggles** — Flip topography, roads, weather, sea-drift; show how the heatmap shape changes (steep terrain channels probability into valleys; roads bias toward roadways; sea drift pushes mass downstream).
-3. **Time evolution** — Resume / pause; pace slider speeds up simulated time. The heatmap diffuses outward from the LKP.
-4. **Plan search** — Click **Find Drone Route** → optimizer returns multi-drone routes with total expected coverage %; routes overlay on the map.
-5. **Negative search** — Draw a cleared polygon, POST to `/negative-search`; probability inside drops, the rest renormalizes (visible on the heatmap).
-6. **Edge detection demo** (separate terminal) — `python figure_recognition/detect_live.py` on bundled aerial footage → live bounding boxes in the browser + `detections.jsonl` log.
-
----
-
 ## Repo Layout
 
 ```
@@ -265,3 +288,13 @@ In DJI Fly: **Profile → Live Stream → Custom RTMP → `rtmp://<your-mac-ip>:
 ## License
 
 Hackathon project — internal use during CSHACK 2026. License TBD post-event.
+
+---
+
+## In Memory
+
+**Adar — Narrow the search. Bring them back.**
+
+ADAR is named in memory of **Lieutenant Adar Ben Simon**, who fell in battle while defending Kibbutz Zikim and her platoon on October 7th.
+
+— Eden Avidan · Roy Carmel · Shir Belson · Naor Shoyhat · Linoy Geva
