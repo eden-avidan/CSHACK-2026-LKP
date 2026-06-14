@@ -1,14 +1,14 @@
-# RescuEdge (CSHACK-2026-LKP)
+# ADAR (CSHACK-2026-LKP)
 
 **Dynamic Search & Rescue (SAR) Intelligence System**
 
-RescuEdge turns a stale Last Known Position (LKP) into live, evolving search guidance. It combines environmental physics, probability heatmaps, Bayesian negative-search updates, multi-drone path optimization, and edge drone person detection.
+ADAR turns a stale Last Known Position (LKP) into live, evolving search guidance. It combines environmental physics, probability heatmaps, Bayesian negative-search updates, multi-drone path optimization, and edge drone person detection.
 
 ---
 
 ## Why
 
-In SAR, an LKP starts decaying the moment it's reported. Wind, terrain, subject mobility, and water currents displace the search area. Static grids waste time and personnel. RescuEdge replaces them with a probability surface that updates as the world changes — and as the search proceeds.
+In SAR, an LKP starts decaying the moment it's reported. Wind, terrain, subject mobility, and water currents displace the search area. Static grids waste time and personnel. ADAR replaces them with a probability surface that updates as the world changes — and as the search proceeds.
 
 ## What it does
 
