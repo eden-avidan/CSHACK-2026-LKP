@@ -222,11 +222,13 @@ In DJI Fly: **Profile → Live Stream → Custom RTMP → `rtmp://<your-mac-ip>:
 | `DELETE` | `/missions/{id}` | Tear down mission |
 | `POST` | `/missions/{id}/pause` · `resume` | Simulation control |
 | `PATCH` | `/missions/{id}/pace` | Change simulated-time pace |
-| `GET` | `/missions/{id}/heatmap` | Current probability grid |
+| `GET` | `/missions/{id}/heatmap` | Current probability grid (mission-scoped) |
+| `GET` | `/heatmap/{mission_id}` | Same grid (standalone route) |
 | `GET` | `/missions/{id}/node-fields` | Per-cell terrain data |
 | `POST` | `/missions/{id}/drone-route` | Run multi-drone path optimizer |
+| `POST` | `/missions/{id}/tick` | Manually advance one simulation tick |
 | `POST` | `/negative-search` | Apply cleared-area Bayesian update |
-| `GET` | `/terrain/inspect` | Inspect terrain at a coordinate |
+| `POST` | `/terrain/inspect` | Inspect terrain at a coordinate |
 | `WS` | `/ws/mission/{id}` | Live engine ticks, heatmap deltas, drone tracks, detection flashes |
 
 ---
